@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# pycache
+DataAnalytics/migrations/
+
 # Virtual Environment
 .F1/
 # C extensions
