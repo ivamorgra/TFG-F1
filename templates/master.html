@@ -1,0 +1,49 @@
+{% load static %} 
+
+<!DOCTYPE html>
+<html lang='es'>
+  <head>
+	<meta charset='utf-8'>
+		<link rel="stylesheet" href="{{STATIC_URL}}css/uikit.min.css" />
+        <script src="{{STATIC_URL}}js/jquery.min.js"></script>
+        <script src="{{STATIC_URL}}js/uikit.min.js"></script>
+  </head>
+  <body>
+  
+
+	<h2>F1 DATA ANALYTICS</h2>
+    <nav class="uk-navbar-container" uk-navbar>
+    <div class="uk-navbar-left">
+
+        <ul class="uk-navbar-nav">
+            <li class="uk-active"><a href="#">Inicio</a>
+            <div class="uk-navbar-dropdown">
+                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                        <li><a href="/populate">Poblar Base de Datos - Acceso Restringido</a></li>
+                        <li><a href="/loadRS">Cargar el Sistema de Recomendaci&oacute;n</a></li>
+						<li><a href="/index.html">Sobre</a></li>
+                    </ul>
+                </div>
+            </li>
+           <li><a href="#">B&uacute;squedas</a>
+                <div class="uk-navbar-dropdown">
+                    <ul class="uk-nav uk-navbar-dropdown-nav">
+						<li><a href="/recomendar_peliculas_usuarios">Recomendar Pel&iacute;culas a un usuario</a></li>
+						<li><a href="/peliculas_similares">Mostrar Pel&iacute;culas similares a una</a></li>
+						<li><a href="/puntuaciones_usuario">Buscar Usuario</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+	    
+
+		<hr>
+ 		
+ 		<h1 >{% block titulo %} {% endblock %}</h1>
+
+		{% block contenido %} {% endblock %}
+  </body>
+</html>

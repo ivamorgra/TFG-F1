@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+#from DataAnalytics.views import get_list
+from DataAnalytics import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('',views.index),
+    path('index.html/', views.index),
+    path('populate/', views.load_data),
+    #path('circuitos/',get_list, name='circuits.html'),
 ]

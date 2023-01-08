@@ -27,10 +27,13 @@ class Constructor(models.Model):
 
 # RI3: The system shall allow store the data of F1 circuits
 class Circuito(models.Model):
+    id = models.IntegerField(primary_key=True)
+    nombre_referencia = models.CharField(null = True,max_length=100)
     nombre = models.CharField(max_length=100)
     localizacion = models.CharField(max_length=100)
     pais = models.CharField(max_length=100)
     latitud = models.FloatField()
+    altura = models.FloatField(null = True)
     longitud = models.FloatField()
     enlace = models.CharField(max_length=100)
 
