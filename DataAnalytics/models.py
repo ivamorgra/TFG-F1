@@ -4,9 +4,10 @@ from django.db import models
 
 # RI1: The system shall allow store the data of F1 pilots
 class Piloto(models.Model):
+    id = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100)
     apellidos = models.TextField(max_length=100)
-    fecha_naciomiento = models.DateTimeField()
+    fecha_nacimiento = models.DateTimeField()
     nacionalidad = models.CharField(max_length=100)
     abreviatura = models.DateTimeField(auto_now_add=True)
     enlace = models.CharField(max_length=100)
@@ -17,6 +18,8 @@ class Piloto(models.Model):
 
 # RI2: The system shall allow store the data of F1 constrctors
 class Constructor(models.Model):
+    id = models.IntegerField(primary_key=True)
+    referencia = models.CharField(null = True, max_length = 50)
     nombre = models.CharField(max_length=100)
     nacionalidad = models.CharField(max_length=100)
     enlace = models.CharField(max_length=100)

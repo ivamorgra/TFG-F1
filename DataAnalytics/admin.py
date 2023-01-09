@@ -4,7 +4,7 @@ from DataAnalytics.models import Piloto,Circuito,Constructor
 
 @admin.register(Piloto)
 class PilotoAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'apellidos', 'fecha_naciomiento', 'nacionalidad', 'abreviatura', 'enlace']
+    list_display = ['nombre', 'apellidos', 'fecha_nacimiento', 'nacionalidad', 'abreviatura', 'enlace']
 
 @admin.register(Circuito)
 class CircuitoAdmin(admin.ModelAdmin):

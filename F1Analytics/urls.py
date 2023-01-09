@@ -23,5 +23,6 @@ urlpatterns = [
     path('',views.index),
     path('index.html/', views.index),
     path('populate/', views.load_data),
+    path('loadData/',views.load_dataframes),
     #path('circuitos/',get_list, name='circuits.html'),
 ]
