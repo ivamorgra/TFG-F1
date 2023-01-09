@@ -24,5 +24,7 @@ urlpatterns = [
     path('index.html/', views.index),
     path('populate/', views.load_data),
     path('loadData/',views.load_dataframes),
+    path('drivers/',views.list_drivers),
+    path('driver/<int:id>',views.get_driver),
     #path('circuitos/',get_list, name='circuits.html'),
 ]

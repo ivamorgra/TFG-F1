@@ -1,0 +1,21 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Ficha completa del piloto {{driver.apellidos}},  {{driver.nombre}}{% endblock %}
+
+
+
+{% block contenido %} 
+
+    
+		
+    {% if driver %}
+        <p>Nombre: {{driver.nombre}} || Abreviatura: {{driver.abreviatura}}</p>
+        <p>Apellidos: {{driver.apellidos}}</p>
+        <p>Fecha de nacimiento: {{driver.fecha_nacimiento}}</p>
+        <p>Nacionalidad: {{driver.nacionalidad}}</p>
+        <p>Más información: <a href="{{driver.enlace}}"> Enlace para obtener más información sobre el piloto </a></p>
+
+	{% endif %}
+    
+
+{% endblock %}

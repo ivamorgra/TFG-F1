@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .models import Circuito
+from django.shortcuts import render, get_object_or_404, HttpResponse
+from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
 
@@ -35,8 +35,17 @@ def load_dataframes(request):
     return render(request,'mensaje.html',{'titulo':'FIN DE CARGA DE LOS DATOS','mensaje':mensaje,'STATIC_URL':settings.STATIC_URL})
 
 
+def list_drivers(request):
+    '''Llamada a la función de carga de datos'''
+    drivers = Piloto.objects.all()
+    return render(request,'drivers.html',{'drivers':drivers,'STATIC_URL':settings.STATIC_URL})
 
 
+def get_driver(request,id):
+    '''Llamada a la función de carga de datos'''
+    driver = get_object_or_404(Piloto,pk=id)
+    #driver = Piloto.objects.get(id=request.GET['id'])
+    return render(request,'driver.html',{'driver':driver,'STATIC_URL':settings.STATIC_URL})
 
 
 

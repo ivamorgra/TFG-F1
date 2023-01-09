@@ -1,0 +1,21 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Listado de pilotos de la F1 {% endblock %}
+
+
+
+{% block contenido %} 
+
+    <h2> En este listado se muestran los pilotos de la F1 que han participado históricamente en la competición. </h2>
+		
+    {% if drivers %}
+        <dl>
+            {% for driver in drivers %}
+                <a href="/driver/{{driver.id}}"><dd>{{driver.nombre}} {{driver.apellidos}} ({{driver.nacionalidad}})</dd></a>
+            {% endfor %}
+		</dl>
+
+	{% endif %}
+    
+
+{% endblock %}
