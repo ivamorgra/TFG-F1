@@ -26,5 +26,7 @@ urlpatterns = [
     path('loadData/',views.load_dataframes),
     path('drivers/',views.list_drivers),
     path('driver/<int:id>',views.get_driver),
+    path('constructors/',views.get_constructors),
+    path('constructors/<int:id>',views.get_constructor),
     #path('circuitos/',get_list, name='circuits.html'),
 ]

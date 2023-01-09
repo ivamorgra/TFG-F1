@@ -36,7 +36,7 @@ def load_dataframes(request):
 
 
 def list_drivers(request):
-    '''Llamada a la función de carga de datos'''
+   
     drivers = Piloto.objects.all()
     return render(request,'drivers.html',{'drivers':drivers,'STATIC_URL':settings.STATIC_URL})
 
@@ -44,10 +44,19 @@ def list_drivers(request):
 def get_driver(request,id):
     '''Llamada a la función de carga de datos'''
     driver = get_object_or_404(Piloto,pk=id)
-    #driver = Piloto.objects.get(id=request.GET['id'])
+    
     return render(request,'driver.html',{'driver':driver,'STATIC_URL':settings.STATIC_URL})
 
+def get_constructors(request):
+    constructors = Constructor.objects.all()
+    return render(request,'constructors.html',{'constructors':constructors,'STATIC_URL':settings.STATIC_URL})
 
+
+def get_constructor(request,id):
+    '''Llamada a la función de carga de datos'''
+    constructor = get_object_or_404(Constructor,pk=id)
+    
+    return render(request,'constructor.html',{'constructor':constructor,'STATIC_URL':settings.STATIC_URL})
 
 '''
 def get_list(request):

@@ -1,0 +1,19 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Ficha completa de la escudería {{constructor.nombre}}{% endblock %}
+
+
+
+{% block contenido %} 
+
+    
+		
+    {% if constructor %}
+        <p>Nombre: {{constructor.nombre}} || Referencia: {{constructor.referencia}}</p>
+        <p>Nacionalidad: {{constructor.nacionalidad}}</p>
+        <p>Más información: <a href="{{constructor.enlace}}"> Enlace para obtener más información sobre el piloto </a></p>
+
+	{% endif %}
+    
+
+{% endblock %}

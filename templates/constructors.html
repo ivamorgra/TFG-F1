@@ -1,0 +1,21 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Listado de pilotos de la F1 {% endblock %}
+
+
+
+{% block contenido %} 
+
+    <h2> En este listado se muestran las escuderías de la F1 que han participado históricamente en la competición. </h2>
+		
+    {% if constructors %}
+        <dl>
+            {% for c in constructors %}
+                <a href="/constructors/{{c.id}}"><dd>{{c.nombre}} ({{c.nacionalidad}})</dd></a>
+            {% endfor %}
+		</dl>
+
+	{% endif %}
+    
+
+{% endblock %}
