@@ -28,5 +28,7 @@ urlpatterns = [
     path('driver/<int:id>',views.get_driver),
     path('constructors/',views.get_constructors),
     path('constructors/<int:id>',views.get_constructor),
+    path('circuits/',views.list_circuits),
+    path('circuits/<int:id>',views.get_circuit),
     #path('circuitos/',get_list, name='circuits.html'),
 ]

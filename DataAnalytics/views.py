@@ -58,6 +58,14 @@ def get_constructor(request,id):
     
     return render(request,'constructor.html',{'constructor':constructor,'STATIC_URL':settings.STATIC_URL})
 
+def list_circuits(request):
+    circuits = Circuito.objects.all()
+    return render(request,'circuits.html',{'circuits':circuits,'STATIC_URL':settings.STATIC_URL})
+
+def get_circuit(request,id):
+    circuit = get_object_or_404(Circuito,pk=id)
+    
+    return render(request,'circuit.html',{'c':circuit,'STATIC_URL':settings.STATIC_URL})
 '''
 def get_list(request):
     print(spark)

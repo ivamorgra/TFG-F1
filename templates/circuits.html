@@ -1,0 +1,21 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Listado de circuitos de la F1 {% endblock %}
+
+
+
+{% block contenido %} 
+
+    <h2> En este listado se muestran los circuitos de la F1 que han formado parte históricamente en la competición. </h2>
+		
+    {% if circuits %}
+        <dl>
+            {% for c in circuits %}
+                <a href="/circuits/{{c.id}}"><dd>{{c.nombre}} ({{c.pais}})</dd></a>
+            {% endfor %}
+		</dl>
+
+	{% endif %}
+    
+
+{% endblock %}
