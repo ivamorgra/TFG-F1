@@ -12,7 +12,13 @@
         <p>Nombre: {{constructor.nombre}} || Referencia: {{constructor.referencia}}</p>
         <p>Nacionalidad: {{constructor.nacionalidad}}</p>
         <p>Más información: <a href="{{constructor.enlace}}"> Enlace para obtener más información sobre la escudería </a></p>
-
+        <hr>
+		<h4>Ficha técnica:</h4>
+		<p>Número de carreras disputadas: {{stats.0}}</p>	
+        <p>Número de victorias: {{stats.1}}</p>
+        <p>Número de carreras a Sprint disputadas: {{stats.2}}</p>	
+        <p>Número de victorias en carreras a Sprint: {{stats.3}}</p>    
+		<hr>
 	{% endif %}
     
 

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponse
 from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
-from .spark_queries import driver_basic_stats
+from .spark_queries import driver_basic_stats,constructor_basic_stats
 
 # Create your views here.
 
@@ -56,8 +56,8 @@ def get_constructors(request):
 def get_constructor(request,id):
     '''Llamada a la función de carga de datos'''
     constructor = get_object_or_404(Constructor,pk=id)
-    
-    return render(request,'constructor.html',{'constructor':constructor,'STATIC_URL':settings.STATIC_URL})
+    stats = constructor_basic_stats(id)
+    return render(request,'constructor.html',{'constructor':constructor,'stats':stats,'STATIC_URL':settings.STATIC_URL})
 
 def list_circuits(request):
     circuits = Circuito.objects.all()
