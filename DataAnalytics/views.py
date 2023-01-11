@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
+
+from DataAnalytics.forms import CircuitoBusquedaForm
 from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
-from .spark_queries import driver_basic_stats,constructor_basic_stats
+from .spark_queries import driver_basic_stats,constructor_basic_stats, get_circuit_bynameornacionality
 
 # Create your views here.
 
@@ -60,17 +62,23 @@ def get_constructor(request,id):
     return render(request,'constructor.html',{'constructor':constructor,'stats':stats,'STATIC_URL':settings.STATIC_URL})
 
 def list_circuits(request):
-    circuits = Circuito.objects.all()
-    return render(request,'circuits.html',{'circuits':circuits,'STATIC_URL':settings.STATIC_URL})
+    circuits =  Circuito.objects.all()
+    formulario = CircuitoBusquedaForm()
+    search = False
+    if request.method=='POST':
+        formulario = CircuitoBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            value=formulario.cleaned_data['input']
+            circuits = get_circuit_bynameornacionality(value)
+            search = True
+        
+    print(search)
+    return render(request,'circuits.html',{'search':search,'formulario':formulario,'circuits':circuits,'STATIC_URL':settings.STATIC_URL})
 
 def get_circuit(request,id):
     circuit = get_object_or_404(Circuito,pk=id)
     
     return render(request,'circuit.html',{'c':circuit,'STATIC_URL':settings.STATIC_URL})
-'''
-def get_list(request):
-    print(spark)
-    df4 = spark.read.options(delimiter=";", header=True).csv(path)
-    df4.show()
-    return render(request, 'circuits.html')
-'''
+
+

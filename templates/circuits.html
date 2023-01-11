@@ -1,12 +1,31 @@
 {% extends 'master.html' %}
 
+
 {% block titulo %} Listado de circuitos de la F1 {% endblock %}
 
 
 
 {% block contenido %} 
 
-    <h2> En este listado se muestran los circuitos de la F1 que han formado parte históricamente en la competición. </h2>
+
+    <form id="formulario" method="post" action=''>{% csrf_token %}
+        <fieldset>
+            <legend>B&uacute;squeda de Circuitos por nombre o país</legend>
+            {{formulario}}
+            <BR><BR>
+
+            <input type='submit'  value='Realizar B&uacute;squeda'/>
+        </fieldset>
+    </form>
+
+    <hr>
+
+    {% if search %}
+        <h2> Listado de circuitos filtrados por nombre o país </h2>
+    {% else %}
+        <h2> En este listado se muestran los circuitos de la F1 que han formado parte históricamente en la competición. </h2>
+    {% endif %}
+   
 		
     {% if circuits %}
         <dl>
@@ -14,7 +33,8 @@
                 <a href="/circuits/{{c.id}}"><dd>{{c.nombre}} ({{c.pais}})</dd></a>
             {% endfor %}
 		</dl>
-
+    {% else %}
+        <p>No hay circuitos que coincidan con la búsqueda</p>
 	{% endif %}
     
 

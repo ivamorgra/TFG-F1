@@ -28,3 +28,12 @@ def constructor_basic_stats(constructor_id):
     
     stats = [num_races,num_wins,num_sraces,num_swins]
     return stats
+
+def get_circuit_bynameornacionality(input):
+    res = []
+    circuits = spark.read.csv("./datasets/circuits.csv", header=True,sep=",")
+    circuits = circuits.filter( (circuits.name.contains(input)) | (circuits.country.contains(input)) ).collect()
+    for c in circuits:
+        circuit = Circuito.objects.get(pk=c.circuitId)
+        res.append(circuit)
+    return res
