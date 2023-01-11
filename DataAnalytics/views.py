@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
 
-from DataAnalytics.forms import CircuitoBusquedaForm
+from DataAnalytics.forms import CircuitoBusquedaForm, ConstructorBusquedaForm
 from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
-from .spark_queries import driver_basic_stats,constructor_basic_stats, get_circuit_bynameornacionality
+from .spark_queries import driver_basic_stats,constructor_basic_stats, get_circuit_bynameornacionality, get_constructor_bynameornacionality
 
 # Create your views here.
 
@@ -52,7 +52,17 @@ def get_driver(request,id):
 
 def get_constructors(request):
     constructors = Constructor.objects.all()
-    return render(request,'constructors.html',{'constructors':constructors,'STATIC_URL':settings.STATIC_URL})
+    formulario = ConstructorBusquedaForm()
+    search = False
+    if request.method=='POST':
+        formulario = ConstructorBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            value=formulario.cleaned_data['input']
+            constructors = get_constructor_bynameornacionality(value)
+            search = True
+
+    return render(request,'constructors.html',{'search':search,'formulario':formulario,'constructors':constructors,'STATIC_URL':settings.STATIC_URL})
 
 
 def get_constructor(request,id):
@@ -73,7 +83,7 @@ def list_circuits(request):
             circuits = get_circuit_bynameornacionality(value)
             search = True
         
-    print(search)
+    
     return render(request,'circuits.html',{'search':search,'formulario':formulario,'circuits':circuits,'STATIC_URL':settings.STATIC_URL})
 
 def get_circuit(request,id):

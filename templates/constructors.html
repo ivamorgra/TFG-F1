@@ -6,7 +6,24 @@
 
 {% block contenido %} 
 
-    <h2> En este listado se muestran las escuderías de la F1 que han participado históricamente en la competición. </h2>
+
+
+    <form id="formulario" method="post" action=''>{% csrf_token %}
+        <fieldset>
+            <legend>B&uacute;squeda de Escuderías por nombre o país</legend>
+            {{formulario}}
+            <BR><BR>
+
+            <input type='submit'  value='Realizar B&uacute;squeda'/>
+        </fieldset>
+    </form>
+
+
+    {% if search %}
+        <h2> Listado de escuderías filtrados por nombre o país </h2>
+    {% else %}
+        <h2> En este listado se muestran las escuderías de la F1 que han formado parte históricamente de la competición. </h2>
+    {% endif %}
 		
     {% if constructors %}
         <dl>
@@ -14,7 +31,9 @@
                 <a href="/constructors/{{c.id}}"><dd>{{c.nombre}} ({{c.nacionalidad}})</dd></a>
             {% endfor %}
 		</dl>
-
+    {% else %}
+        <p>No hay escuderías que coincidan con la búsqueda</p>
+	
 	{% endif %}
     
 

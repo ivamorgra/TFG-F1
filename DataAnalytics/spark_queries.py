@@ -37,3 +37,12 @@ def get_circuit_bynameornacionality(input):
         circuit = Circuito.objects.get(pk=c.circuitId)
         res.append(circuit)
     return res
+
+def get_constructor_bynameornacionality(input):
+    res = []
+    constr = spark.read.csv("./datasets/constructors.csv", header=True,sep=",")
+    constructors = constr.filter( (constr.name.contains(input)) | (constr.nationality.contains(input)) ).collect()
+    for c in constructors:
+        con = Constructor.objects.get(pk=c.constructorId)
+        res.append(con)
+    return res
