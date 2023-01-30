@@ -10,7 +10,7 @@
 
     <form id="formulario" method="post" action=''>{% csrf_token %}
         <fieldset>
-            <legend>B&uacute;squeda de Escuderías por nombre o país</legend>
+            <legend>B&uacute;squeda de Escuderías por nombre o nacionalidad</legend>
             {{formulario}}
             <BR><BR>
 
@@ -20,7 +20,7 @@
 
 
     {% if search %}
-        <h2> Listado de escuderías filtrados por nombre o país </h2>
+        <h2> Listado de escuderías filtrados por nombre o nacionalidad </h2>
     {% else %}
         <h2> En este listado se muestran las escuderías de la F1 que han formado parte históricamente de la competición. </h2>
     {% endif %}

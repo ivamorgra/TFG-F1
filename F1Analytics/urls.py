@@ -18,6 +18,7 @@ from django.urls import path
 #from DataAnalytics.views import get_list
 from DataAnalytics import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index),
@@ -30,5 +31,6 @@ urlpatterns = [
     path('constructors/<int:id>',views.get_constructor),
     path('circuits/',views.list_circuits),
     path('circuits/<int:id>',views.get_circuit),
+    path('api/get_followers',views.get_twitter_stats),
     #path('circuitos/',get_list, name='circuits.html'),
 ]

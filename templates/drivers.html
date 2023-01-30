@@ -6,8 +6,22 @@
 
 {% block contenido %} 
 
-    <h2> En este listado se muestran los pilotos de la F1 que han participado históricamente en la competición. </h2>
-		
+    <form id="formulario" method="post" action=''>{% csrf_token %}
+        <fieldset>
+            <legend>B&uacute;squeda de Pilotos por nombre o nacionalidad</legend>
+            {{formulario}}
+            <BR><BR>
+
+            <input type='submit'  value='Realizar B&uacute;squeda'/>
+        </fieldset>
+    </form>
+   
+	{% if search %}
+        <h2> Listado de pilotos de F1 filtrados por nombre o nacionalidad </h2>
+    {% else %}
+        <h2> En este listado se muestran los pilotos de la F1 que han participado históricamente en la competición. </h2>
+    {% endif %}
+    
     {% if drivers %}
         <dl>
             {% for driver in drivers %}

@@ -8,3 +8,6 @@ class CircuitoBusquedaForm(forms.Form):
 class ConstructorBusquedaForm(forms.Form):
     input = forms.CharField(label="Nombre o país de la escudería", widget=forms.TextInput(attrs={'placeholder': 'Ferrari/Italian'}), required=True)
 
+class PilotoBusquedaForm(forms.Form):
+    input = forms.CharField(label="Nombre o país de la escudería", widget=forms.TextInput(attrs={'placeholder': 'Fernando Alonso/Spanish'}), required=True)
+

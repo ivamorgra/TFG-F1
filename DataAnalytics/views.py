@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
 
-from DataAnalytics.forms import CircuitoBusquedaForm, ConstructorBusquedaForm
+from DataAnalytics.forms import CircuitoBusquedaForm, ConstructorBusquedaForm, PilotoBusquedaForm
 from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
-from .spark_queries import driver_basic_stats,constructor_basic_stats, get_circuit_bynameornacionality, get_constructor_bynameornacionality
-
+from .spark_queries import driver_basic_stats,constructor_basic_stats, get_circuit_bynameornacionality, get_constructor_bynameornacionality, get_driver_bynameornacionality
+from .twitter import get_actual_followers
 # Create your views here.
 
 ''' Vista de la página principal'''
@@ -40,7 +40,18 @@ def load_dataframes(request):
 def list_drivers(request):
    
     drivers = Piloto.objects.all()
-    return render(request,'drivers.html',{'drivers':drivers,'STATIC_URL':settings.STATIC_URL})
+    search = False
+    formulario = PilotoBusquedaForm()
+
+    if request.method=='POST':
+        formulario = PilotoBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            value=formulario.cleaned_data['input']
+            drivers = get_driver_bynameornacionality(value)
+            search = True
+
+    return render(request,'drivers.html',{'search':search,'formulario':formulario,'drivers':drivers,'STATIC_URL':settings.STATIC_URL})
 
 
 def get_driver(request,id):
@@ -92,3 +103,8 @@ def get_circuit(request,id):
     return render(request,'circuit.html',{'c':circuit,'STATIC_URL':settings.STATIC_URL})
 
 
+#API TWITTER    
+
+def get_twitter_stats(request):
+    followers_stats = get_actual_followers()
+    return render(request,'twitter_api/example.html',{'followers_stats':followers_stats,'STATIC_URL':settings.STATIC_URL})

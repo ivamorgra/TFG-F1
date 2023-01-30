@@ -46,3 +46,13 @@ def get_constructor_bynameornacionality(input):
         con = Constructor.objects.get(pk=c.constructorId)
         res.append(con)
     return res
+
+def get_driver_bynameornacionality(input):
+    res = []
+    drivers = spark.read.csv("./datasets/drivers.csv", header=True,sep=",")
+    drivers = drivers.filter( (drivers.forename.contains(input)) | (drivers.surname.contains(input)) | (drivers.nationality.contains(input)) ).collect()
+
+    for d in drivers:
+        driver = Piloto.objects.get(pk=d.driverId)
+        res.append(driver)
+    return res
