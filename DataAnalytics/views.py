@@ -5,7 +5,7 @@ from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
 from .spark_queries import driver_basic_stats,constructor_basic_stats, get_circuit_bynameornacionality, get_constructor_bynameornacionality, get_driver_bynameornacionality
-from .twitter import get_actual_followers
+from .twitter import UserClient, Automate
 # Create your views here.
 
 ''' Vista de la página principal'''
@@ -106,5 +106,6 @@ def get_circuit(request,id):
 #API TWITTER    
 
 def get_twitter_stats(request):
-    followers_stats = get_actual_followers()
-    return render(request,'twitter_api/example.html',{'followers_stats':followers_stats,'STATIC_URL':settings.STATIC_URL})
+    twitter_api = UserClient()
+    followers_stats = twitter_api.get_num_followers()
+    return render(request,'twitter_api/stats.html',{'followers_stats':followers_stats,'STATIC_URL':settings.STATIC_URL})

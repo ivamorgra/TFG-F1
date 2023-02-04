@@ -1,0 +1,33 @@
+{% extends 'master.html' %}
+
+{% block titulo %}Estadísticas en Twitter (actuales) de las escuderías de la F1 {% endblock %}
+
+
+{% block contenido %} 
+
+    <p> Las estadísticas relativas a los likes y retweets que ha recibido cada cuenta
+        se han obtenido a partir de los últimos 100 tweets de cada cuenta. </p>
+<table>
+    <thead>
+        <tr>
+        <th>Nombre en Twitter de la escudería</th>
+        <th>Número de seguidores (actuales)</th>
+        <th>Número de tweets (actuales)</th>
+        <th>Número de likes que ha recibido (actuales)</th>
+        <th>Número de retweets que ha recibido (actuales)</th>
+        </tr>
+    </thead>
+    
+    {% for s in followers_stats %}
+    <tr>   
+        <td>@{{s.0}}</td>
+        <td>{{s.1}}</td>
+        <td>{{s.2}}</td>
+        <td>{{s.3}}</td>
+        <td>{{s.4}}</td>
+    </tr>  
+    {% endfor %}
+    
+</table>
+{% endblock %}
+
