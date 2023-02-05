@@ -5,7 +5,7 @@ from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
 from .spark_queries import driver_basic_stats,constructor_basic_stats, get_circuit_bynameornacionality, get_constructor_bynameornacionality, get_driver_bynameornacionality
-from .twitter import UserClient, Automate
+from .twitter import UserClient
 # Create your views here.
 
 ''' Vista de la página principal'''
