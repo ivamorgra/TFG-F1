@@ -31,6 +31,7 @@ urlpatterns = [
     path('constructors/<int:id>',views.get_constructor),
     path('circuits/',views.list_circuits),
     path('circuits/<int:id>',views.get_circuit),
+    path('races/',views.list_races),
     path('api/get_followers',views.get_twitter_stats),
     #path('circuitos/',get_list, name='circuits.html'),
 ]

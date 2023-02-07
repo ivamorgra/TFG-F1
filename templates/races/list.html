@@ -1,0 +1,20 @@
+{% extends 'master.html' %}
+
+
+{% block titulo %} Listado de carreras de la F1 {% endblock %}
+
+
+
+{% block contenido %} 
+
+    {% if c %}
+            <dl>
+                {% for i in c %}
+                    <a href="/races/{{i.0}}"><dd>{{i.1}}, ({{i.2}})</dd></a>
+                {% endfor %}
+            </dl>
+        {% else %}
+            <p>No hay carreras que coincidan con la búsqueda</p>
+        {% endif %}
+
+{% endblock %}

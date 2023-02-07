@@ -4,7 +4,7 @@ from DataAnalytics.forms import CircuitoBusquedaForm, ConstructorBusquedaForm, P
 from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
-from .spark_queries import driver_basic_stats,constructor_basic_stats, get_circuit_bynameornacionality, get_constructor_bynameornacionality, get_driver_bynameornacionality
+from .spark_queries import *
 from .twitter import UserClient
 # Create your views here.
 
@@ -103,6 +103,9 @@ def get_circuit(request,id):
     return render(request,'circuit.html',{'c':circuit,'STATIC_URL':settings.STATIC_URL})
 
 
+def list_races(request):
+    carreras = get_races()
+    return render(request,'races/list.html',{'c':carreras,'STATIC_URL':settings.STATIC_URL})
 #API TWITTER    
 
 def get_twitter_stats(request):

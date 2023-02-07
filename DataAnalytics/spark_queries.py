@@ -56,3 +56,21 @@ def get_driver_bynameornacionality(input):
         driver = Piloto.objects.get(pk=d.driverId)
         res.append(driver)
     return res
+
+def get_races():
+    #Obtener dataframe de carreras de la sesion de spark
+    res = []
+    races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    #Pasar del dataframe de spark a un array de python
+    races = races.select("raceId","name","year",).collect()
+    #Conversion a iterador para pasarlo a la vista html
+    iterator = iter(races)
+    while True:
+        try:
+            elemento = next(iterator)
+            res.append((elemento[0],elemento[1],elemento[2]))
+                
+        except StopIteration:
+            break
+    
+    return res
