@@ -2,6 +2,8 @@ import csv
 from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
+from .bstracker import race_scrapping
+from pyspark.sql.functions import col
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
@@ -72,5 +74,20 @@ def get_races():
                 
         except StopIteration:
             break
-    
+    res.sort(key=lambda x: x[2], reverse=True)
     return res
+
+def get_race(race_id):
+        
+        races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+        race = races.filter(races.raceId == race_id)
+        res =  []
+        circuit,podium,pole = race_scrapping(race.collect()[0][7])
+        iterator = iter(race.collect())
+        while True:
+            try:
+                elemento = next(iterator)
+                res.append((elemento[0],elemento[1],elemento[2],elemento[3],elemento[4],elemento[5],elemento[6],elemento[7]))
+            except StopIteration:
+                break
+        return res,circuit,podium,pole

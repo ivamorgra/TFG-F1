@@ -106,6 +106,11 @@ def get_circuit(request,id):
 def list_races(request):
     carreras = get_races()
     return render(request,'races/list.html',{'c':carreras,'STATIC_URL':settings.STATIC_URL})
+
+def details_race(request,id):
+    carrera,circuit,podium,pole = get_race(id)
+    return render(request,'races/details.html',{'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})
+
 #API TWITTER    
 
 def get_twitter_stats(request):

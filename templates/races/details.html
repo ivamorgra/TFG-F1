@@ -1,0 +1,22 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Ficha completa de la carrera {{c.name}}{% endblock %}
+
+
+
+{% block contenido %} 
+
+    {% if c %}
+        <p>Nombre de la carrera: {{c.0.4}}</p>
+        <p>Fecha: {{c.0.5}} || Año: {{c.0.1}} </p>
+        <p>circuito: {{cir}}</p>
+        <p>Posición de Pole: {{pole}}</p>
+        <p> Podium: </p>
+            {%for po in p%}
+                <p> Pos {{po.0}}: {{po.1}}</p>
+            {%endfor%}
+    {% else %}
+        <p>La carrera no existe</p>
+    {% endif %}
+
+{% endblock %}
