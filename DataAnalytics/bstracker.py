@@ -6,6 +6,7 @@ def race_scrapping(url):
     count = 0
     circuit_name = ''
     f = urllib.request.urlopen(url)
+    
     soup = BeautifulSoup(f,"html.parser")
     data = soup.find_all('table', class_ = "infobox vevent")
     for row in data:
@@ -17,4 +18,6 @@ def race_scrapping(url):
     pole_position = podium[0][1]
     
     return circuit_name, podium[1:],pole_position
+
+
         

@@ -6,10 +6,12 @@ from .spark_loader import populate,load_df
 from django.conf import settings
 from .spark_queries import *
 from .twitter import UserClient
+from .meteo import get_weather
 # Create your views here.
 
 ''' Vista de la página principal'''
 def index(request):
+    
     return render(request, 'index.html',{'STATIC_URL':settings.STATIC_URL})
 
 
@@ -108,8 +110,8 @@ def list_races(request):
     return render(request,'races/list.html',{'c':carreras,'STATIC_URL':settings.STATIC_URL})
 
 def details_race(request,id):
-    carrera,circuit,podium,pole = get_race(id)
-    return render(request,'races/details.html',{'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})
+    carrera,circuit,podium,pole,meteo = get_race(id)
+    return render(request,'races/details.html',{'m':meteo,'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})
 
 #API TWITTER    
 

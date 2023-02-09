@@ -3,6 +3,7 @@ from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from .bstracker import race_scrapping
+from .meteo import get_weather
 from pyspark.sql.functions import col
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
@@ -82,7 +83,25 @@ def get_race(race_id):
         races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
         race = races.filter(races.raceId == race_id)
         res =  []
+        year = int(race.collect()[0][1])
+
+        
+        date = race.collect()[0][5]
+        time = race.collect()[0][6]
+        ''' Procesamiento de la fecha para obtener el formato
+         correcto para la API '''
+        start_date_param, end_date_param, end_time = process_meteo_date(date,str(year),time)
+
         circuit,podium,pole = race_scrapping(race.collect()[0][7])
+        if (len(circuit.split(","))> 2 ):
+            location = circuit.split(",")[1]
+        else:
+            location = circuit.split(",")[-1]
+
+        if (year >= 2010):
+            meteo = get_weather(location,start_date_param,end_date_param,time,end_time)
+        else:
+            meteo = "No disponible"
         iterator = iter(race.collect())
         while True:
             try:
@@ -90,4 +109,15 @@ def get_race(race_id):
                 res.append((elemento[0],elemento[1],elemento[2],elemento[3],elemento[4],elemento[5],elemento[6],elemento[7]))
             except StopIteration:
                 break
-        return res,circuit,podium,pole
+        return res,circuit,podium,pole,meteo
+
+def process_meteo_date(date,year,time):
+    ''' la duracion de una carrera suele ser como máximo de 2 horas'''
+    hours_time = int(time.split(":")[0]) + 2
+    end_time = str(hours_time) + ":" + time.split(":")[1] + ":" + time.split(":")[2]
+    #El formato de fecha debe ser "2019-01-01T00:00:00"
+    day = date.split("/")[0]
+    month = date.split("/")[1]
+    start_date_param = year + "-" + month + "-" + day + "T" + time
+    end_date_param = year + "-" + month + "-" + day + "T" + end_time
+    return start_date_param, end_date_param, end_time
