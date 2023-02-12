@@ -16,7 +16,13 @@
                 <p> Pos {{po.0}}: {{po.1}}</p>
             {%endfor%}
         <p> Meteorología: </p>
-        <p> Temperatura: {{m}}</p>
+        {% for d in m%}
+            <p> Temperatura mínima: {{d.0}}</p>
+            <p> Temperatura : {{d.1}}</p>
+            <p> Precipitaciones: {{d.2}}</p>
+            <p> Humedad: {{d.3}}</p>
+            <p> Condiciones: {{d.4}}</p>
+        {%endfor%}
     {% else %}
         <p>La carrera no existe</p>
     {% endif %}
