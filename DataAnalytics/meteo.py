@@ -29,7 +29,7 @@ def get_weather(location, date, end_date,start_time,end_time):
         data_dict = lista_valores[-1]
         data_parsed = list(data_dict.values())[0]['values'][0]
         temperatura = data_parsed['temp']
-        print (temperatura)
+        
         precipitacion = data_parsed['precip']
         humedad = data_parsed['humidity']
         condiciones = data_parsed['conditions']
