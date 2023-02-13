@@ -139,6 +139,8 @@ class MyThread(threading.Thread):
                 writer = csv.writer(f)
                 writer.writerows(res)
             print("Data update completed")
+        
+        time.sleep(60*60*24)
             
 
 flag = True
@@ -146,8 +148,8 @@ my_thread = MyThread(flag)
 my_thread.start()
 
 # to stop the thread, set flag to False
-flag = False
-my_thread.join()
+#flag = False
+#my_thread.join()
     
 
 
