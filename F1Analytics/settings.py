@@ -75,6 +75,7 @@ WSGI_APPLICATION = 'F1Analytics.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+'''
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -85,8 +86,30 @@ DATABASES = {
         "PORT":"5432",
     }
 }
+'''
+'''
+DATABASES = {
+    "default": {
+        "ENGINE": "usertfg.mysql.pythonanywhere-services.com",
+        "NAME": "usertfg",
+        'USER': 'postgres',
+        'PASSWORD': '5L5UO0z7kP0EQED6LsR3',
+        'HOST': 'containers-us-west-49.railway.app',
+        'PORT': '71950',
+    }
+}
+'''
 
-
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "f1analytics",
+        'USER': 'usertfg',
+        'PASSWORD': 'supertfg',
+        'HOST': 'localhost',
+        'PORT': '3307',
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -123,13 +146,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+#STATIC_ROOT = BASE_DIR / "static"
+#os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 #staticfiles_dirs se define para poder usar los archivos estaticos en las plantillas
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

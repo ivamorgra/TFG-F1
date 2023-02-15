@@ -4,7 +4,8 @@
       {
         "src": "F1Analytics/wsgi.py",
         "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb", "runtime": "python3.8.5" }
+        "config": { "maxLambdaSize": "15mb",
+        "runtime": "python3.8.5" }
       },
       {
         "src": "build_files.sh",
