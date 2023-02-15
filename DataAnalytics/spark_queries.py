@@ -32,6 +32,18 @@ def constructor_basic_stats(constructor_id):
     stats = [num_races,num_wins,num_sraces,num_swins]
     return stats
 
+def process_race_data(races):
+    res = []
+    iterator = iter(races)
+    while True:
+        try:
+            elemento = next(iterator)
+            res.append((elemento[0],elemento[1],elemento[2]))
+                
+        except StopIteration:
+            break
+    return res
+
 def get_circuit_bynameornacionality(input):
     res = []
     circuits = spark.read.csv("./datasets/circuits.csv", header=True,sep=",")
@@ -62,19 +74,12 @@ def get_driver_bynameornacionality(input):
 
 def get_races():
     #Obtener dataframe de carreras de la sesion de spark
-    res = []
+    
     races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
     #Pasar del dataframe de spark a un array de python
     races = races.select("raceId","name","year",).collect()
     #Conversion a iterador para pasarlo a la vista html
-    iterator = iter(races)
-    while True:
-        try:
-            elemento = next(iterator)
-            res.append((elemento[0],elemento[1],elemento[2]))
-                
-        except StopIteration:
-            break
+    res = process_race_data(races)
     res.sort(key=lambda x: x[2], reverse=True)
     return res
 
@@ -110,6 +115,15 @@ def get_race(race_id):
             except StopIteration:
                 break
         return res,circuit,podium,pole,meteo
+
+def get_race_bynameorseason(input):
+
+    races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    races = races.select("raceId","name","year",).filter( (races.name.contains(input)) | (races.year == input) ).collect()
+    print (races)
+    res = process_race_data(races)
+    print (res)
+    return res
 
 def process_meteo_date(date,year,time):
     ''' la duracion de una carrera suele ser como máximo de 2 horas'''

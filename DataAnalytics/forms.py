@@ -11,3 +11,5 @@ class ConstructorBusquedaForm(forms.Form):
 class PilotoBusquedaForm(forms.Form):
     input = forms.CharField(label="Nombre o país de la escudería", widget=forms.TextInput(attrs={'placeholder': 'Fernando Alonso/Spanish'}), required=True)
 
+class CarreraBusquedaForm(forms.Form):
+    input = forms.CharField(label="Temporada o Nombre del Gran Premio", widget=forms.TextInput(attrs={'placeholder': 'Chinese Grand Prix/2005'}), required=True)

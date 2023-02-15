@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
 
-from DataAnalytics.forms import CircuitoBusquedaForm, ConstructorBusquedaForm, PilotoBusquedaForm
+from DataAnalytics.forms import CircuitoBusquedaForm, ConstructorBusquedaForm, PilotoBusquedaForm, CarreraBusquedaForm
 from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
@@ -17,8 +17,8 @@ def index(request):
 
 def load_data(request):
     '''Llamada a la función de carga de datos'''
-    c,d,co = populate()
-    mensaje = 'La carga se ha realizado con éxito. Se han cargado: ' + str(c) + ' circuitos, '+ str(d) + ' pilotos y '+ str(co)+ ' constructores.'
+    c,d,co,r = populate()
+    mensaje = 'La carga se ha realizado con éxito. Se han cargado: ' + str(c) + ' circuitos, '+ str(d) + ' pilotos, '+ str(co)+ ' constructores y '+ str(r)+ ' carreras.'
     return render(request,'mensaje.html',{'titulo':'FIN DE CARGA DE LA BASE DE DATOS','mensaje':mensaje,'STATIC_URL':settings.STATIC_URL})
 
 def load_dataframes(request):
@@ -107,7 +107,17 @@ def get_circuit(request,id):
 
 def list_races(request):
     carreras = get_races()
-    return render(request,'races/list.html',{'c':carreras,'STATIC_URL':settings.STATIC_URL})
+    formulario = CarreraBusquedaForm()
+    search = False
+    if request.method=='POST':
+        formulario = CarreraBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            value=formulario.cleaned_data['input']
+            carreras = get_race_bynameorseason(value)
+            search = True
+        
+    return render(request,'races/list.html',{'search':search,'formulario':formulario,'c':carreras,'STATIC_URL':settings.STATIC_URL})
 
 def details_race(request,id):
     carrera,circuit,podium,pole,meteo = get_race(id)

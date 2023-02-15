@@ -7,6 +7,22 @@
 
 {% block contenido %} 
 
+    <form id="formulario" method="post" action=''>{% csrf_token %}
+        <fieldset>
+            <legend>B&uacute;squeda de Carreas por nombre de Gran Premio o por año</legend>
+            {{formulario}}
+            <BR><BR>
+
+            <input type='submit'  value='Realizar B&uacute;squeda'/>
+        </fieldset>
+    </form>
+
+    {% if search %}
+        <h2> Listado de carreras de F1 filtradas por nombre de Gran Premio o temporada </h2>
+    {% else %}
+        <h2> En este listado se muestran las carreras de la F1 que se han llevado a cabo históricamente en la competición. </h2>
+    {% endif %}
+
     {% if c %}
             <dl>
                 {% for i in c %}

@@ -1,7 +1,8 @@
 import csv 
-from .models import Circuito, Piloto, Constructor
+from .models import Circuito, Piloto, Constructor, Carrera
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
+import datetime
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
@@ -10,15 +11,9 @@ def populate():
     c=load_circuits()
     p = load_drivers()
     co = load_constructors()
-    
-    '''
-    g=populateGenres()
-    (u, us)=populateUsers()
-    (m, mo)=populateMovies()
-    p=populateRatings(u,m)  #USAMOS LOS DICCIONARIOS DE USUARIOS Y PELICULAS PARA ACELERAR LA CARGA EN PUNTUACIONES
-    return (o,g,us,mo,p)
-    '''
-    return (c,p,co)
+    r = load_races()
+
+    return (c,p,co,r)
 
 def load_circuits():
     ''' Borrado de los datos de la tabla por si ya estaban cargados de antes'''
@@ -104,6 +99,35 @@ def load_constructors():
     
     Constructor.objects.bulk_create(constructors)
     return Constructor.objects.count()
+
+
+def load_races():
+    ''' Borrado de los datos de la tabla por si ya estaban cargados de antes'''
+    Carrera.objects.all().delete()
+
+    '''Creación de lista de objetos de tipo Carrera'''
+    races = []
+    '''Carga de los datos de los carreras'''
+    df = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    for row in df.collect():
+        
+        if (int(row[1]) > 2020 ):
+            fecha = row[5].split("/")
+            date_time_str = row[1] + "-" + fecha[1] + "-" + fecha[0] + ' ' + row[6]
+            date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+            race = Carrera(
+                id = row[0],
+                temporada = row[1],
+                numero = row[2],
+                nombre = row[4],
+                fecha = date_time_obj,
+                enlace = row[-1],
+                circuito = Circuito.objects.get(id = row[3])
+            )
+            races.append(race)
+    
+    Carrera.objects.bulk_create(races)
+    return Carrera.objects.count()
 
 def load_df():
     cons_res = spark.read.csv("./datasets/constructor_results.csv", header=True,sep=",")

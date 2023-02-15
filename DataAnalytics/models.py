@@ -9,7 +9,8 @@ class Piloto(models.Model):
     apellidos = models.TextField(max_length=100)
     fecha_nacimiento = models.DateTimeField()
     nacionalidad = models.CharField(max_length=100)
-    abreviatura = models.DateTimeField(auto_now_add=True)
+    abreviatura = models.TextField(max_length=100)
+    #CharField(max_length=100)
     enlace = models.CharField(max_length=100)
 
     def __str__(self):
@@ -39,6 +40,18 @@ class Circuito(models.Model):
     altura = models.FloatField(null = True)
     longitud = models.FloatField()
     enlace = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nombre
+
+class Carrera(models.Model):
+    id = models.IntegerField(primary_key=True)
+    temporada = models.BigIntegerField()
+    numero = models.BigIntegerField()
+    fecha = models.DateTimeField()
+    nombre = models.CharField(max_length=100)
+    enlace = models.CharField(max_length=100)
+    circuito = models.ForeignKey(Circuito, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nombre
