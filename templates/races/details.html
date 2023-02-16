@@ -17,10 +17,10 @@
             {%endfor%}
         <p> Meteorología: </p>
         {% for d in m%}
-            <p> Temperatura mínima: {{d.0}}</p>
-            <p> Temperatura : {{d.1}}</p>
+            <p> Temperatura mínima: {{d.0}} ºC</p>
+            <p> Temperatura : {{d.1}} ºC</p>
             <p> Precipitaciones: {{d.2}}</p>
-            <p> Humedad: {{d.3}}</p>
+            <p> Humedad: {{d.3}} %</p>
             <p> Condiciones: {{d.4}}</p>
         {%endfor%}
     {% else %}

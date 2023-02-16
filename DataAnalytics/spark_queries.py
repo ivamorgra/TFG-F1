@@ -1,4 +1,5 @@
 import csv 
+from csv import writer
 from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
@@ -89,24 +90,35 @@ def get_race(race_id):
         race = races.filter(races.raceId == race_id)
         res =  []
         year = int(race.collect()[0][1])
-
-        
+        name = race.collect()[0][4]
+        #Obtención de datos de la carrera
+        circuit,podium,pole = race_scrapping(race.collect()[0][7])
         date = race.collect()[0][5]
         time = race.collect()[0][6]
         ''' Procesamiento de la fecha para obtener el formato
          correcto para la API '''
-        start_date_param, end_date_param, end_time = process_meteo_date(date,str(year),time)
-
-        circuit,podium,pole = race_scrapping(race.collect()[0][7])
-        if (len(circuit.split(","))> 2 ):
-            location = circuit.split(",")[1]
-        else:
-            location = circuit.split(",")[-1]
-
-        if (year >= 2010):
+        exists = check_notexists(name,year)
+        if(exists[0]):
+            start_date_param, end_date_param, end_time = process_meteo_date(date,str(year),time)
+            if (len(circuit.split(","))> 2 ):
+                location = circuit.split(",")[1]
+            else:
+                location = circuit.split(",")[-1]
+        
             meteo = get_weather(location,start_date_param,end_date_param,time,end_time)
+        
+            #Actualización del registro
+            with open('./datasets/meteo.csv','a',newline='') as f:
+                w = writer(f)
+                row = [(year,name,meteo[0][0],meteo[0][1],
+                meteo[0][2],meteo[0][3],meteo[0][4])]  
+                w.writerows(row)
+                f.close()
+                print ('Meteo Data Updated')
         else:
-            meteo = "No disponible"
+            meteo = exists[1]
+        
+        #Obtencón de datos específicos de la carrera del dataframe
         iterator = iter(race.collect())
         while True:
             try:
@@ -114,24 +126,47 @@ def get_race(race_id):
                 res.append((elemento[0],elemento[1],elemento[2],elemento[3],elemento[4],elemento[5],elemento[6],elemento[7]))
             except StopIteration:
                 break
+        
         return res,circuit,podium,pole,meteo
 
 def get_race_bynameorseason(input):
 
     races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
     races = races.select("raceId","name","year",).filter( (races.name.contains(input)) | (races.year == input) ).collect()
-    print (races)
+    
     res = process_race_data(races)
-    print (res)
+    
     return res
 
 def process_meteo_date(date,year,time):
     ''' la duracion de una carrera suele ser como máximo de 2 horas'''
-    hours_time = int(time.split(":")[0]) + 2
-    end_time = str(hours_time) + ":" + time.split(":")[1] + ":" + time.split(":")[2]
+    
+    if (time != "\\N"):
+        hours_time = int(time.split(":")[0]) + 2
+        end_time = str(hours_time) + ":" + time.split(":")[1] + ":" + time.split(":")[2]
+    else:
+        ''' Como a priori no hay datos de la hora de inicio de la carrera,
+        por defecto se le asigna la hora de inicio de la carrera a las 12:00:00'''
+        time = "12:00:00"
+        #La hora de finalizacion de la carrera se le asigna a las 14:00:00 por tanto
+        end_time = "14:00:00"
     #El formato de fecha debe ser "2019-01-01T00:00:00"
     day = date.split("/")[0]
     month = date.split("/")[1]
     start_date_param = year + "-" + month + "-" + day + "T" + time
     end_date_param = year + "-" + month + "-" + day + "T" + end_time
     return start_date_param, end_date_param, end_time
+
+
+''' Optimización de la API Meteo '''
+
+def check_notexists(name,year):
+    ''' Comprueba si la fecha de la carrera ya se encuentra en el dataset de meteo'''
+
+    race = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
+   
+    race = race.select("temporada","nombre").filter((race.nombre.contains(name)) & (race.temporada == year)).collect()
+    
+    
+    return ((len(race) == 0),race)
+

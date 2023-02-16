@@ -12,7 +12,7 @@ def get_weather(location, date, end_date,start_time,end_time):
     querystring = {"startDateTime":date,\
         "aggregateHours":"24","location":location,\
             "endDateTime":end_date,\
-                "unitGroup":"us","dayStartTime":start_time,\
+                "unitGroup":"uk","dayStartTime":start_time,\
                     "contentType":"json","dayEndTime":end_time,\
                         "shortColumnNames":"0"}
 
@@ -34,6 +34,7 @@ def get_weather(location, date, end_date,start_time,end_time):
         humedad = data_parsed['humidity']
         condiciones = data_parsed['conditions']
         min_temp = data_parsed['mint']
+        
         meteo.append((min_temp,temperatura,precipitacion,humedad,condiciones))
         return meteo
     else:

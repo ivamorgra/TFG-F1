@@ -138,6 +138,7 @@ class MyThread(threading.Thread):
             with open('./datasets/followers.csv', 'a',newline="") as f:
                 writer = csv.writer(f)
                 writer.writerows(res)
+                f.close()
             print("Data update completed")
         
         time.sleep(60*60*24)
@@ -147,25 +148,12 @@ flag = True
 my_thread = MyThread(flag)
 my_thread.start()
 
-# to stop the thread, set flag to False
-#flag = False
-#my_thread.join()
+
     
 
 
 
 
 
-'''
-def call_api():
-    res = []
-    fecha_actual = datetime.datetime.now()
-    for c in SC_USERNAMES:
-        user = api.get_user(screen_name = c)
-        res.append((fecha_actual,c,user.followers_count))
-    df = spark.createDataFrame(res, schema=['fecha','escuderia','seguidores'])
-    df.write.csv('./datasets/followers.csv', header=True)
-    return res
-'''
 
 
