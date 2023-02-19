@@ -9,20 +9,28 @@
     {% if c %}
         <p>Nombre de la carrera: {{c.0.4}}</p>
         <p>Fecha: {{c.0.5}} || Año: {{c.0.1}} </p>
-        <p>circuito: {{cir}}</p>
+        <p>circuito: <a href="/circuits/{{cir.id}}">{{cir.nombre}}<a></p>
         <p>Posición de Pole: {{pole}}</p>
         <p> Podium: </p>
             {%for po in p%}
                 <p> Pos {{po.0}}: {{po.1}}</p>
             {%endfor%}
+        <p> Vuelta rápida: {{v_rapida.3}} || Piloto: <a href="/driver/{{v_rapida.0}}">{{v_rapida.1}}<a> || Escudería: {{v_rapida.2}}</p>
+        <p> Máxima velocidad alcanzada: {{max_vel.3}} km/h || Piloto: <a href="/driver/{{max_vel.0}}">{{max_vel.1}}<a> || Escudería: {{max_vel.2}}</p>
         <p> Meteorología: </p>
-        {% for d in m%}
-            <p> Temperatura mínima: {{d.0}} ºC</p>
-            <p> Temperatura : {{d.1}} ºC</p>
-            <p> Precipitaciones: {{d.2}}</p>
-            <p> Humedad: {{d.3}} %</p>
-            <p> Condiciones: {{d.4}}</p>
-        {%endfor%}
+        {% if nm %}
+            {% for d in m%}
+                <p> Temperatura mínima: {{d.0}} ºC</p>
+                <p> Temperatura : {{d.1}} ºC</p>
+                <p> Precipitaciones: {{d.2}}</p>
+                <p> Humedad: {{d.3}} %</p>
+                <p> Condiciones: {{d.4}}</p>
+            {%endfor%}
+        {% else %}
+            <p> No hay datos de meteorología para esta carrera, ya que el año en el que se disputó no se registraron datos de meteorología.
+                es anterior al año 2000.
+            </p>
+        {% endif %}
     {% else %}
         <p>La carrera no existe</p>
     {% endif %}

@@ -120,8 +120,14 @@ def list_races(request):
     return render(request,'races/list.html',{'search':search,'formulario':formulario,'c':carreras,'STATIC_URL':settings.STATIC_URL})
 
 def details_race(request,id):
-    carrera,circuit,podium,pole,meteo = get_race(id)
-    return render(request,'races/details.html',{'m':meteo,'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})
+    bool_meteo = True
+    carrera,circuit,podium,pole,meteo,data_fl,data_ms = get_race(id)
+    
+    if (len(meteo) == 1):
+        bool_meteo = False
+
+    print (bool_meteo)
+    return render(request,'races/details.html',{'nm':bool_meteo,'v_rapida':data_fl,'max_vel':data_ms,'m':meteo,'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})
 
 #API TWITTER    
 

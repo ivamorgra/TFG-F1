@@ -73,6 +73,12 @@ def get_driver_bynameornacionality(input):
         res.append(driver)
     return res
 
+def get_driver_byid(id):
+    return Piloto.objects.get(pk=id)
+
+def get_constructor_byid(id):
+    return Constructor.objects.get(pk=id)
+
 def get_races():
     #Obtener dataframe de carreras de la sesion de spark
     
@@ -89,35 +95,45 @@ def get_race(race_id):
         races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
         race = races.filter(races.raceId == race_id)
         res =  []
-        year = int(race.collect()[0][1])
-        name = race.collect()[0][4]
+        race_collector = race.collect()
+        circuit_id = int(race_collector[0][3])
+        circuit = Circuito.objects.get(pk=circuit_id)
+        
+        year = int(race_collector[0][1])
+        name = race_collector[0][4]
         #Obtención de datos de la carrera
-        circuit,podium,pole = race_scrapping(race.collect()[0][7])
-        date = race.collect()[0][5]
-        time = race.collect()[0][6]
+        podium,pole = race_scrapping(race_collector[0][7])
+        data_stats = get_data_race(race_id)
+
+        #Datos sobre la vuelta rápida y la máxima velocidad alcanzada
+        data_fl = data_stats[0]
+        data_ms = data_stats[1]
+
+        date = race_collector[0][5]
+        time = race_collector[0][6]
         ''' Procesamiento de la fecha para obtener el formato
          correcto para la API '''
-        exists = check_notexists(name,year)
-        if(exists[0]):
-            start_date_param, end_date_param, end_time = process_meteo_date(date,str(year),time)
-            if (len(circuit.split(","))> 2 ):
-                location = circuit.split(",")[1]
+
+        if (year >= 2000):
+            exists = check_notexists(name,year)
+            if(exists[0]):
+                start_date_param, end_date_param, end_time = process_meteo_date(date,str(year),time)
+            
+                meteo = get_weather(circuit.localizacion,start_date_param,end_date_param,time,end_time)
+            
+                #Actualización del registro
+                with open('./datasets/meteo.csv','a',newline='') as f:
+                    w = writer(f)
+                    row = [(year,name,meteo[0][0],meteo[0][1],
+                    meteo[0][2],meteo[0][3],meteo[0][4])]  
+                    w.writerows(row)
+                    f.close()
+                    print ('Meteo Data Updated')
             else:
-                location = circuit.split(",")[-1]
-        
-            meteo = get_weather(location,start_date_param,end_date_param,time,end_time)
-        
-            #Actualización del registro
-            with open('./datasets/meteo.csv','a',newline='') as f:
-                w = writer(f)
-                row = [(year,name,meteo[0][0],meteo[0][1],
-                meteo[0][2],meteo[0][3],meteo[0][4])]  
-                w.writerows(row)
-                f.close()
-                print ('Meteo Data Updated')
+                meteo = exists[1]
         else:
-            meteo = exists[1]
-        
+            meteo = []
+            meteo.append("No hay datos disponibles ya que la carrera se disputó antes del año 2000")
         #Obtencón de datos específicos de la carrera del dataframe
         iterator = iter(race.collect())
         while True:
@@ -127,7 +143,56 @@ def get_race(race_id):
             except StopIteration:
                 break
         
-        return res,circuit,podium,pole,meteo
+        return res,circuit,podium,pole,meteo,data_fl,data_ms
+
+def get_data_race(race_id):
+    NO_DATA = "No hay datos disponibles"
+    res = []
+    ''' Obtenemos la vuelta más rápida, máx velocidad a la que se llegó'''
+
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+
+    #Obtenemos los campos que nos interesan de la carrera seleccionada
+    df = results.select("raceId","driverId","constructorId",
+    "position","fastestLap","fastestLapTime","fastestLapSpeed").filter(results.raceId == race_id)
+    
+    collector = df.collect()
+    if (len(collector) == 0):
+        res.append((NO_DATA,NO_DATA,NO_DATA,NO_DATA))
+        res.append((NO_DATA,NO_DATA,NO_DATA,NO_DATA))
+        return res
+    else:
+
+        fl_data = df.orderBy(df.fastestLapTime).collect()[0]
+
+        if (fl_data[2] == "\\N" or fl_data[3] == "\\N" or fl_data[-2] == "\\N"):
+            res.append((NO_DATA,NO_DATA,NO_DATA,NO_DATA))
+        else:
+        #Obtenemos el nombre del piloto
+            flobj_driver = get_driver_byid(fl_data[1])
+            fl_driver = flobj_driver.nombre + " " + flobj_driver.apellidos
+
+            #Obtenemos el nombre del constructor
+            fl_constructor = get_constructor_byid(fl_data[2]).nombre
+
+            res.append((flobj_driver.id,fl_driver,fl_constructor,fl_data[-2]))
+
+        #Obtenemos la máxima velocidad
+        max_speed = df.orderBy(df.fastestLapSpeed).collect()[0]
+
+        if (max_speed[2] == "\\N" or max_speed[3] == "\\N" or max_speed[-1] == "\\N"):
+            res.append((NO_DATA,NO_DATA,NO_DATA,NO_DATA))
+        else:
+            #Obtenemos el nombre del piloto
+            driver = get_driver_byid(max_speed[1])
+            ms_driver = driver.nombre + " " + driver.apellidos
+
+            #Obtenemos el nombre del constructor
+            ms_constructor = get_constructor_byid(max_speed[2]).nombre
+            res.append((driver.id,ms_driver,ms_constructor,max_speed[-1]))
+
+    return res
+
 
 def get_race_bynameorseason(input):
 
