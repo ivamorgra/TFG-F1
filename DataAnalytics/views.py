@@ -7,12 +7,13 @@ from django.conf import settings
 from .spark_queries import *
 from .twitter import UserClient
 from .meteo import get_weather
+from .bstracker import next_race_scrapping
 # Create your views here.
 
 ''' Vista de la página principal'''
 def index(request):
-    
-    return render(request, 'index.html',{'STATIC_URL':settings.STATIC_URL})
+    next_race = next_race_scrapping()
+    return render(request, 'index.html',{'race':next_race,'STATIC_URL':settings.STATIC_URL})
 
 
 def load_data(request):
