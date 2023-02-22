@@ -100,6 +100,7 @@ def get_race(race_id):
         circuit = Circuito.objects.get(pk=circuit_id)
         
         year = int(race_collector[0][1])
+        
         name = race_collector[0][4]
         #Obtención de datos de la carrera
         podium,pole = race_scrapping(race_collector[0][7])
@@ -130,8 +131,15 @@ def get_race(race_id):
                     f.close()
                     print ('Meteo Data Updated')
             else:
-                meteo = exists[1]
+                data = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
+                data = data.filter( (data.temporada == year) & (data.nombre == name) ).collect()[0]
+                meteo = []
+                meteo.append((data.min_temp,data.temperatura,data.precipitacion
+                ,data.humedad,data.condiciones))
+                
+
         else:
+            
             meteo = []
             meteo.append("No hay datos disponibles ya que la carrera se disputó antes del año 2000")
         #Obtencón de datos específicos de la carrera del dataframe
@@ -231,6 +239,7 @@ def check_notexists(name,year):
     race = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
    
     race = race.select("temporada","nombre").filter((race.nombre.contains(name)) & (race.temporada == year)).collect()
+    
     
     
     return ((len(race) == 0),race)

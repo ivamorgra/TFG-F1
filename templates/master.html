@@ -4,39 +4,90 @@
 <html lang='es'>
   <head>
 	<meta charset='utf-8'>
-		<link rel="stylesheet" href="{{STATIC_URL}}css/uikit.min.css" />
-        <script src="{{STATIC_URL}}js/jquery.min.js"></script>
-        <script src="{{STATIC_URL}}js/uikit.min.js"></script>
-  </head>
+        <title>F1DataAnalytics</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        <link rel="stylesheet" href="style.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    </head>
   <body>
   
 
-	<h2>F1 DATA ANALYTICS</h2>
-    <nav class="uk-navbar-container" uk-navbar>
-    <div class="uk-navbar-left">
+	
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
 
-        <ul class="uk-navbar-nav">
-            <li class="uk-active"><a href="/">Inicio</a>
-            <div class="uk-navbar-dropdown">
-                    <ul class="uk-nav uk-navbar-dropdown-nav">
-                        <li><a href="/populate">Poblar Base de Datos - Acceso Restringido</a></li>
-                        <li><a href="/loadData">Cargar los datos de la F1</a></li>
-						<li><a href="/index.html">Sobre</a></li>
+        <!-- Logotipo de la marca -->
+
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-flower1"></i>
+            <span class="text-warning">F1DataAnalytics</span>
+        </a>
+
+
+        <!-- boton del menu -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Carga de datos
+                    </a>
+                    <ul class="dropdown-menu bg-secondary" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="/populate">Poblar Base de Datos - Acceso Restringido</a></li>
+                        <li><a class="dropdown-item" href="/loadData">Cargar los datos de la F1</a></li>
+                        <li><a class="dropdown-item" href="/index.html">Sobre</a></li>
                     </ul>
-                </div>
-            </li>
-           <li><a href="#">B&uacute;squedas</a>
-                <div class="uk-navbar-dropdown">
-                    <ul class="uk-nav uk-navbar-dropdown-nav">
-						<li><a href="/drivers">Listado de pilotos</a></li>
-						<li><a href="/constructors">Listado de escuderías</a></li>
-						<li><a href="/circuits">Listado de circuitos</a></li>
-                        <li><a href="/races">Listado de carreras</a></li>
-                        <li><a href="/api/get_followers">API Twitter</a></li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
+                </li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Búsquedas
+                    </a>
+                    <div>
+                        <ul class="dropdown-menu bg-secondary" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/drivers">Listado de pilotos</a></li>
+                            <li><a class="dropdown-item" href="/constructors">Listado de escuderías</a></li>
+                            <li><a class="dropdown-item" href="/circuits">Listado de circuitos</a></li>
+                            <li><a class="dropdown-item" href="/races">Listado de carreras</a></li>
+                            <li><a class="dropdown-item" href="/api/get_followers">API Twitter</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <!-- enlaces redes sociales -->
+
+          <ul class="navbar-nav  flex-row flex-wrap text-light">
+
+            <li class="nav-item col-6 col-md-auto p-3">
+                 <i class="bi bi-twitter"></i>
+                 <small class="d-md-none ms-2">Twitter</small>  
+             </li>
+ 
+             <li class="nav-item col-6 col-md-auto p-3">
+               <i class="bi bi-github"></i>
+               <small class="d-md-none ms-2">GitHub</small> 
+             </li>
+ 
+             <li class="nav-item col-6 col-md-auto p-3">
+               <i class="bi bi-whatsapp"></i>
+               <small class="d-md-none ms-2">WhatsApp</small>
+             </li>
+ 
+             <li class="nav-item col-6 col-md-auto p-3">
+               <i class="bi bi-facebook"></i>
+               <small class="d-md-none ms-2">Facebook</small>
+             </li>
+ 
+           </ul>
+         </div>   
 
     </div>
 </nav>

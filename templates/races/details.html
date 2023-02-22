@@ -15,8 +15,16 @@
             {%for po in p%}
                 <p> Pos {{po.0}}: {{po.1}}</p>
             {%endfor%}
-        <p> Vuelta rápida: {{v_rapida.3}} || Piloto: <a href="/driver/{{v_rapida.0}}">{{v_rapida.1}}<a> || Escudería: {{v_rapida.2}}</p>
-        <p> Máxima velocidad alcanzada: {{max_vel.3}} km/h || Piloto: <a href="/driver/{{max_vel.0}}">{{max_vel.1}}<a> || Escudería: {{max_vel.2}}</p>
+        {% if fl %}
+            <p> Vuelta rápida: {{v_rapida.3}} || Piloto: <a href="/driver/{{v_rapida.0}}">{{v_rapida.1}}<a> || Escudería: {{v_rapida.2}}</p>
+        {% else %}
+            <p> No hay datos específicos de vuelta rápida para esta carrera.
+        {% endif %}
+        {% if ms %}
+                <p> Máxima velocidad alcanzada: {{max_vel.3}} km/h || Piloto: <a href="/driver/{{max_vel.0}}">{{max_vel.1}}<a> || Escudería: {{max_vel.2}}</p>
+        {% else %}
+            <p> No hay datos específicos de máxima velocidad para esta carrera.
+        {% endif %}
         <p> Meteorología: </p>
         {% if nm %}
             {% for d in m%}

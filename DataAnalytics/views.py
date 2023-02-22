@@ -13,7 +13,7 @@ from .bstracker import next_race_scrapping
 ''' Vista de la página principal'''
 def index(request):
     next_race = next_race_scrapping()
-    return render(request, 'index.html',{'race':next_race,'STATIC_URL':settings.STATIC_URL})
+    return render(request, 'menu.html',{'race':next_race,'STATIC_URL':settings.STATIC_URL})
 
 
 def load_data(request):
@@ -122,13 +122,21 @@ def list_races(request):
 
 def details_race(request,id):
     bool_meteo = True
+    bool_data_fl = True
+    bool_data_ms = True
+
     carrera,circuit,podium,pole,meteo,data_fl,data_ms = get_race(id)
-    
-    if (len(meteo) == 1):
+    print (meteo)
+    if (meteo[0] == 'No hay datos disponibles ya que la carrera se disputó antes del año 2000'):
         bool_meteo = False
 
-    print (bool_meteo)
-    return render(request,'races/details.html',{'nm':bool_meteo,'v_rapida':data_fl,'max_vel':data_ms,'m':meteo,'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})
+    if (data_fl[0] == 'No hay datos disponibles'):
+        bool_data_fl = False
+    
+    if (data_ms[0] == 'No hay datos disponibles'):
+        bool_data_ms = False
+
+    return render(request,'races/details.html',{'fl':bool_data_fl,'ms':bool_data_ms,'nm':bool_meteo,'v_rapida':data_fl,'max_vel':data_ms,'m':meteo,'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})
 
 #API TWITTER    
 
