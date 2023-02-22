@@ -89,6 +89,13 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+.navbar-logo{
+  display: inline-block;
+  vertical-align: middle;
+  width: 10em;
+  border-radius:4px;
+}
+
 hr {
   margin: 1rem 0;
   color: inherit;
