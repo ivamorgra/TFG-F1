@@ -96,6 +96,43 @@ body {
   border-radius:4px;
 }
 
+.image-section{
+
+  display: center;
+  vertical-align: middle;
+  width: 5em;
+  border-radius:4px;
+}
+
+.subsection-image{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2%;
+  width: 12em;
+  border-radius:4px;
+}
+
+#logo-final{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2%;
+  width: 12em;
+  border-radius:4px;
+}
+
+#section{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2%;
+  padding-top: 8%;
+  
+  
+}
+
 hr {
   margin: 1rem 0;
   color: inherit;
@@ -11315,3 +11352,4 @@ html {
   background-repeat: no-repeat;
   min-height: 15rem;
 }
+
