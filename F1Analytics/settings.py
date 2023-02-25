@@ -103,8 +103,8 @@ DATABASES = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "f1dataanalytics",
-        'USER': 'userf1tfg',
+        "NAME": "f1data_analytics",
+        'USER': 'superuserf1tfg',
         'PASSWORD': 'supertfg',
         'HOST': 'localhost',
         'PORT': '3307',

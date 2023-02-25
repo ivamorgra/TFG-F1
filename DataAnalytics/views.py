@@ -5,6 +5,7 @@ from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
 from django.conf import settings
 from .spark_queries import *
+from .auto_races import get_race
 from .twitter import UserClient
 from .meteo import get_weather
 from .bstracker import next_race_scrapping

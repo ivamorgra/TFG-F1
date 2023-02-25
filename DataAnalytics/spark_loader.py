@@ -1,19 +1,28 @@
 import csv 
-from .models import Circuito, Piloto, Constructor, Carrera
+from .models import Circuito, Piloto, Constructor, Carrera, Periodo
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 import datetime
+from .spark_queries import is_active_driver
+from .bstracker import drivers_scrapping,constructors_scrapping,get_actual_team_byname
+from pyspark.sql.functions import col
+
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
+URL = 'https://www.formula1.com/'
 
 def populate():
     c=load_circuits()
-    p = load_drivers()
     co = load_constructors()
+    p = load_drivers()
+    pe = load_periods()
     r = load_races()
-
+    print ("Número de periodos cargados: ")
+    print (pe)
     return (c,p,co,r)
+
+
 
 def load_circuits():
     ''' Borrado de los datos de la tabla por si ya estaban cargados de antes'''
@@ -58,13 +67,15 @@ def load_circuits():
 
 def load_drivers():
     Piloto.objects.all().delete()
-
+    actual_drivers = drivers_scrapping()
+    
     '''Creación de lista de objetos de tipo Piloto'''
     drivers = []
     '''Carga de los datos de los circuitos'''
     df = spark.read.csv("./datasets/drivers.csv", header=True,sep=",")
     for row in df.collect():
-
+        is_active = is_active_driver(actual_drivers,row.forename,row.surname)
+        
         driver = Piloto(
             id = row[0],
             nombre = row[4],
@@ -73,6 +84,7 @@ def load_drivers():
             nacionalidad = row[7],
             abreviatura = row[3],
             enlace = row[8],
+            activo = is_active
         )
         drivers.append(driver)
     
@@ -81,19 +93,23 @@ def load_drivers():
 
 def load_constructors():
     Constructor.objects.all().delete()
-
+    actual_teams = constructors_scrapping()
     '''Creación de lista de objetos de tipo Piloto'''
     constructors = []
     '''Carga de los datos de los circuitos'''
     df = spark.read.csv("./datasets/constructors.csv", header=True,sep=",")
     for row in df.collect():
-
+        nombre = row.name
+        is_active = True
+        if (len(list(filter(lambda x: nombre in x, actual_teams))) == 0):
+            is_active = False
         constructor = Constructor(
             id = row[0],
             referencia = row[1],
             nombre = row[2],
             nacionalidad = row[3],
             enlace = row[4],
+            activo = is_active
         )
         constructors.append(constructor)
     
@@ -128,6 +144,43 @@ def load_races():
     
     Carrera.objects.bulk_create(races)
     return Carrera.objects.count()
+
+
+def load_periods():
+    Periodo.objects.all().delete()
+    fecha_actual = datetime.datetime.now()
+    temporada_actual = int(fecha_actual.year)
+    pilotos = Piloto.objects.all()
+    teams = spark.read.csv("./datasets/constructors.csv", header=True,sep=",")
+    periods = []
+    for piloto in pilotos:
+        
+        if (piloto.activo == True):
+            list_actual_team_name = []
+            ''' Si el piloto está activo, añadimos el periodo actual'''
+            actual_team_name = get_actual_team_byname(piloto.apellidos)
+                
+            if (actual_team_name == "Red Bull Racing"):
+                actual_team_name = "Red Bull"
+            elif (actual_team_name == "Alpine"):
+                actual_team_name = "Alpine F1 Team"
+
+            list_actual_team_name.append(actual_team_name)
+            print (list_actual_team_name)
+            query_name = teams.filter( (teams.name.isin(list_actual_team_name)) | teams.constructorRef.isin(list_actual_team_name) )
+            print (query_name)
+            print (query_name.collect()[0])
+            period = Periodo(
+                temporada_inicio = temporada_actual,
+                temporada_fin = temporada_actual,
+                constructor = Constructor.objects.get(nombre = query_name.collect()[0].name),
+                piloto = piloto
+            )
+            
+            periods.append(period) 
+        
+    Periodo.objects.bulk_create(periods)
+    return Periodo.objects.count()
 
 def load_df():
     cons_res = spark.read.csv("./datasets/constructor_results.csv", header=True,sep=",")

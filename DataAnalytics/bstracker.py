@@ -5,6 +5,9 @@ from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 import csv
+import re
+from .spark_queries import get_constructor_bynameornacionality
+import requests
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
@@ -37,6 +40,46 @@ def race_scrapping(url):
     
     return  podium[1:],pole_position
 
+''' Función que devuelve una lista con los nombres y apellidos de los pilotos actuales'''
+def drivers_scrapping():
+    drivers = []
+    f = urllib.request.urlopen(URL_F1_OFFICIAL + 'en/drivers.html')
+    
+    soup = BeautifulSoup(f,"html.parser")
+    ''' div que contiene los nombres de los pilotos'''
+    data = soup.find_all('div', class_ = "col-xs-8 listing-item--name f1-uppercase")
+    for e in data:
+        surname = e.find('span', class_="d-block f1-bold--s f1-color--carbonBlack").text
+        name = e.find('span', class_="d-block f1--xxs f1-color--carbonBlack").text
+        drivers.append((name,surname))
+    return drivers
+
+''' Función que devuelve una lista con los nombres de los equipos actuales'''
+def constructors_scrapping():
+    constructors = []
+    f = urllib.request.urlopen(URL_F1_OFFICIAL+'en/teams.html')
+    
+    soup = BeautifulSoup(f,"html.parser")
+    ''' div que contiene los nombres de los equipos'''
+    data = soup.find_all('div', class_ = "name f1-bold--m")
+    for row in data:
+        data_constructors = row.find('span', class_ = "f1-color--black").text
+        constructors.append(data_constructors)
+    return constructors
+
+
+def get_actual_team_byname(name):
+    f = urllib.request.urlopen(URL_F1_OFFICIAL+'en/teams.html')
+    soup = BeautifulSoup(f,"html.parser")
+    teams = soup.find_all('fieldset',class_='listing-item-wrapper')
+    for team in teams:
+        team_name = team.find('span',class_='f1-color--black').text
+        drivers = team.find_all('span',class_='last-name f1-uppercase f1-bold--xs d-block d-lg-inline')
+        for driver in drivers:
+            if (name == driver.text):
+                
+                return team_name
+                
 
 def next_race_scrapping():
 
@@ -96,3 +139,46 @@ def next_race_scrapping():
                 if (int(MONTHS[mes]) >= month):
                     if ( datetime.datetime.strptime(e.fecha,"%Y-%m-%d %H:%M:%S") - actual_date <= datetime.timedelta(14)):
                         return (e.temporada,e.ronda,e.dia_comienzo,e.dia_final,e.mes,e.nombre,e.pais,e.imagen)
+
+
+def get_historial(url):
+    ''' Se busca en el historial del piloto'''
+    response = requests.get(url)
+    res = []
+    #Se comprueba que la url existe
+    if response.status_code != 404:
+       
+        f = urllib.request.urlopen(url)
+        soup = BeautifulSoup(f,"html.parser")
+        ''' Obtenemos las escuderías en las que ha estado (si se puede obtener) y los años'''
+        res = []
+        data = soup.find_all('div',class_='vector-toc-text')
+        for d in data[1:]:
+            ''' De esta función obtenemos las escuderías y los años'''
+            if (' ' in d.text):
+                t,a1,a2 = get_teams(d.text)
+                if (t != None):
+                    res.append((t,a1,a2))
+    return res
+
+def get_teams(string):
+    temporadas = string.split(' ')[1].split('-')
+    if (len(temporadas) == 2):
+        a2 = temporadas[1]
+    else:
+        a2 = None
+    a1 = temporadas[0]
+    if ( '(' in string and ')' in string):
+            dato = string.replace('(','').replace(')','').split(' ')
+            string_sin_numeros = re.sub(r'\d+', '', dato[0])
+            escuderia = string_sin_numeros.replace('.','')
+            ''' Comprobamos definitivamente que la escudería es válida'''
+            res = get_constructor_bynameornacionality(escuderia)
+            if (len(res) == 0):
+                escuderia = None
+            else:
+                escuderia = res[0]
+    else:
+        escuderia = None
+
+    return escuderia,a1,a2
