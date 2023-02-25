@@ -141,25 +141,7 @@ def next_race_scrapping():
                         return (e.temporada,e.ronda,e.dia_comienzo,e.dia_final,e.mes,e.nombre,e.pais,e.imagen)
 
 
-def get_historial(url):
-    ''' Se busca en el historial del piloto'''
-    response = requests.get(url)
-    res = []
-    #Se comprueba que la url existe
-    if response.status_code != 404:
-       
-        f = urllib.request.urlopen(url)
-        soup = BeautifulSoup(f,"html.parser")
-        ''' Obtenemos las escuderías en las que ha estado (si se puede obtener) y los años'''
-        res = []
-        data = soup.find_all('div',class_='vector-toc-text')
-        for d in data[1:]:
-            ''' De esta función obtenemos las escuderías y los años'''
-            if (' ' in d.text):
-                t,a1,a2 = get_teams(d.text)
-                if (t != None):
-                    res.append((t,a1,a2))
-    return res
+
 
 def get_teams(string):
     temporadas = string.split(' ')[1].split('-')
