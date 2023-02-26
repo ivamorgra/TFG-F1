@@ -853,3 +853,8 @@ driverId,driverRef,number,code,forename,surname,dob,nationality,url
 853,"mazepin",9,"MAZ","Nikita","Mazepin","1999-03-02","Russian","http://en.wikipedia.org/wiki/Nikita_Mazepin"
 854,"mick_schumacher",47,"MSC","Mick","Schumacher","1999-03-22","German","http://en.wikipedia.org/wiki/Mick_Schumacher"
 855,"zhou",24,"ZHO","Guanyu","Zhou","1999-05-30","Chinese","http://en.wikipedia.org/wiki/Guanyu_Zhou"
+856,Perez,11,PER,Sergio,Perez,1990-01-26,Mexico,\N
+857,Piastri,81,PIA,Oscar,Piastri,2001-04-06,Australia,\N
+858,Hulkenberg,27,HUL,Nico,Hulkenberg,1987-08-19,Germany,\N
+859,De Vries,21,DE ,Nyck,De Vries,1995-02-06,Netherlands,\N
+860,Sargeant,2,SAR,Logan,Sargeant,2001-12-31,United States,\N

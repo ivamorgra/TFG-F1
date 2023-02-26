@@ -52,6 +52,12 @@ def drivers_scrapping():
         surname = e.find('span', class_="d-block f1-bold--s f1-color--carbonBlack").text
         name = e.find('span', class_="d-block f1--xxs f1-color--carbonBlack").text
         drivers.append((name,surname))
+    if len(drivers) < 20:
+        other_data = soup.find_all('div', class_ = "col-xs-8 listing-item--name f1-uppercase driver-lastname-primary")
+        for e in other_data:
+            surname = e.find('span', class_="d-block f1-bold--s f1-color--carbonBlack").text
+            name = e.find('span', class_="d-block f1--xxs f1-color--carbonBlack").text
+            drivers.append((name,surname))
     return drivers
 
 ''' Función que devuelve una lista con los nombres de los equipos actuales'''
@@ -141,7 +147,24 @@ def next_race_scrapping():
                         return (e.temporada,e.ronda,e.dia_comienzo,e.dia_final,e.mes,e.nombre,e.pais,e.imagen)
 
 
-
+def post_data_driver(url,last_id,surname,name):
+    row = []
+    with open("./datasets/drivers.csv", "a",newline='') as f:
+            writer = csv.writer(f)
+            f = urllib.request.urlopen(url)
+            soup = BeautifulSoup(f,"html.parser")    
+            data = soup.find_all('td', class_ = "stat-value")
+            numero = soup.find('div', class_ = "driver-number").find('span').text
+            
+            for d in data:
+                row.append(d.text)
+            fecha =  row[-2].split('/')
+            month = fecha[1]
+            day = fecha[0]
+            year = fecha[2]
+            fecha = year + "-" + month + "-" + day
+            row = [(last_id+1,surname,numero,surname[:3].upper(),name,surname,fecha,row[1],"\\N")]
+            writer.writerows(row)    
 
 def get_teams(string):
     temporadas = string.split(' ')[1].split('-')

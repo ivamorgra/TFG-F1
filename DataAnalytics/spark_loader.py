@@ -4,7 +4,7 @@ from pyspark import SparkContext
 from pyspark.sql import SparkSession
 import datetime
 from .spark_queries import is_active_driver
-from .bstracker import drivers_scrapping,constructors_scrapping,get_actual_team_byname
+from .bstracker import drivers_scrapping,constructors_scrapping,get_actual_team_byname,post_data_driver
 from pyspark.sql.functions import col
 
 
@@ -71,8 +71,14 @@ def load_drivers():
     
     '''Creación de lista de objetos de tipo Piloto'''
     drivers = []
+    
+    #Antes de cargar los datos de los pilotos, nos aseguramos de que estén todos los pilotos en el registro
+    check_drivers(actual_drivers)
+
     '''Carga de los datos de los circuitos'''
     df = spark.read.csv("./datasets/drivers.csv", header=True,sep=",")
+
+
     for row in df.collect():
         is_active = is_active_driver(actual_drivers,row.forename,row.surname)
         
@@ -153,6 +159,7 @@ def load_periods():
     pilotos = Piloto.objects.all()
     teams = spark.read.csv("./datasets/constructors.csv", header=True,sep=",")
     periods = []
+
     for piloto in pilotos:
         
         if (piloto.activo == True):
@@ -181,6 +188,31 @@ def load_periods():
         
     Periodo.objects.bulk_create(periods)
     return Periodo.objects.count()
+
+
+def check_drivers(actual_drivers):
+    
+    reg_drivers = spark.read.csv("./datasets/drivers.csv", header=True,sep=",")
+    for driver in actual_drivers:
+        if (len(reg_drivers.filter((reg_drivers.forename == driver[0]) & (reg_drivers.surname == driver[1])).collect()) == 0):
+            #Para saber el último id
+            reg_drivers = spark.read.csv("./datasets/drivers.csv", header=True,sep=",")
+            total = reg_drivers.count()
+            #Si contiene espacios en blanco, los sustituimos por guiones
+            if (' ' in driver[0] or ' ' in driver[1]):
+                nombre = driver[0].replace(" ","-")
+                apellido = driver[1].replace(" ","-")
+                url = "https://www.formula1.com/en/drivers/" + nombre.lower() + "-" + apellido.lower() + ".html"
+            else:
+
+                url = "https://www.formula1.com/en/drivers/" + driver[0].lower() + "-" + driver[1].lower() + ".html"
+            
+            # Actualiza el registro con los datos del nuevo piloto
+            post_data_driver(url,total+1,driver[1],driver[0])
+    return False
+
+
+
 
 def load_df():
     cons_res = spark.read.csv("./datasets/constructor_results.csv", header=True,sep=",")
