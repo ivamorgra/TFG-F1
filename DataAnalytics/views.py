@@ -9,11 +9,16 @@ from .auto_races import get_race
 from .twitter import UserClient
 from .meteo import get_weather
 from .bstracker import next_race_scrapping
+from .trends import search_trends
+import matplotlib.pyplot as plt
 # Create your views here.
 
 ''' Vista de la página principal'''
 def index(request):
     next_race = next_race_scrapping()
+    #fig = search_trends(request)
+    
+    
     return render(request, 'menu.html',{'race':next_race,'STATIC_URL':settings.STATIC_URL})
 
 
@@ -62,8 +67,10 @@ def get_driver(request,id):
     '''Llamada a la función de carga de datos'''
     driver = get_object_or_404(Piloto,pk=id)
     stats = driver_basic_stats(id)
-    
-    return render(request,'drivers/profile.html',{'driver':driver,'stats':stats,'STATIC_URL':settings.STATIC_URL})
+    x,y,media,total = search_trends(driver.nombre)
+    #ventas_mensuales = [1000, 2000, 1500, 3000, 2500, 2000, 1800, 2200, 3000, 3500, 4000, 4500]
+    print(x)
+    return render(request,'drivers/profile.html',{'total':total,'media':media,'x':x,'y':y,'driver':driver,'stats':stats,'STATIC_URL':settings.STATIC_URL})
     #return render(request,'driver.html',{'driver':driver,'stats':stats,'STATIC_URL':settings.STATIC_URL})
 
 def get_constructors(request):
