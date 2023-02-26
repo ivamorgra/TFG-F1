@@ -62,8 +62,9 @@ def get_driver(request,id):
     '''Llamada a la función de carga de datos'''
     driver = get_object_or_404(Piloto,pk=id)
     stats = driver_basic_stats(id)
-   
-    return render(request,'driver.html',{'driver':driver,'stats':stats,'STATIC_URL':settings.STATIC_URL})
+    
+    return render(request,'drivers/profile.html',{'driver':driver,'stats':stats,'STATIC_URL':settings.STATIC_URL})
+    #return render(request,'driver.html',{'driver':driver,'stats':stats,'STATIC_URL':settings.STATIC_URL})
 
 def get_constructors(request):
     constructors = Constructor.objects.all()
