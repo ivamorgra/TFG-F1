@@ -4,6 +4,7 @@ from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
+from .models import Carrera
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
@@ -21,6 +22,33 @@ def driver_basic_stats(driver_id):
     stats = [num_races,num_wins,num_sraces,num_swins]
     return stats
 
+def get_country_races_by_driver(driver_id):
+    
+    results= spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    
+    results = results.join(races, on=["raceId"], how="inner").filter(col("year") >= 2021)
+    counts = results.select('raceId').collect()
+    
+    ids = []
+    for c in counts:
+        ids.append(int(c.raceId))
+    
+    
+    paises = {}
+
+    for id in ids:
+        key = "\"" + Carrera.objects.get(pk=id).circuito.pais + "\""
+        key.replace("'","")
+        
+        if key in paises:
+            paises[key] += 1
+        else:
+            paises[key] = 1
+    print (list(paises.keys()))
+    return list(paises.keys()), list(paises.values())
+    
+    
 def constructor_basic_stats(constructor_id):
     races = spark.read.csv("./datasets/constructor_standings.csv", header=True,sep=",")
     races_constructor = races.filter(races.constructorId == constructor_id)

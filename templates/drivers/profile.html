@@ -96,6 +96,27 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="card card-plain h-100">
+                <div class="card card-chart">
+                  <div class="card-header">
+                    <h5 class="card-category">Total Tendencias: </h5>
+                    <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> {{total}}</h3>
+                    <h5 class="card-category">Media de tendencias: </h5>
+                    <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> {{media}}</h3>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart-area">
+                      <canvas id="sectores">
+                        
+                      </canvas>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
         </div>
       </div>
     </div>
@@ -119,6 +140,8 @@
     <script src="{% static '/js/material-dashboard.min.js'%}"></script>
 
     <script>
+
+     
 
       meses = {};
       meses[1] = "enero";

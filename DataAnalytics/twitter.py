@@ -38,6 +38,14 @@ SC_USERNAMES = ['MercedesAMGF1','AlpineF1Team','HaasF1Team','McLarenF1',
             'alfaromeof1', 'WilliamsRacing','redbullracing',
             'AstonMartinF1','ScuderiaFerrari','AlphaTauriF1']
 
+# Listado de los nombres de usuario de los pilotos de Fórmula 1
+DRIVER_USERNAMES = ['LewisHamilton','alo_oficial','ValtteriBottas','KevinMagnussen',
+            'Max33Verstappen','Carlossainz55','OconEsteban','lance_stroll',
+            'PierreGASLY','Charles_Leclerc','LandoNorris','GeorgeRussell63',
+            'alex_albon','yukitsunoda07','ZhouGuanyu24','SChecoPerez',
+            'OscarPiastri','HulkHulkenberg','nyckdevries','LoganSargeant']
+                    
+
 # Autenticación
 class TwitterAuth():
     def authenticate_twitter_app(self):
@@ -83,11 +91,31 @@ class UserClient():
     def get_twitter_client_api(self):
         return self.twitter_client
     
-    def get_num_followers(self):
+    def get_stats_constructors(self):
         res = []
         for c in SC_USERNAMES:
             user = self.twitter_client.get_user(screen_name = c)
             num_tweets = 100
+            total_likes = 0
+            total_rts = 0
+            date = datetime.datetime.now()
+            for tweet in tweepy.Cursor(self.twitter_client.user_timeline, screen_name=c, include_rts=False).items(num_tweets):
+            #Se obtiene el número de likes y rts de los tweets
+                total_likes += tweet.favorite_count
+                total_rts += tweet.retweet_count
+            res.append((c,user.followers_count,user.statuses_count,total_likes,total_rts,date))
+        return res
+
+    def get_stats_drivers(self):
+        res = []
+        for c in DRIVER_USERNAMES:
+            user = self.twitter_client.get_user(screen_name = c)
+
+            # Se seleccionan menos tweets 
+            # para evitar que se exceda el límite de la API y 
+            # evitar que se rallentice demasiado
+
+            num_tweets = 50
             total_likes = 0
             total_rts = 0
             date = datetime.datetime.now()
@@ -111,7 +139,25 @@ class ProcessData():
         return emoji_pattern.sub(r'', text)
 
 
-
+''' Con esta función se comprueba si la última actualización
+ de los datos fue hace más de 24 horas (o igual).'''
+def check_date(dataset):
+    #Se accede a la última fila del dataset para obtener la fecha de la última actualización y evitar una sobrecarga en la API
+    df = spark.read.csv(dataset, header=True)
+    df = df.orderBy(df.Fecha.desc()).limit(1)
+    last_date = df.select('Fecha').collect()
+    if len(last_date) == 0:
+        return True
+    
+    last_date = last_date[0][0]
+    last_date = datetime.datetime.strptime(last_date, '%Y-%m-%d %H:%M:%S.%f')
+    actual_date = datetime.datetime.now()
+    #Se comprueba que la última actualización fue hace más (o igual) de 24 horas
+    if actual_date - last_date >= datetime.timedelta(days=1):
+        return True
+    else:
+        return False
+    
 class MyThread(threading.Thread):
     def __init__(self, flag, *args, **kwargs):
         self.flag = flag
@@ -120,20 +166,13 @@ class MyThread(threading.Thread):
     def run(self):
 
         print("Executing Daemon Thread: " + self.name)
-        #Se accede a la última fila del dataset para obtener la fecha de la última actualización y evitar una sobrecarga en la API
-        df = spark.read.csv("./datasets/followers.csv", header=True)
-        df = df.orderBy(df.Fecha.desc()).limit(1)
-        last_date = df.select('Fecha').collect()
-        last_date = last_date[0][0]
-        last_date = datetime.datetime.strptime(last_date, '%Y-%m-%d %H:%M:%S.%f')
-        actual_date = datetime.datetime.now()
-        #Se comprueba que la última actualización fue hace más (o igual) de 24 horas
-        
-        if actual_date - last_date >= datetime.timedelta(days=1):
-        #int((actual_date - last_date).total_seconds) / 3600 >= 24:
+       
+       
+        # Se comprueba la última actualización
+        if check_date("./datasets/followers.csv"):
             #Se obtienen los datos de las escuderías
             client = UserClient(self)
-            res = client.get_num_followers()
+            res = client.get_stats_constructors()
             #Actualización del registro (dataset)
             with open('./datasets/followers.csv', 'a',newline="") as f:
                 writer = csv.writer(f)
@@ -142,11 +181,36 @@ class MyThread(threading.Thread):
             print("Data update completed")
         
         time.sleep(60*60*24)
-            
+
+
+class MyDaemonThreadDrivers(threading.Thread):
+    def __init__(self, flag, *args, **kwargs):
+        self.flag = flag
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+
+        print("Executing Daemon Driver Thread: " + self.name)
+       
+        # Se comprueba la última actualización
+        if check_date("./datasets/drivers_followers.csv"):
+            #Se obtienen los datos de los pilotos
+            client = UserClient(self)
+            res = client.get_stats_drivers()
+            #Actualización del registro (dataset)
+            with open('./datasets/drivers_followers.csv', 'a',newline="") as f:
+                writer = csv.writer(f)
+                writer.writerows(res)
+                f.close()
+            print("Data update completed")
+        
+        time.sleep(60*60*24)
 
 flag = True
 my_thread = MyThread(flag)
+my_drivers_thread = MyDaemonThreadDrivers(flag)
 my_thread.start()
+my_drivers_thread.start()
 
 
     

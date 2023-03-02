@@ -68,11 +68,17 @@ def get_driver(request,id):
     driver = get_object_or_404(Piloto,pk=id)
     stats = driver_basic_stats(id)
     x,y,media,total = search_trends(driver.nombre)
-    #ventas_mensuales = [1000, 2000, 1500, 3000, 2500, 2000, 1800, 2200, 3000, 3500, 4000, 4500]
-    print(x)
-    return render(request,'drivers/profile.html',{'total':total,'media':media,'x':x,'y':y,'driver':driver,'stats':stats,'STATIC_URL':settings.STATIC_URL})
-    #return render(request,'driver.html',{'driver':driver,'stats':stats,'STATIC_URL':settings.STATIC_URL})
+    paises,numero = get_country_races_by_driver(id)
 
+    context = {'paises':paises,
+               'valores':numero,
+               'total':total,
+               'media':media,
+               'x':x,'y':y,'driver':driver,'stats':stats,
+               'STATIC_URL':settings.STATIC_URL}
+    
+    return render(request,'drivers/profile.html',context)
+    
 def get_constructors(request):
     constructors = Constructor.objects.all()
     formulario = ConstructorBusquedaForm()
