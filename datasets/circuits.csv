@@ -78,3 +78,4 @@ circuitId,circuitRef,name,location,country,lat,lng,alt,url
 77,"jeddah","Jeddah Corniche Circuit","Jeddah","Saudi Arabia",21.6319,39.1044,15,"http://en.wikipedia.org/wiki/Jeddah_Street_Circuit"
 78,"losail","Losail International Circuit","Al Daayen","Qatar",25.49,51.4542,\N,"http://en.wikipedia.org/wiki/Losail_International_Circuit"
 79,"miami","Miami International Autodrome","Miami","USA",25.9581,-80.2389,\N,"http://en.wikipedia.org/wiki/Miami_International_Autodrome"
+80,"las_vegas","Heineken Silver Las Vegas Grand Prix","Las Vegas","USA",36.17497,-115.13722,613,\N

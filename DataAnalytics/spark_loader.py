@@ -4,8 +4,11 @@ from pyspark import SparkContext
 from pyspark.sql import SparkSession
 import datetime
 from .spark_queries import is_active_driver
-from .bstracker import drivers_scrapping,constructors_scrapping,get_actual_team_byname,post_data_driver
+from .bstracker import drivers_scrapping,constructors_scrapping,get_actual_team_byname,post_data_driver,get_data_race,next_race_scrapping
 from pyspark.sql.functions import col
+import threading
+import time
+import csv
 
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
@@ -18,8 +21,7 @@ def populate():
     p = load_drivers()
     pe = load_periods()
     r = load_races()
-    print ("Número de periodos cargados: ")
-    print (pe)
+    
     return (c,p,co,r)
 
 
@@ -227,3 +229,140 @@ def load_df():
     qualy_results =  spark.read.csv("./datasets/qualifying.csv", header=True,sep=",")
 
     return cons_res.count(),races.count(),seasons.count(),results.count(),sresults.count(),status.count(),const_clas.count(),laps.count(),stops.count(),qualy_results.count()
+
+
+### AUTOMATIZACIÓN DE LA CARGA DE DATOS DE CARRERAS ###
+
+''' Con esta función se comprueba si ya ha pasado una carrera y se actualiza el dataset y la BD de carreras'''
+def check_date():
+    #Se accede a la última fila del dataset para obtener la fecha de la última actualización y evitar una sobrecarga en la API
+    actual_date = datetime.datetime.now()
+    df = spark.read.csv("./datasets/next_races.csv", header=True)
+    
+    races = df.collect()
+    
+    for row in races:
+        fecha = row['fecha'] 
+        fecha = fecha.strptime(fecha, '%Y-%m-%d %H:%M:%S')
+        if actual_date - fecha >= datetime.timedelta(days=3):
+            return True
+    
+    return False
+
+
+
+def post_speeds(race_id,speeds):
+
+    df = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    
+    for speed in speeds:
+
+        numero = speed[2][0]
+
+        # fastestLap
+        lap = speed[5][0]
+
+        #fastestLapTime
+        flap = speed[7][0]
+        #fastestLapSpeed
+        flaps = speed[8][0]
+
+        #rank
+        rank = speed[1][0]
+
+        result_to_update = df.filter((df.raceId == race_id) & (df.number == numero)).withColumn("fastestLap",lap).withColumn("rank",rank).withColumn("fastestLapTime",flap).withColumn("fastestLapSpeed",flaps)
+        
+        #Se actualiza la fila
+        df = df.filter((df.raceId == race_id) & (df.number == numero)).union(result_to_update)
+
+    df.write.csv("./datasets/results.csv", header=True,sep=",",mode="overwrite")
+    
+
+''' En esta función con los datos devueltos se actualiza el dataset 
+ de los resultados de las carreras'''
+def write_results_csv(year,location,nombre_carrera,ronda): 
+
+    data,speeds = get_data_race(year,location,nombre_carrera)
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    total = results.count()
+
+    # Obtener el id de la carrera
+    carrera = Carrera.objects.get(year = year,round = ronda )
+    carrera_id = carrera.id
+    with open('./datasets/results.csv', 'a',newline="") as f:
+                
+                for row in data:
+                    result_id = total +1
+
+                    conductor = Piloto.objects.filter(abreviatura = row[3][2], activo = True).get()
+                    conductor_id = conductor.id
+
+                    constructor = Constructor.objects.filter(nombre = row[4][0], activo = True).get()
+                    constructor_id = constructor.id
+
+                    laps = row[5][0]
+                    position = int(row[1][0])
+                    points = row[7][0]
+                     
+                    if ('lap' in row[6][0] or 'laps' in row[6][0]):
+                        time = "\\N"
+                    elif (row[6][0] == 'DNF'):
+                        time = "\\N"
+                        status_id = 3
+                    else:
+                    
+                        time = row[6][0]
+                        status_id = 1
+                    
+                    number = row[2][0]
+
+                    grid = "\\N"
+                    position_text = "'"+str(position)+"'"
+                    position_order = "\\N"
+                    milliseconds = "\\N"
+                    fastest_lap = "\\N"
+                    rank = "\\N"
+                    fastest_lap_time = "\\N"
+                    fastest_lap_speed = "\\N"
+
+                    fila = [(result_id,carrera_id,conductor_id,constructor_id,number,
+                             grid,position,position_text,position_order,points,
+                             laps,time,milliseconds,fastest_lap,rank,fastest_lap_time,
+                             fastest_lap_speed,status_id)]
+                    writer = csv.writer(f)
+                    writer.writerow(fila)
+        
+                    total += 1
+                
+                f.close()
+    
+    post_speeds(carrera_id,speeds)
+            
+
+
+
+
+class AutoThread(threading.Thread):
+    def __init__(self, flag, *args, **kwargs):
+        self.flag = flag
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+
+        print("Executing Daemon Auto Race Thread: " + self.name)
+       
+        # Se comprueba la última actualización
+        if check_date():
+            print("Updating data...")
+            #Actualización del registro (dataset)
+            carrera = next_race_scrapping()
+            year = carrera[0]
+            location = carrera[7]
+            nombre = carrera[6]
+            round = int(carrera[1].split(" ")[1])
+            write_results_csv(year,location,nombre,round)
+        
+        time.sleep(60*60*24)
+
+flag = True
+my_thread = AutoThread(flag)

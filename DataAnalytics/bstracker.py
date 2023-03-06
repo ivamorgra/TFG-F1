@@ -187,3 +187,99 @@ def get_teams(string):
         escuderia = None
 
     return escuderia,a1,a2
+
+
+''' Se obtiene la clasificación de la carrera a través de la web
+    year -> año de la carrera
+    location -> lugar donde se disputa'''
+def get_data_race(year,location,nombre_carrera):
+
+    # Primero se debe obtener el data-value (valor que se usará) 
+    # para construir la url
+
+    values = []
+
+    f = urllib.request.urlopen('https://www.formula1.com/en/results.html/'+str(year)+'/races.html')
+    soup = BeautifulSoup(f,'html.parser')
+
+    
+
+    data_values = soup.find_all("a", class_="resultsarchive-filter-item-link FilterTrigger")
+    
+    for data in data_values:
+        if '/' in data['data-value']:
+            values.append(data['data-value'])
+    
+    #Según la localización sabemos qué data-value es el correspondiente
+
+    for v in values:
+        
+        ''''''
+        if (location.lower() == 'united states'):
+            if (( ('MIAMI' in nombre_carrera) and ('Miami' in v.split('/')[1]))
+                    or ( ('LAS VEGAS' in nombre_carrera) and ('las vegas' in v.split('/')[1].replace('-',' ')))
+                    or ( ('united states' in v.split('/')[1].replace('-',' ')))):
+                
+                suburl = v
+                break
+
+        elif (location.lower() == 'italy'):
+            if (( ('EMILIA-ROMAGNA'in nombre_carrera) and ('1209' in v.split('/')[0]))
+                or ( ('ITALIA' in nombre_carrera) and ('1218' in v.split('/')[0]))):
+                
+                suburl = v
+                break
+
+        elif (location.lower() == v.split('/')[1].split('-').replace('-',' ').lower()):
+            suburl = v
+            break
+
+    #Ya podemos obtener la url de la vista donde se obtiene la clasificación
+            
+    url = 'https://www.formula1.com/en/results.html/'+str(year)+'/races/'+suburl+"/race-result.html"
+    url_speeds = 'https://www.formula1.com/en/results.html/'+str(year)+'/races/'+suburl+"fastest-laps.html"
+    data = get_positions(url)
+    speeds = get_speeds(url_speeds)
+
+    return data, speeds
+
+
+''' Función auxiliar que devuelve la clasificación de la carrera'''
+def get_positions(url):
+
+    fres = urllib.request.urlopen(url)
+    
+    soupres = BeautifulSoup(fres,'html.parser')
+
+    rows = soupres.find_all("tr")
+    res = []
+    for row in rows:
+        subres = []
+        cols = row.find_all("td")
+        for ele in cols:
+            subres.append(ele.text.strip().split("\n"))
+        
+        res.append(subres)
+        
+    # Se elimina la primera fila que es vacía
+    #Devuelve una lista de listas de listas
+    return res[1:]
+
+def get_speeds(url):
+    
+    fres = urllib.request.urlopen(url)
+    soupres = BeautifulSoup(fres,'html.parser')
+
+    rows = soupres.find_all("tr")
+    res = []
+    for row in rows:
+        subres = []
+        cols = row.find_all("td")
+        for ele in cols:
+            subres.append(ele.text.strip().split("\n"))
+        
+        res.append(subres)
+        
+    # Se elimina la primera fila que es vacía
+    #Devuelve una lista de listas de listas
+    return res[1:]

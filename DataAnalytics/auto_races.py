@@ -11,7 +11,7 @@ from .spark_queries import get_data_race,check_notexists,process_meteo_date
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
 
-
+''' Función que obtiene los datos de una carrera dada su id'''
 def get_race(race_id):
         
         races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
