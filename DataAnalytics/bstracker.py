@@ -230,14 +230,14 @@ def get_data_race(year,location,nombre_carrera):
                 suburl = v
                 break
 
-        elif (location.lower() == v.split('/')[1].split('-').replace('-',' ').lower()):
+        elif (location.lower() == v.split('/')[1].replace('-',' ').lower()):
             suburl = v
             break
 
     #Ya podemos obtener la url de la vista donde se obtiene la clasificación
             
     url = 'https://www.formula1.com/en/results.html/'+str(year)+'/races/'+suburl+"/race-result.html"
-    url_speeds = 'https://www.formula1.com/en/results.html/'+str(year)+'/races/'+suburl+"fastest-laps.html"
+    url_speeds = 'https://www.formula1.com/en/results.html/'+str(year)+'/races/'+suburl+"/fastest-laps.html"
     data = get_positions(url)
     speeds = get_speeds(url_speeds)
 

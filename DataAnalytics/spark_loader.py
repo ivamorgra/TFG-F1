@@ -1,4 +1,4 @@
-import csv 
+from django.db.models import Q
 from .models import Circuito, Piloto, Constructor, Carrera, Periodo
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
@@ -111,6 +111,8 @@ def load_constructors():
         is_active = True
         if (len(list(filter(lambda x: nombre in x, actual_teams))) == 0):
             is_active = False
+        if (row[2] == 'Alpine F1 Team'):
+            is_active = True
         constructor = Constructor(
             id = row[0],
             referencia = row[1],
@@ -175,10 +177,9 @@ def load_periods():
                 actual_team_name = "Alpine F1 Team"
 
             list_actual_team_name.append(actual_team_name)
-            print (list_actual_team_name)
+            
             query_name = teams.filter( (teams.name.isin(list_actual_team_name)) | teams.constructorRef.isin(list_actual_team_name) )
-            print (query_name)
-            print (query_name.collect()[0])
+            
             period = Periodo(
                 temporada_inicio = temporada_actual,
                 temporada_fin = temporada_actual,
@@ -243,40 +244,48 @@ def check_date():
     
     for row in races:
         fecha = row['fecha'] 
-        fecha = fecha.strptime(fecha, '%Y-%m-%d %H:%M:%S')
+        fecha = datetime.datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S')
         if actual_date - fecha >= datetime.timedelta(days=3):
             return True
     
     return False
 
-
-
 def post_speeds(race_id,speeds):
 
-    df = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    #Obtenemos el número de líneas del dataset
+
+    with open("./datasets/aux_results.csv", 'r') as archivo:
+        reader = csv.reader(archivo)
+        lista = list(reader)
+    archivo.close()
+
     
-    for speed in speeds:
+    with open("./datasets/results.csv", 'a',newline="") as f:
+        for row in lista:
 
-        numero = speed[2][0]
+            for speed in speeds:
+                numero = speed[2][0]
 
-        # fastestLap
-        lap = speed[5][0]
+                if ( row[4] == numero  and int(row[1]) == race_id):
 
-        #fastestLapTime
-        flap = speed[7][0]
-        #fastestLapSpeed
-        flaps = speed[8][0]
+                    # fastestLap
+                    lap = speed[5][0]
 
-        #rank
-        rank = speed[1][0]
+                    #fastestLapTime
+                    flap = speed[7][0]
+                    #fastestLapSpeed
+                    flaps = speed[8][0]
 
-        result_to_update = df.filter((df.raceId == race_id) & (df.number == numero)).withColumn("fastestLap",lap).withColumn("rank",rank).withColumn("fastestLapTime",flap).withColumn("fastestLapSpeed",flaps)
-        
-        #Se actualiza la fila
-        df = df.filter((df.raceId == race_id) & (df.number == numero)).union(result_to_update)
-
-    df.write.csv("./datasets/results.csv", header=True,sep=",",mode="overwrite")
+                    #rank
+                    rank = speed[1][0]
+                    new_row = [row[0],row[1],row[2],row[3],row[4],
+                               row[5],row[6],row[7],row[8],row[9],
+                               row[10],row[11],row[12],lap,rank,flap,flaps,row[-1]]
+                    
+                    writer = csv.writer(f)
+                    writer.writerow(new_row)
     
+    f.close()
 
 ''' En esta función con los datos devueltos se actualiza el dataset 
  de los resultados de las carreras'''
@@ -287,48 +296,55 @@ def write_results_csv(year,location,nombre_carrera,ronda):
     total = results.count()
 
     # Obtener el id de la carrera
-    carrera = Carrera.objects.get(year = year,round = ronda )
+    carrera = Carrera.objects.get(temporada = year,numero = ronda )
     carrera_id = carrera.id
-    with open('./datasets/results.csv', 'a',newline="") as f:
+    with open('./datasets/aux_results.csv', 'a',newline="") as f:
                 
                 for row in data:
                     result_id = total +1
 
-                    conductor = Piloto.objects.filter(abreviatura = row[3][2], activo = True).get()
-                    conductor_id = conductor.id
-
-                    constructor = Constructor.objects.filter(nombre = row[4][0], activo = True).get()
+                    if (row[3][0] == 'Zhou'):
+                        conductor = Piloto.objects.filter(Q(apellidos__icontains= row[3][0]), activo = 1).get()
+                        conductor_id = conductor.id
+                    else:
+                        conductor = Piloto.objects.filter(Q(nombre__icontains= row[3][0]), activo = 1).get()
+                        conductor_id = conductor.id
+                    
+                    nombre = row[4][0].split(" ")[0]
+                    
+                    constructor = Constructor.objects.filter(Q(nombre__icontains=nombre),activo = 1).get()
                     constructor_id = constructor.id
-
+    
                     laps = row[5][0]
-                    position = int(row[1][0])
+                    
                     points = row[7][0]
                      
                     if ('lap' in row[6][0] or 'laps' in row[6][0]):
                         time = "\\N"
+                        position = 0
                     elif (row[6][0] == 'DNF'):
                         time = "\\N"
                         status_id = 3
                     else:
-                    
+                        position = int(row[1][0])
                         time = row[6][0]
                         status_id = 1
                     
                     number = row[2][0]
 
                     grid = "\\N"
-                    position_text = "'"+str(position)+"'"
+                    position_text = "\'"+str(position)+"\'"
                     position_order = "\\N"
                     milliseconds = "\\N"
-                    fastest_lap = "\\N"
-                    rank = "\\N"
-                    fastest_lap_time = "\\N"
-                    fastest_lap_speed = "\\N"
+                    fastest_lap = ""
+                    rank = ""
+                    fastest_lap_time = ""
+                    fastest_lap_speed = ""
 
-                    fila = [(result_id,carrera_id,conductor_id,constructor_id,number,
+                    fila = [result_id,carrera_id,conductor_id,constructor_id,number,
                              grid,position,position_text,position_order,points,
                              laps,time,milliseconds,fastest_lap,rank,fastest_lap_time,
-                             fastest_lap_speed,status_id)]
+                             fastest_lap_speed,status_id]
                     writer = csv.writer(f)
                     writer.writerow(fila)
         
@@ -356,13 +372,16 @@ class AutoThread(threading.Thread):
             print("Updating data...")
             #Actualización del registro (dataset)
             carrera = next_race_scrapping()
+            
             year = carrera[0]
-            location = carrera[7]
-            nombre = carrera[6]
             round = int(carrera[1].split(" ")[1])
-            write_results_csv(year,location,nombre,round)
+            race = Carrera.objects.get(numero = (round -1), temporada = year)
+            localizacion = race.circuito.pais
+            nombre = race.nombre
+            write_results_csv(year,localizacion,nombre,round-1)
         
         time.sleep(60*60*24)
 
 flag = True
 my_thread = AutoThread(flag)
+my_thread.start()
