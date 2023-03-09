@@ -246,7 +246,30 @@ def check_date():
         fecha = row['fecha'] 
         fecha = datetime.datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S')
         if actual_date - fecha >= datetime.timedelta(days=3):
-            return True
+            #Si está dentro de ese período, entonces mira si ya se ha actualizado el dataset
+            #Se busca en la última fila del dataset
+            races = spark.read.csv("./datasets/results.csv",header=True)
+            total = races.count()
+            
+            last_race = races.filter(races.resultId == total).collect()[0]
+            
+            last_race_id = last_race["raceId"]
+            
+            race_bd = Carrera.objects.get(id = last_race_id)
+            registered_day = race_bd.fecha.day
+            registered_month = race_bd.fecha.month
+            registered_year = race_bd.fecha.year
+            
+            # Se suman 2 días ya que el día de la fecha es anterior a la carrera 
+            day = fecha.day +2
+            month = fecha.month
+            year = fecha.year
+
+            if ((day == registered_day) & (month == registered_month)
+                & (year == registered_year)):
+                return False
+            else:
+                return True
     
     return False
 
@@ -287,6 +310,13 @@ def post_speeds(race_id,speeds):
     
     f.close()
 
+    #Borrado de las filas del dataset auxiliar
+
+    with open("./datasets/aux_results.csv",'w',newline="") as aux:
+        writer = csv.writer(aux)
+        writer.writerows([])
+    
+    
 ''' En esta función con los datos devueltos se actualiza el dataset 
  de los resultados de las carreras'''
 def write_results_csv(year,location,nombre_carrera,ronda): 
@@ -379,7 +409,9 @@ class AutoThread(threading.Thread):
             localizacion = race.circuito.pais
             nombre = race.nombre
             write_results_csv(year,localizacion,nombre,round-1)
-        
+            
+        else:
+            print("Data races already updated :)")
         time.sleep(60*60*24)
 
 flag = True
