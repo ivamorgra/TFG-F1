@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 #from DataAnalytics.views import get_list
 from DataAnalytics import views
+from Dashboard import views as dashboard_views
 
 
 urlpatterns = [
@@ -34,5 +35,6 @@ urlpatterns = [
     path('races/',views.list_races),
     path('races/<int:id>', views.details_race),
     path('api/get_followers',views.get_twitter_stats),
+    path('dashboard/',dashboard_views.get_dashboard),
     #path('circuitos/',get_list, name='circuits.html'),
 ]
