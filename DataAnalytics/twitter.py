@@ -91,11 +91,10 @@ class UserClient():
     def get_twitter_client_api(self):
         return self.twitter_client
     
-    def get_stats_constructors(self):
+    def get_stats_constructors(self,num_tweets):
         res = []
         for c in SC_USERNAMES:
             user = self.twitter_client.get_user(screen_name = c)
-            num_tweets = 100
             total_likes = 0
             total_rts = 0
             date = datetime.datetime.now()
@@ -106,7 +105,7 @@ class UserClient():
             res.append((c,user.followers_count,user.statuses_count,total_likes,total_rts,date))
         return res
 
-    def get_stats_drivers(self):
+    def get_stats_drivers(self,num_tweets):
         res = []
         for c in DRIVER_USERNAMES:
             user = self.twitter_client.get_user(screen_name = c)
@@ -115,7 +114,6 @@ class UserClient():
             # para evitar que se exceda el límite de la API y 
             # evitar que se rallentice demasiado
 
-            num_tweets = 50
             total_likes = 0
             total_rts = 0
             date = datetime.datetime.now()

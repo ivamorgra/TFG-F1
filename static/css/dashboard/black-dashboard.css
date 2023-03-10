@@ -4791,6 +4791,14 @@ input[type="button"].btn-block {
   align-items: center;
   justify-content: space-between;
 }
+#selection-buttons{
+  display:inline-flex;
+  justify-content:left
+  width: 35%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  margin-left: 25%;
+}
 
 .twitter-logo{
   width: 5%;

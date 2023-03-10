@@ -6,7 +6,6 @@ from .spark_loader import populate,load_df
 from django.conf import settings
 from .spark_queries import *
 from .auto_races import get_race
-from .twitter import UserClient
 from .meteo import get_weather
 from .bstracker import next_race_scrapping
 from .trends import search_trends
@@ -152,10 +151,3 @@ def details_race(request,id):
         bool_data_ms = False
 
     return render(request,'races/details.html',{'fl':bool_data_fl,'ms':bool_data_ms,'nm':bool_meteo,'v_rapida':data_fl,'max_vel':data_ms,'m':meteo,'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})
-
-#API TWITTER    
-
-def get_twitter_stats(request):
-    twitter_api = UserClient()
-    followers_stats = twitter_api.get_num_followers()
-    return render(request,'twitter_api/stats.html',{'followers_stats':followers_stats,'STATIC_URL':settings.STATIC_URL})
