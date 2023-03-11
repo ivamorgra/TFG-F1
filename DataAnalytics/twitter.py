@@ -170,7 +170,7 @@ class MyThread(threading.Thread):
         if check_date("./datasets/followers.csv"):
             #Se obtienen los datos de las escuderías
             client = UserClient(self)
-            res = client.get_stats_constructors()
+            res = client.get_stats_constructors(50)
             #Actualización del registro (dataset)
             with open('./datasets/followers.csv', 'a',newline="") as f:
                 writer = csv.writer(f)
@@ -194,7 +194,7 @@ class MyDaemonThreadDrivers(threading.Thread):
         if check_date("./datasets/drivers_followers.csv"):
             #Se obtienen los datos de los pilotos
             client = UserClient(self)
-            res = client.get_stats_drivers()
+            res = client.get_stats_drivers(50)
             #Actualización del registro (dataset)
             with open('./datasets/drivers_followers.csv', 'a',newline="") as f:
                 writer = csv.writer(f)

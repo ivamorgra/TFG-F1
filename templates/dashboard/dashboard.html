@@ -532,6 +532,10 @@
       </ul>
     </div>
   </div>
+  <div id="json-data" data-json='{{ values_trend |safe }}'>
+  </div>
+  <div id="json-data_months" data-json='{{ json_data_months |safe }}'>
+  </div>
   <!--   Core JS Files   -->
   <script src="{% static '/js/dashboard/core/jquery.min.js'%}"></script>
   <script src="{% static '/js/dashboard/core/popper.min.js'%}"></script>

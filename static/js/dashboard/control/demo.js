@@ -1,5 +1,15 @@
 type = ['primary', 'info', 'success', 'warning', 'danger'];
 
+
+const valuesElement = document.getElementById('json-data')
+const values = JSON.parse(valuesElement.dataset.json);
+console.log(values);
+
+const monthsElement = document.getElementById('json-data_months')
+const months = JSON.parse(monthsElement.dataset.json);
+console.log(months);
+
+
 demo = {
   initPickColor: function() {
     $('.pick-class-label').click(function() {
@@ -86,7 +96,7 @@ demo = {
       type: 'line',
       responsive: true,
       data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: months,
         datasets: [{
           label: "Active Users",
           borderColor: "#f96332",
@@ -99,7 +109,7 @@ demo = {
           fill: true,
           backgroundColor: gradientFill,
           borderWidth: 2,
-          data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 630]
+          data: values
         }]
       },
       options: gradientChartOptionsConfiguration
@@ -423,8 +433,8 @@ demo = {
 
 
 
-    var chart_labels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-    var chart_data = [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100];
+    var chart_labels = months;
+    var chart_data = values;
 
 
     var ctx = document.getElementById("chartBig1").getContext('2d');
@@ -461,12 +471,12 @@ demo = {
     var myChartData = new Chart(ctx, config);
     $("#0").click(function() {
       var data = myChartData.config.data;
-      data.datasets[0].data = chart_data;
+      data.datasets[0].data = values;
       data.labels = chart_labels;
       myChartData.update();
     });
     $("#1").click(function() {
-      var chart_data = [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120];
+      var chart_data = values;
       var data = myChartData.config.data;
       data.datasets[0].data = chart_data;
       data.labels = chart_labels;

@@ -1,11 +1,25 @@
 from django.shortcuts import render
 from django.conf import settings
 from DataAnalytics.twitter import UserClient
+from DataAnalytics.trends import search_trends
 import logging
+import json
 # Create your views here.
 
 def get_dashboard(request):
-    return render(request, 'dashboard/dashboard.html')
+    #Obtención de los valores en los meses
+    meses,valores,media,total = search_trends('F1')
+
+    json_data = json.dumps(valores)
+    json_data_months = json.dumps(meses)
+    context = {
+        'json_data_months':json_data_months,
+        'values_trend':json_data,
+        'STATIC_URL':settings.STATIC_URL
+    }
+    
+
+    return render(request, 'dashboard/dashboard.html',context)
 
 def get_twitter_stats(request,num):
 

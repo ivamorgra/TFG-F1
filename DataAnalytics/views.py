@@ -66,7 +66,7 @@ def get_driver(request,id):
     '''Llamada a la función de carga de datos'''
     driver = get_object_or_404(Piloto,pk=id)
     stats = driver_basic_stats(id)
-    x,y,media,total = search_trends(driver.nombre)
+    x,y,media,total = search_trends(driver.nombre,150)
     paises,numero = get_country_races_by_driver(id)
 
     context = {'paises':paises,
