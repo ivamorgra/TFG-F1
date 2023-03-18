@@ -4,6 +4,8 @@ from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
+from django.db.models import Q
+import datetime
 from .models import Carrera
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
@@ -45,7 +47,7 @@ def get_country_races_by_driver(driver_id):
             paises[key] += 1
         else:
             paises[key] = 1
-    print (list(paises.keys()))
+    
     return list(paises.keys()), list(paises.values())
     
     
@@ -127,6 +129,64 @@ def get_races():
     return res
 
 
+
+''' Devuelve la evolución de puntos
+    en las carreras de los 3 primeros pilotos actuales'''
+
+#region Evolución Top 3 Pilotos
+def get_top3drivers_evolution(abreviaturas):
+    ''' LOS PARÁMETROS SON:
+    - Abreviaturas de los 3 pilotos
+    RETURN: Carreras de la temporada, listas de puntos de los 3 pilotos'''
+    
+    puntuation_driver1 = []
+    puntuation_driver2 = []
+    puntuation_driver3 = []
+
+    #Obtenemos la fecha actual
+    actual_date = datetime.datetime.now()
+    #Obtenemos el año actual
+    actual_year = actual_date.year
+
+    #Obtenemos las carreras hasta la fecha
+    races = Carrera.objects.filter(temporada=actual_year)
+    #Pasamos las carreras a un array de python
+    races_list = races.values_list('id','nombre','fecha')
+    names_races_list = races.values_list('nombre')
+    #Obtenemos los pilotos 
+    
+    try:
+        piloto_1 = Piloto.objects.get(abreviatura=abreviaturas[0],activo=1)
+        piloto_2 = Piloto.objects.get(abreviatura=abreviaturas[1],activo=1)
+        piloto_3 = Piloto.objects.get(abreviatura=abreviaturas[2],activo=1)
+
+    except Exception as e:
+        print(e)
+    
+    #Obtenemos los puntos de los pilotos en cada carrera
+
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    for r in races_list:
+        data_driver1 = results.filter( (results.raceId == r[0]) & (results.driverId == piloto_1.id) ).collect()
+        data_driver2 = results.filter( (results.raceId == r[0]) & (results.driverId == piloto_2.id) ).collect()
+        data_driver3 = results.filter( (results.raceId == r[0]) & (results.driverId == piloto_3.id) ).collect()
+        
+        if (len(data_driver1) > 0):
+            puntuation_driver1.append(data_driver1[0].points)
+        else:
+            puntuation_driver1.append(0)
+        if (len(data_driver2) > 0):
+            puntuation_driver2.append(data_driver2[0].points)
+        else:
+            puntuation_driver2.append(0)
+        if (len(data_driver3) > 0):
+            puntuation_driver3.append(data_driver3[0].points)
+        else:
+            puntuation_driver3.append(0)
+    
+
+    return list(names_races_list),puntuation_driver1,puntuation_driver2,puntuation_driver3
+#endregion
 
 def get_data_race(race_id):
     NO_DATA = "No hay datos disponibles"

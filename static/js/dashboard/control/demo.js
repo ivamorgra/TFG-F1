@@ -3,11 +3,24 @@ type = ['primary', 'info', 'success', 'warning', 'danger'];
 
 const valuesElement = document.getElementById('json-data')
 const values = JSON.parse(valuesElement.dataset.json);
-console.log(values);
+
 
 const monthsElement = document.getElementById('json-data_months')
 const months = JSON.parse(monthsElement.dataset.json);
-console.log(months);
+
+
+const valuesElementGraph2 = document.getElementById('json_data_graph2')
+const values2 = JSON.parse(valuesElementGraph2.dataset.json);
+
+
+const daysElement = document.getElementById('json_data_dias2')
+const days = JSON.parse(daysElement.dataset.json);
+
+const valuesElementGraph3 = document.getElementById('json_data_graph3')
+const values3 = JSON.parse(valuesElementGraph3.dataset.json);
+
+const daysElement3 = document.getElementById('json_data_dias3')
+const days3 = JSON.parse(daysElement3.dataset.json);
 
 
 demo = {
@@ -192,22 +205,22 @@ demo = {
             zeroLineColor: "transparent",
           },
           ticks: {
-            suggestedMin: 60,
-            suggestedMax: 125,
+            suggestedMin: 0,
+            suggestedMax: 25,
             padding: 20,
             fontColor: "#9a9a9a"
           }
         }],
 
         xAxes: [{
-          barPercentage: 1.6,
+          barPercentage: 1,
           gridLines: {
             drawBorder: false,
             color: 'rgba(225,78,202,0.1)',
             zeroLineColor: "transparent",
           },
           ticks: {
-            padding: 20,
+            padding: 5,
             fontColor: "#9a9a9a"
           }
         }]
@@ -361,6 +374,23 @@ demo = {
 
     var ctx = document.getElementById("chartLinePurple").getContext("2d");
 
+    /* Datos de la grafica Evolución Top 3 Pilotos */
+    const races = document.getElementById('json_data_races')
+    const x_races = JSON.parse(races.dataset.json);
+
+    const piloto1 = document.getElementById('json_data_p1')
+    const y_piloto1 = JSON.parse(piloto1.dataset.json);
+
+    const piloto2 = document.getElementById('json_data_p2')
+    const y_piloto2 = JSON.parse(piloto2.dataset.json);
+
+    const piloto3 = document.getElementById('json_data_p3')
+    const y_piloto3 = JSON.parse(piloto3.dataset.json);
+
+    const names = document.getElementById('json_data_nombres')
+    const labels_names = JSON.parse(names.dataset.json);
+
+
     var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
 
     gradientStroke.addColorStop(1, 'rgba(72,72,176,0.2)');
@@ -368,9 +398,9 @@ demo = {
     gradientStroke.addColorStop(0, 'rgba(119,52,169,0)'); //purple colors
 
     var data = {
-      labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+      labels: x_races,
       datasets: [{
-        label: "Data",
+        label: labels_names[0],
         fill: true,
         backgroundColor: gradientStroke,
         borderColor: '#d048b6',
@@ -384,9 +414,42 @@ demo = {
         pointHoverRadius: 4,
         pointHoverBorderWidth: 15,
         pointRadius: 4,
-        data: [80, 100, 70, 80, 120, 80],
-      }]
-    };
+        data: y_piloto1,
+      },
+      {
+        label: labels_names[1],
+        fill: true,
+        backgroundColor: gradientStroke,
+        borderColor: '#00d6b4',
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        pointBackgroundColor: '#00d6b4',
+        pointBorderColor: 'rgba(255,255,255,0)',
+        pointHoverBackgroundColor: '#00d6b4',
+        pointBorderWidth: 20,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 15,
+        pointRadius: 4,
+        data: y_piloto2,
+      },
+      {
+        label: labels_names[2],
+        fill: true,
+        backgroundColor: gradientStroke,
+        borderColor: '#f17e5d',
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        pointBackgroundColor: '#f17e5d',
+        pointBorderColor: 'rgba(255,255,255,0)',
+        pointHoverBackgroundColor: '#f17e5d',
+        pointBorderWidth: 20,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 15,
+        pointRadius: 4,
+        data: y_piloto3
+    }]};
 
     var myChart = new Chart(ctx, {
       type: 'line',
@@ -436,6 +499,11 @@ demo = {
     var chart_labels = months;
     var chart_data = values;
 
+    var chart_labels_graph2 = days;
+    var chart_data_graph2 = values2;
+
+    var chart_labels_graph3 = days3;
+    var chart_data_graph3 = values3;
 
     var ctx = document.getElementById("chartBig1").getContext('2d');
 
@@ -449,7 +517,7 @@ demo = {
       data: {
         labels: chart_labels,
         datasets: [{
-          label: "My First dataset",
+          label: "Nº búsquedas",
           fill: true,
           backgroundColor: gradientStroke,
           borderColor: '#d346b1',
@@ -476,18 +544,18 @@ demo = {
       myChartData.update();
     });
     $("#1").click(function() {
-      var chart_data = values;
+      var chart_data = chart_data_graph2;
       var data = myChartData.config.data;
       data.datasets[0].data = chart_data;
-      data.labels = chart_labels;
+      data.labels = chart_labels_graph2;
       myChartData.update();
     });
 
     $("#2").click(function() {
-      var chart_data = [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130];
+      var chart_data = chart_data_graph3;
       var data = myChartData.config.data;
       data.datasets[0].data = chart_data;
-      data.labels = chart_labels;
+      data.labels = chart_labels_graph3;
       myChartData.update();
     });
 

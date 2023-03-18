@@ -283,3 +283,53 @@ def get_speeds(url):
     # Se elimina la primera fila que es vacía
     #Devuelve una lista de listas de listas
     return res[1:]
+
+
+''' Función que devuelve la clasificación de los pilotos en la temporada actual'''
+def get_standings():
+
+    ''' OBTIENE LA CLASIFICACIÓN DE LOS PILOTOS EN LA TEMPORADA ACTUAL
+    Devuelve:
+        - Una lista de listas con todos los datos la siguiente estructura:
+            [ [posición, piloto, puntos],
+        - Una lista de listas con los nombres la siguiente estructura:
+            [ [nombre, apellido, abreviatura,
+        - Una lista de puntos de cada piloto
+    
+    '''
+
+    actual_year = datetime.datetime.now().year
+    url = "https://www.formula1.com/en/results.html/"+str(actual_year)+"/drivers.html"
+
+    #Obtenemos los datos de la web
+    f = urllib.request.urlopen(url)
+    
+    soup = BeautifulSoup(f,"html.parser")
+    data = soup.find('table', class_ = "resultsarchive-table").find_all('tr')
+    points = []
+    names = []
+    res = []
+    #Recorrido por filas
+    for row in data:
+        specific_data = row.find_all('td')
+        aux_data = []
+        complete_name = []
+        if (len(specific_data) != 0):
+            points.append(specific_data[-2].text)
+        #Recorrido por columnas
+        for d in specific_data:
+            
+            aux = d.find_all('span')
+            if (len(aux) == 0):
+                aux_data.append(d.text)
+            else:
+                for a in aux:
+                    aux_data.append(a.text)
+                    complete_name.append(a.text)
+        res.append(aux_data)
+        names.append(complete_name)
+
+    #Se elimina la primera fila que es vacía
+    return res[1:],names[1:],points
+
+#def get_top_three_standings():
