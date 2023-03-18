@@ -151,7 +151,7 @@ def get_top3drivers_evolution(abreviaturas):
     #Obtenemos las carreras hasta la fecha
     races = Carrera.objects.filter(temporada=actual_year)
     #Pasamos las carreras a un array de python
-    races_list = races.values_list('id','nombre','fecha')
+    races_list = races.values_list('id')
     names_races_list = races.values_list('nombre')
     #Obtenemos los pilotos 
     
@@ -185,8 +185,73 @@ def get_top3drivers_evolution(abreviaturas):
             puntuation_driver3.append(0)
     
 
-    return list(names_races_list),puntuation_driver1,puntuation_driver2,puntuation_driver3
+    return list(races_list),list(names_races_list),puntuation_driver1,puntuation_driver2,puntuation_driver3
 #endregion
+
+#region Evolución Top 3 Constructores
+
+
+''' Función que devuelve la evolución de puntos de 
+    los 3 primeros constructores actuales
+    PARAMS: Abreviaturas de los 3 constructores'''
+
+def get_top3teams_evolution(names):
+    ''' LOS PARÁMETROS SON:
+    - Carreras de la temporada
+    - Nombre de los 3 constructores
+    RETURN: Carreras de la temporada, listas de puntos de los 3 pilotos'''
+    
+    puntuation_team1 = []
+    puntuation_team2 = []
+    puntuation_team3 = []
+
+    actual_year = datetime.datetime.now().year
+
+    #Obtenemos las carreras 
+    races = Carrera.objects.filter(temporada=actual_year)
+    races_list = races.values_list('id')
+
+    try:
+        
+        team_1 = Constructor.objects.filter(Q(nombre__icontains= names[0].split(' ')[0] ), activo = 1).get()
+        
+        team_2 = Constructor.objects.filter(Q(nombre__icontains= names[1].split(' ')[0] ), activo = 1).get()
+        team_3 = Constructor.objects.filter(Q(nombre__icontains= names[2].split(' ')[0] ), activo = 1).get()
+
+        #Obtenemos los puntos de los equipos en cada carrera
+        results = spark.read.csv("./datasets/constructor_results.csv", header=True,sep=",")
+        
+        for r in races_list:
+            
+            data_team1 = results.filter( (results.raceId == r[0]) & (results.constructorId == team_1.id) ).collect()
+            
+            
+            data_team2 = results.filter( (results.raceId == r[0]) & (results.constructorId == team_2.id) ).collect()
+            
+            data_team3 = results.filter( (results.raceId == r[0]) & (results.constructorId == team_3.id) ).collect()
+
+            if (len(data_team1) > 0):
+                puntuation_team1.append(data_team1[0].points)
+            else:
+                puntuation_team1.append(0)
+            if (len(data_team2) > 0):
+                puntuation_team2.append(data_team2[0].points)
+            else:
+                puntuation_team2.append(0)
+            if (len(data_team3) > 0):
+                puntuation_team3.append(data_team3[0].points)
+            else:
+                puntuation_team3.append(0)
+    
+    except Exception as e:
+        print(e)
+        
+
+    return puntuation_team1,puntuation_team2,puntuation_team3
+
+#endregion
+
+
 
 def get_data_race(race_id):
     NO_DATA = "No hay datos disponibles"

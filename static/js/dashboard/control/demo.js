@@ -301,8 +301,8 @@ demo = {
             zeroLineColor: "transparent",
           },
           ticks: {
-            suggestedMin: 50,
-            suggestedMax: 125,
+            suggestedMin: 0,
+            suggestedMax: 50,
             padding: 20,
             fontColor: "#9e9e9e"
           }
@@ -335,7 +335,7 @@ demo = {
         titleFontColor: '#333',
         bodyFontColor: '#666',
         bodySpacing: 4,
-        xPadding: 12,
+        xPadding: 6,
         mode: "nearest",
         intersect: 0,
         position: "nearest"
@@ -350,9 +350,9 @@ demo = {
             zeroLineColor: "transparent",
           },
           ticks: {
-            suggestedMin: 60,
-            suggestedMax: 120,
-            padding: 20,
+            suggestedMin: 0,
+            suggestedMax: 100,
+            padding: 5,
             fontColor: "#9e9e9e"
           }
         }],
@@ -457,6 +457,18 @@ demo = {
       options: gradientChartOptionsConfigurationWithTooltipPurple
     });
 
+    /* Datos de la grafica Evolución Top 3 equipos */
+    const equipo1 = document.getElementById('json_data_t1')
+    const y_equipo1 = JSON.parse(equipo1.dataset.json);
+
+    const equipo2 = document.getElementById('json_data_t2')
+    const y_equipo2 = JSON.parse(equipo2.dataset.json);
+
+    const equipo3 = document.getElementById('json_data_t3')
+    const y_equipo3 = JSON.parse(equipo3.dataset.json);
+
+    const names_equipos = document.getElementById('json_data_names_teams')
+    const labels_names_equipos = JSON.parse(names_equipos.dataset.json);
 
     var ctxGreen = document.getElementById("chartLineGreen").getContext("2d");
 
@@ -467,9 +479,9 @@ demo = {
     gradientStroke.addColorStop(0, 'rgba(66,134,121,0)'); //green colors
 
     var data = {
-      labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV'],
+      labels: x_races,
       datasets: [{
-        label: "My First dataset",
+        label: labels_names_equipos[0],
         fill: true,
         backgroundColor: gradientStroke,
         borderColor: '#00d6b4',
@@ -483,7 +495,41 @@ demo = {
         pointHoverRadius: 4,
         pointHoverBorderWidth: 15,
         pointRadius: 4,
-        data: [90, 27, 60, 12, 80],
+        data: y_equipo1,
+      },
+      {
+        label: labels_names_equipos[1],
+        fill: true,
+        backgroundColor: gradientStroke,
+        borderColor: '#f17e5d',
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        pointBackgroundColor: '#f17e5d',
+        pointBorderColor: 'rgba(255,255,255,0)',
+        pointHoverBackgroundColor: '#f17e5d',
+        pointBorderWidth: 20,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 15,
+        pointRadius: 4,
+        data: y_equipo2,
+      },
+      {
+        label: labels_names_equipos[2],
+        fill: true,
+        backgroundColor: gradientStroke,
+        borderColor: '#fcc468',
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        pointBackgroundColor: '#fcc468',
+        pointBorderColor: 'rgba(255,255,255,0)',
+        pointHoverBackgroundColor: '#fcc468',
+        pointBorderWidth: 20,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 15,
+        pointRadius: 4,
+        data: y_equipo3,
       }]
     };
 
@@ -560,6 +606,15 @@ demo = {
     });
 
 
+    /* Tendencias en países */
+
+    const countriesElement = document.getElementById('json_data_countries')
+    const countries = JSON.parse(countriesElement.dataset.json);
+
+
+    const valuesCountriesElement = document.getElementById('json_data_values')
+    const valuesCountries = JSON.parse(valuesCountriesElement.dataset.json);
+
     var ctx = document.getElementById("CountryChart").getContext("2d");
 
     var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
@@ -576,9 +631,9 @@ demo = {
         display: false
       },
       data: {
-        labels: ['USA', 'GER', 'AUS', 'UK', 'RO', 'BR'],
+        labels: countries,
         datasets: [{
-          label: "Countries",
+          label: "Índice de popularidad",
           fill: true,
           backgroundColor: gradientStroke,
           hoverBackgroundColor: gradientStroke,
@@ -586,7 +641,7 @@ demo = {
           borderWidth: 2,
           borderDash: [],
           borderDashOffset: 0.0,
-          data: [53, 20, 10, 80, 100, 45],
+          data: valuesCountries,
         }]
       },
       options: gradientBarChartConfiguration

@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.conf import settings
 from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
-from DataAnalytics.bstracker import get_standings
-from DataAnalytics.spark_queries import get_top3drivers_evolution
+from DataAnalytics.bstracker import get_standings,get_standings_teams
+from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution
 import logging
 import json
 # Create your views here.
@@ -19,9 +19,9 @@ def get_dashboard(request):
     - 30 días
     '''
 
-    meses,valores,media,total = search_trends('F1',365)
-    dias_5,valores_5,media_5,total_5 = search_trends('F1',7)
-    dias_15,valores_15,media_15,total_15 = search_trends('F1',30)
+    meses,valores,media,total,countries,values = search_trends('F1',365)
+    dias_5,valores_5,media_5,total_5,countries_5,values_5 = search_trends('F1',7)
+    dias_15,valores_15,media_15,total_15,countries_15,values_15 = search_trends('F1',30)
 
     json_data = json.dumps(valores)
     json_data_months = json.dumps(meses)
@@ -32,26 +32,43 @@ def get_dashboard(request):
     json_data_graph3 = json.dumps(valores_15)
     json_data_dias3 = json.dumps(dias_15)
 
+    json_data_countries = json.dumps(countries)
+    json_data_values = json.dumps(values)
+
     ''' TABLA DE CLASIFICACIÓN'''
     clasification_data,nombres,puntos = get_standings()
-    
+    clasification_data_teams,nombres_teams,puntos_teams = get_standings_teams()
 
-    nombres_param = [nombres[0][2],nombres[1][2],nombres[2][2]]
+    names_param = [nombres[0][2],nombres[1][2],nombres[2][2]]
+    names_teams_param = [nombres_teams[0][2],nombres_teams[1][2],nombres_teams[2][2]]
 
         
     ''' GRÁFICA EVOLUTIVA TOP 3 PILOTOS '''
 
-    races_list,p1,p2,p3 = get_top3drivers_evolution(nombres_param)
+    aux_races_list,races_list,p1,p2,p3 = get_top3drivers_evolution(names_param)
     
+    t1,t2,t3 = get_top3teams_evolution(names_teams_param)
+
     json_data_races = json.dumps(races_list)
     json_data_p1 = json.dumps(p1)
     json_data_p2 = json.dumps(p2)
     json_data_p3 = json.dumps(p3)
-    json_data_nombres = json.dumps(nombres_param)
+    json_data_nombres = json.dumps(names_param)
 
+    ''' GRÁFICA EVOLUTIVA TOP 3 EQUIPOS  '''
+    json_data_names_teams = json.dumps(names_teams_param)
+    json_data_t1 = json.dumps(t1)
+    json_data_t2 = json.dumps(t2)
+    json_data_t3 = json.dumps(t3)
 
     ''' GRÁFICA DE EVOLUCIÓN DE PUNTOS'''
     context = {
+        'json_data_names_teams': json_data_names_teams,
+        'json_data_t1':json_data_t1,
+        'json_data_t2':json_data_t2,
+        'json_data_t3':json_data_t3,
+        'json_data_countries':json_data_countries,
+        'json_data_values':json_data_values,
         'json_data_races':json_data_races,
         'json_data_p1':json_data_p1,
         'json_data_p2':json_data_p2,

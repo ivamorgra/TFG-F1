@@ -33,7 +33,13 @@ def search_trends(keyword,days):
     pytrend.build_payload(kw_list=[keyword], timeframe=f'{fecha_inicio} {fecha_fin}')
     
     data = pytrend.interest_over_time()
-     
+    ''' Regiones más relevantes'''
+    region_data = pytrend.interest_by_region()
+    region_data.sort_values(by=keyword, ascending=False, inplace=True)
+    
+    countries = region_data.head(10).index.tolist()
+    values = region_data.head(10)[keyword].tolist()
+    
     if (days > 30):
       df = data.resample('M').sum()
       valores = df[keyword].tolist()
@@ -64,7 +70,7 @@ def search_trends(keyword,days):
           
           months.append(WEEK_DAYS[day_date])
             
-    return months,valores,media,total
+    return months,valores,media,total,countries,values
 
 
 
