@@ -66,7 +66,7 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'stats' %}">
+            <a href="{% url 'dashboard' %}">
               <i class="tim-icons icon-chart-bar-32"></i>
               <p>Estadísticas</p>
             </a>
@@ -127,8 +127,28 @@
               <div class="card-header ">
                 <div class="row">
                   <div class="col-sm-6 text-left">
-                    <h5 class="card-category">Total Búsquedas</h5>
-                    <h2 class="card-title">Tendencias en Google</h2>
+                    <h5 class="card-category">Estadísticas principales:</h5>
+                    <h2 class="card-title">Pilotos:</h2>
+                    <h2> {{request}} </h2>
+                    <div class="form">
+
+                    <form method="POST"> 
+                      {% csrf_token %}
+                      <select name="driver1" class="form-select" aria-label="Default select example">
+                        <option selected>Selecciona un piloto</option>
+                        {% for piloto in ad %}
+                        <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
+                        {% endfor %}
+                      </select>
+                      
+                      <select name="driver2" class="form-select" aria-label="Default select example">
+                        <option selected>Selecciona el piloto competidor</option>
+                        {% for piloto in ad %}
+                        <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
+                        {% endfor %}
+                      </select>
+                      <button type="submit">Enviar</button>
+                    </form>
                   </div>
                   <div class="col-sm-6">
                     <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
@@ -159,7 +179,7 @@
               </div>
               <div class="card-body">
                 <div class="chart-area">
-                  <canvas id="chartBig1"></canvas>
+                  <canvas id="starProgresschart"></canvas>
                 </div>
               </div>
             </div>
@@ -170,11 +190,11 @@
             <div class="card card-chart">
               <div class="card-header">
                 <h5 class="card-category">Temporada actual</h5>
-                <h3 class="card-title"> Evolución de puntos de los 3 primeros pilotos</h3>
+                <h3 class="card-title"> Progreso de temporada</h3>
               </div>
               <div class="card-body">
                 <div class="chart-area">
-                  <canvas id="chartLinePurple"></canvas>
+                  <canvas id="sectorProgresschart"></canvas>
                 </div>
               </div>
             </div>
@@ -535,34 +555,18 @@
     </div>
   </div>
 
-  <!-- DATOS DE LA PRIMERA GRÁFICA (GRÁFICA PRINCIPAL)-->
-  <div id="json-data" data-json='{{ values_trend |safe }}'>
-  </div>
-  <div id="json-data_months" data-json='{{ json_data_months |safe }}'>
-  </div>
-  <div id="json_data_graph2" data-json='{{ json_data_graph2 |safe }}'>
-  </div>
-  <div id="json_data_dias2" data-json='{{ json_data_dias2 |safe }}'>
-  </div>
-  <div id="json_data_graph3" data-json='{{ json_data_graph3 |safe }}'>
-  </div>
-  <div id="json_data_dias3" data-json='{{ json_data_dias3 |safe }}'>
-  </div>
-  <div id="json_data_countries" data-json='{{ json_data_countries |safe }}'></div>
-  <div id="json_data_values" data-json='{{ json_data_values |safe }}'></div>
+  <!-- DATOS DE LA GRÁFICA DE SECTORES (PROGRSO DE LA TEMPORADA)-->
+  <div id="json_data_progress" data-json='{{ json_data_progress |safe }}'></div>
 
-  <!-- DATOS DE LA GRÁFICA EVOLUTIVA TOP 3 PILOTOS -->
-  <div id="json_data_races" data-json='{{ json_data_races |safe }}'></div>
-  <div id="json_data_p1" data-json='{{ json_data_p1 |safe }}'></div>
-  <div id="json_data_p2" data-json='{{ json_data_p2 |safe }}'></div>
-  <div id="json_data_p3" data-json='{{ json_data_p3 |safe }}'></div>
-  <div id="json_data_nombres" data-json='{{ json_data_nombres |safe }}'></div>
 
+  <!-- DATOS DE LA GRÁFICA EVOLUTIVA COMPARACIÓN 2 PILOTOS -->
+  <div id="json_payload_driver1" data-json='{{ json_payload_driver1 |safe }}'></div>
+  <div id="json_payload_driver2" data-json='{{ json_payload_driver2 |safe }}'></div>
+  <div id="json_races_list" data-json='{{ json_races_list |safe }}'></div>
+  <div id="json_names_races" data-json='{{ json_names_races |safe }}'></div>
+  
   <!-- DATOS DE LA GRÁFICA EVOLUTIVA TOP 3 CONSTRUCTORES -->
-  <div id="json_data_names_teams" data-json='{{ json_data_names_teams |safe }}'></div>
-  <div id="json_data_t1" data-json='{{ json_data_t1 |safe }}'></div>
-  <div id="json_data_t2" data-json='{{ json_data_t2 |safe }}'></div>
-  <div id="json_data_t3" data-json='{{ json_data_t3 |safe }}'></div>
+
   <!--   Core JS Files   -->
   <script src="{% static '/js/dashboard/core/jquery.min.js'%}"></script>
   <script src="{% static '/js/dashboard/core/popper.min.js'%}"></script>
@@ -574,7 +578,8 @@
   
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static '/js/dashboard/black-dashboard.min.js'%}"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
-  <script src="{% static 'js/dashboard/control/demo.js'%}"></script>
+  <script src="{% static 'js/dashboard/control/stats.js'%}"></script>
+  
   <script>
     $(document).ready(function() {
       $().ready(function() {

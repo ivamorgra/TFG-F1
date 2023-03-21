@@ -103,6 +103,20 @@ def get_driver_bynameornacionality(input):
         res.append(driver)
     return res
 
+
+#region Obtener piloto activo por nombre
+
+def get_active_driver_byname(name):
+
+    try :
+        driver = Piloto.objects.get(Q(nombre=name),activo=1)
+    
+    except Piloto.DoesNotExist:
+        driver = None
+
+    return driver
+#endregion
+
 def get_driver_byid(id):
     return Piloto.objects.get(pk=id)
 
@@ -133,10 +147,10 @@ def get_races():
 ''' Devuelve la evolución de puntos
     en las carreras de los 3 primeros pilotos actuales'''
 
-#region Evolución Top 3 Pilotos
+#region Evolución Top 3 Pilotos (vale para la comparativa entre 2 pilotos)
 def get_top3drivers_evolution(abreviaturas):
     ''' LOS PARÁMETROS SON:
-    - Abreviaturas de los 3 pilotos
+    - Abreviaturas de los 3 pilotos (o 2)
     RETURN: Carreras de la temporada, listas de puntos de los 3 pilotos'''
     
     puntuation_driver1 = []
@@ -251,6 +265,97 @@ def get_top3teams_evolution(names):
 
 #endregion
 
+
+#region Progreso de temporada
+
+def get_season_progress():
+
+    ''' Vemos cuantas carreras hay en la temporada
+        y cuantas han pasado'''
+    num_season_races = Carrera.objects.filter(temporada=datetime.datetime.now().year).count()
+    num_past_races = Carrera.objects.filter(temporada=datetime.datetime.now().year).filter(fecha__lt=datetime.datetime.now()).count()
+
+    return num_past_races/num_season_races
+
+#endregion
+
+#region Comparativa de pilotos
+
+def get_pilots_comparison(names):
+    ''' Abreviaturas debe ser una lista de 2 abreviaturas
+    correspondiente a dos pilotos'''
+    driver_1 = get_active_driver_byname(names[0])
+    driver_2 = get_active_driver_byname(names[1])
+
+    id_driver1 = driver_1.id
+    id_driver2 = driver_1.id
+
+    #Obtenemos los datos estadísticos de los pilotos
+    
+    wins_1 = get_num_wins_season_pilot(id_driver1)
+    wins_2 = get_num_wins_season_pilot(id_driver2)
+
+    #Obtenemos el pipeline de la temporada
+    pipeline = ()
+
+#endregion
+
+
+#region Evolución 2 pilotos
+def get_comparation_drivers_evolution(ids):
+    ''' LOS PARÁMETROS SON:
+    - Ids de los 2 pilotos
+    RETURN: Carreras de la temporada, listas de puntos de los 2 pilotos'''
+    
+    puntuation_driver1 = []
+    puntuation_driver2 = []
+
+    #Obtenemos la fecha actual
+    actual_date = datetime.datetime.now()
+    #Obtenemos el año actual
+    actual_year = actual_date.year
+
+    #Obtenemos las carreras hasta la fecha
+    races = Carrera.objects.filter(temporada=actual_year)
+    #Pasamos las carreras a un array de python
+    races_list = races.values_list('id')
+    names_races_list = races.values_list('nombre')
+    
+    
+    #Obtenemos los puntos de los pilotos en cada carrera
+
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    for r in races_list:
+        data_driver1 = results.filter( (results.raceId == r[0]) & (results.driverId == ids[0]) ).collect()
+        data_driver2 = results.filter( (results.raceId == r[0]) & (results.driverId == ids[1]) ).collect()
+        if (len(data_driver1) > 0):
+            puntuation_driver1.append(data_driver1[0].points)
+        else:
+            puntuation_driver1.append(0)
+        if (len(data_driver2) > 0):
+            puntuation_driver2.append(data_driver2[0].points)
+        else:
+            puntuation_driver2.append(0)
+       
+    
+
+    return list(races_list),list(names_races_list),puntuation_driver1,puntuation_driver2
+#endregion
+
+#region Numero de victorias de una temporada de un piloto
+
+
+def get_num_wins_season_pilot(id):
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    #Obtenemos las carreras de la temporada actual
+    actual_year = datetime.datetime.now().year
+    races = Carrera.objects.filter(temporada=actual_year)
+    count = 0
+    for r in races:
+        data_count = results.filter( (results.raceId == r.id) & (results.driverId == id) & (results.position == 1) ).count()
+        count += data_count
+    return count
+#endregion
 
 
 def get_data_race(race_id):

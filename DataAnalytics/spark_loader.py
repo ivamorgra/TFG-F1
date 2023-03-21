@@ -241,11 +241,12 @@ def check_date():
     df = spark.read.csv("./datasets/next_races.csv", header=True)
     
     races = df.collect()
-    
+    res = False
     for row in races:
         fecha = row['fecha'] 
         fecha = datetime.datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S')
-        if actual_date - fecha >= datetime.timedelta(days=3):
+        periodo = actual_date - fecha
+        if (periodo >= datetime.timedelta(days=1)) & (periodo <= datetime.timedelta(days=5)):
             #Si está dentro de ese período, entonces mira si ya se ha actualizado el dataset
             #Se busca en la última fila del dataset
             races = spark.read.csv("./datasets/results.csv",header=True)
@@ -261,17 +262,18 @@ def check_date():
             registered_year = race_bd.fecha.year
             
             # Se suman 2 días ya que el día de la fecha es anterior a la carrera 
-            day = fecha.day +2
+            day = int(row['dia_comienzo'])
             month = fecha.month
             year = fecha.year
 
             if ((day == registered_day) & (month == registered_month)
                 & (year == registered_year)):
-                return False
+                res = False
+                break
             else:
-                return True
-    
-    return False
+                res = True
+                break
+    return res
 
 def post_speeds(race_id,speeds):
 

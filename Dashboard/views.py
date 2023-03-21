@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.conf import settings
 from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
-from DataAnalytics.bstracker import get_standings,get_standings_teams
-from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution
+from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping
+from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison
 import logging
 import json
 # Create your views here.
@@ -85,6 +85,79 @@ def get_dashboard(request):
     
 
     return render(request, 'dashboard/dashboard.html',context)
+
+
+#region Vista de estadísticas
+
+def get_stats(request):
+    percentage_progress = get_season_progress()
+    
+    json_data_progress = json.dumps(percentage_progress)
+    
+    active_drivers = drivers_scrapping()
+
+    if request.method == 'POST':
+
+        #Se obtiene los nombres de los pilotos a comparar
+        driver_1 = request.POST.get('driver1')
+        driver_2 = request.GET('driver2')
+        
+        names = [driver_1,driver_2]
+        res = get_pilots_comparison(names)
+
+        num_wins_1 = res['wins1']
+        num_wins_2 = res['wins2']
+        races_list = res['races_list']
+        names_races = res['names_races_list']
+        payload_driver1 = res['puntuation_driver1']
+        payload_driver2 = res['puntuation_driver2']
+
+        json_num_wins_1 = json.dumps(num_wins_1)
+        json_num_wins_2 = json.dumps(num_wins_2)
+        json_races_list = json.dumps(races_list)
+        json_names_races = json.dumps(names_races)
+        json_payload_driver1 = json.dumps(payload_driver1)
+        json_payload_driver2 = json.dumps(payload_driver2)
+
+
+    
+    else:
+        driver_1 = 'Verstappen'
+        driver_2 = 'Alonso'
+        
+        names = [driver_1,driver_2]
+        res = get_pilots_comparison(names)
+
+        num_wins_1 = res['wins1']
+        num_wins_2 = res['wins2']
+        races_list = res['races_list']
+        names_races = res['names_races_list']
+        payload_driver1 = res['puntuation_driver1']
+        payload_driver2 = res['puntuation_driver2']
+
+        json_num_wins_1 = json.dumps(num_wins_1)
+        json_num_wins_2 = json.dumps(num_wins_2)
+        json_races_list = json.dumps(races_list)
+        json_names_races = json.dumps(names_races)
+        json_payload_driver1 = json.dumps(payload_driver1)
+        json_payload_driver2 = json.dumps(payload_driver2)
+    
+    
+    context = {
+        'json_num_wins_1':json_num_wins_1,
+        'json_num_wins_2':json_num_wins_2,
+        'json_races_list':json_races_list,
+        'json_names_races':json_names_races,
+        'json_payload_driver1':json_payload_driver1,
+        'json_payload_driver2':json_payload_driver2,
+        'json_data_progress':json_data_progress,
+        'ad':active_drivers,
+        'STATIC_URL':settings.STATIC_URL
+    }
+    return render(request, 'dashboard/stats.html',context)
+
+#endregion
+
 
 ''' APARTADO TWITTER '''
 def get_twitter_stats(request,num):
