@@ -128,10 +128,8 @@
                 <div class="row">
                   <div class="col-sm-6 text-left">
                     <h5 class="card-category">Estadísticas principales:</h5>
-                    <h2 class="card-title">Pilotos:</h2>
-                    <h2> {{request}} </h2>
-                    <div class="form">
-
+                    <h2 class="card-title">Pilotos:</h2> <h3> {{driver_1}} vs {{driver_2}}</h3>
+                    
                     <form method="POST"> 
                       {% csrf_token %}
                       <select name="driver1" class="form-select" aria-label="Default select example">
@@ -149,31 +147,6 @@
                       </select>
                       <button type="submit">Enviar</button>
                     </form>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                      <label class="btn btn-sm btn-primary btn-simple active" id="0">
-                        <input type="radio" name="options" checked>
-                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Último año</span>
-                        <span class="d-block d-sm-none">
-                          <i class="tim-icons icon-single-02"></i>
-                        </span>
-                      </label>
-                      <label class="btn btn-sm btn-primary btn-simple" id="1">
-                        <input type="radio" class="d-none d-sm-none" name="options">
-                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Última semana</span>
-                        <span class="d-block d-sm-none">
-                          <i class="tim-icons icon-gift-2"></i>
-                        </span>
-                      </label>
-                      <label class="btn btn-sm btn-primary btn-simple" id="2">
-                        <input type="radio" class="d-none" name="options">
-                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Último mes</span>
-                        <span class="d-block d-sm-none">
-                          <i class="tim-icons icon-tap-02"></i>
-                        </span>
-                      </label>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -564,6 +537,8 @@
   <div id="json_payload_driver2" data-json='{{ json_payload_driver2 |safe }}'></div>
   <div id="json_races_list" data-json='{{ json_races_list |safe }}'></div>
   <div id="json_names_races" data-json='{{ json_names_races |safe }}'></div>
+  <div id="json_driver_name" data-json='{{ json_driver_name |safe }}'></div>
+  <div id="json_driver_name2" data-json='{{ json_driver_name2 |safe }}'></div>
   
   <!-- DATOS DE LA GRÁFICA EVOLUTIVA TOP 3 CONSTRUCTORES -->
 

@@ -100,13 +100,13 @@ def get_stats(request):
 
         #Se obtiene los nombres de los pilotos a comparar
         driver_1 = request.POST.get('driver1')
-        driver_2 = request.GET('driver2')
+        driver_2 = request.POST.get('driver2')
         
         names = [driver_1,driver_2]
         res = get_pilots_comparison(names)
 
-        num_wins_1 = res['wins1']
-        num_wins_2 = res['wins2']
+        num_wins_1 = res['wins_1']
+        num_wins_2 = res['wins_2']
         races_list = res['races_list']
         names_races = res['names_races_list']
         payload_driver1 = res['puntuation_driver1']
@@ -118,7 +118,8 @@ def get_stats(request):
         json_names_races = json.dumps(names_races)
         json_payload_driver1 = json.dumps(payload_driver1)
         json_payload_driver2 = json.dumps(payload_driver2)
-
+        json_driver_name = json.dumps(driver_1)
+        json_driver_name2 = json.dumps(driver_2)
 
     
     else:
@@ -128,8 +129,8 @@ def get_stats(request):
         names = [driver_1,driver_2]
         res = get_pilots_comparison(names)
 
-        num_wins_1 = res['wins1']
-        num_wins_2 = res['wins2']
+        num_wins_1 = res['wins_1']
+        num_wins_2 = res['wins_2']
         races_list = res['races_list']
         names_races = res['names_races_list']
         payload_driver1 = res['puntuation_driver1']
@@ -141,9 +142,14 @@ def get_stats(request):
         json_names_races = json.dumps(names_races)
         json_payload_driver1 = json.dumps(payload_driver1)
         json_payload_driver2 = json.dumps(payload_driver2)
-    
+        json_driver_name = json.dumps(driver_1)
+        json_driver_name2 = json.dumps(driver_2)
     
     context = {
+        'json_driver_name':json_driver_name,
+        'json_driver_name2':json_driver_name2,
+        'driver_1':driver_1,
+        'driver_2':driver_2,
         'json_num_wins_1':json_num_wins_1,
         'json_num_wins_2':json_num_wins_2,
         'json_races_list':json_races_list,

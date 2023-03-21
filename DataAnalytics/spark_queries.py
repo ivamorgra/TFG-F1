@@ -109,7 +109,7 @@ def get_driver_bynameornacionality(input):
 def get_active_driver_byname(name):
 
     try :
-        driver = Piloto.objects.get(Q(nombre=name),activo=1)
+        driver = Piloto.objects.get(Q(apellidos=name),activo=1)
     
     except Piloto.DoesNotExist:
         driver = None
@@ -288,7 +288,7 @@ def get_pilots_comparison(names):
     driver_2 = get_active_driver_byname(names[1])
 
     id_driver1 = driver_1.id
-    id_driver2 = driver_1.id
+    id_driver2 = driver_2.id
 
     #Obtenemos los datos estadísticos de los pilotos
     
@@ -296,8 +296,19 @@ def get_pilots_comparison(names):
     wins_2 = get_num_wins_season_pilot(id_driver2)
 
     #Obtenemos el pipeline de la temporada
-    pipeline = ()
+    ids = [id_driver1,id_driver2]
+    races_list,names_races_list,puntuation_driver1,puntuation_driver2 = get_comparation_drivers_evolution(ids)
 
+    res = {
+        'wins_1': wins_1,
+        'wins_2': wins_2,
+        'races_list':races_list,
+        'names_races_list': names_races_list,
+        'puntuation_driver1': puntuation_driver1,
+        'puntuation_driver2': puntuation_driver2
+    }
+
+    return res
 #endregion
 
 
