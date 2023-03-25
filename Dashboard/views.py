@@ -101,6 +101,8 @@ def get_stats(request):
         #Se obtiene los nombres de los pilotos a comparar
         driver_1 = request.POST.get('driver1')
         driver_2 = request.POST.get('driver2')
+        if (driver_2 == 'De'):
+            driver_2 = "De Vries"
         
         names = [driver_1,driver_2]
         res = get_pilots_comparison(names)
