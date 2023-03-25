@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/x-icon" href="{% static 'images/f1icon.ico' %} " />
   <title>
-    Estadísticas generales de Twitter
+    Clasificación
   </title>
   <!--     Fonts and icons     -->
  <!--     Fonts and icons     -->
@@ -48,7 +48,7 @@
                     <p>Dashboard</p>
                 </a>
             </li>
-            <li class="active">
+            <li>
               <a href="{% url 'twitter' num=10 %}">
                 <i class="tim-icons icon-sound-wave"></i>
                 <p>Twitter</p>
@@ -72,7 +72,7 @@
                 <p>Estadísticas</p>
               </a>
             </li>
-            <li>
+            <li class="active">
               <a href="{% url 'standings' %}">
                 <i class="tim-icons icon-trophy"></i>
                 <p>Clasificación</p>
@@ -124,49 +124,44 @@
       <div class="content">
         <div class="row">
           <div class="col-md-12">
-            <div class="col-sm-12" id="selection-buttons">
-              <div class="btn-group">
-                <a href="{% url 'twitter' num=10 %}" class="btn btn-primary{{active1}}">Últimos 10</a>
-                <a href="{% url 'twitter' num=25 %}" class="btn btn-primary{{active2}}">Últimos 25</a>
-                <a href="{% url 'twitter' num=50 %}" class="btn btn-primary{{active3}}">Últimos 50</a>
-              </div>
-            </div>
             <div class="card ">
               <div class="card-header">
                 
-                <h4 class="card-title">DATOS SOBRE LAS CUENTAS DE EQUIPOS</h4>
-                <p class="category"> Datos escogidos según sus últimos {{num}} tweets</p>
+                <h4 class="card-title">CLASIFICACIÓN PILOTOS</h4>
+                <p class="category"> Clasificación actual del mundial de Fórmula 1</p>
+                
               </div>
               <div class="card-body">
                 <div class="table-responsive">
                   <table class="table tablesorter " id="">
                     <thead class=" text-primary">
                       <tr>
-                        <th>
-                          Nombre de la cuenta
+                        <th >
+                            Posición
                         </th>
                         <th>
-                          Número de seguidores
+                          Nombre del piloto
                         </th>
                         <th>
-                          Número de tweets
+                          Nacionalidad
                         </th>
-                        <th class="text-center">
-                          Número de likes recibidos
+                        <th>
+                          Coche
                         </th>
-                        <th class="text-center">
-                            Número de retweets recibidos
-                          </th>
+                        <th >
+                          Puntos
+                        </th>
+                        
                       </tr>
                     </thead>
                     <tbody>
-                        {% for s in context.teams %}
+                        {% for s in driver_standings %}
                         <tr>   
-                            <td>@{{s.0}}</td>
-                            <td class="text-center">{{s.1}}</td>
-                            <td class="text-center">{{s.2}}</td>
-                            <td class="text-center">{{s.3}}</td>
-                            <td class="text-center">{{s.4}}</td>
+                            <td>{{s.1}}</td>
+                            <td >{{s.2}} {{s.3}}</td>
+                            <td >{{s.5}}</td>
+                            <td >{{s.6}}</td>
+                            <td>{{s.7}}</td>
                         </tr>  
                         {% endfor %}
                       
@@ -179,8 +174,8 @@
           <div class="col-md-12">
             <div class="card  card-plain">
               <div class="card-header">
-                <h4 class="card-title"> DATOS SOBRE LAS CUENTAS DE PILOTOS</h4>
-                <p class="category"> Datos esocogidos según sus últimos {{num}} tweets</p>
+                <h4 class="card-title"> CLASIFICACIÓN EQUIPOS</h4>
+                <p class="category">Clasificación actual del mundial de constructores de la Fórmula 1</p>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -188,30 +183,22 @@
                     <thead class=" text-primary">
                         <tr>
                             <th>
-                              Nombre de la cuenta
+                              Posición
                             </th>
                             <th>
-                              Número de seguidores
+                              Nombre del equipo
                             </th>
                             <th>
-                              Número de tweets
+                              Puntos
                             </th>
-                            <th class="text-center">
-                              Número de likes recibidos
-                            </th>
-                            <th class="text-center">
-                                Número de retweets recibidos
-                              </th>
                           </tr>
                     </thead>
                     <tbody>
-                        {% for s in context.drivers %}
+                        {% for s in team_standings %}
                         <tr>   
-                            <td>@{{s.0}}</td>
-                            <td class="text-center">{{s.1}}</td>
-                            <td class="text-center">{{s.2}}</td>
-                            <td class="text-center">{{s.3}}</td>
-                            <td class="text-center">{{s.4}}</td>
+                            <td>{{s.1}}</td>
+                            <td>{{s.2}}</td>
+                            <td >{{s.3}}</td>
                         </tr>  
                         {% endfor %}
                       </tr>
@@ -276,7 +263,7 @@
   
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static '/js/dashboard/black-dashboard.min.js'%}"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
-  <script src="{% static 'js/dashboard/control/demo.js'%}"></script>
+  
   <script>
     $(document).ready(function() {
       $().ready(function() {

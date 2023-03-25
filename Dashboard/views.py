@@ -6,6 +6,7 @@ from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_sc
 from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison
 import logging
 import json
+
 # Create your views here.
 
 
@@ -166,6 +167,20 @@ def get_stats(request):
 
 #endregion
 
+#region Vista de Clasificación
+
+def get_view_standings(request):
+
+    driver_standings,names,points = get_standings()
+    
+    team_standings,names,points = get_standings_teams()
+
+    context = {
+        'driver_standings':driver_standings,
+        'team_standings':team_standings,
+    }
+    return render(request, 'dashboard/standings.html',context)
+#endregion Vista de Clasificación
 
 ''' APARTADO TWITTER '''
 def get_twitter_stats(request,num):
