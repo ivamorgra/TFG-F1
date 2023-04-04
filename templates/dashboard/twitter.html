@@ -17,7 +17,7 @@
  <link href="{% static 'css/dashboard/nucleo-icons.css'%}" rel="stylesheet" />
  <!-- CSS Files -->
  <link href="{% static 'css/dashboard/black-dashboard.css'%}" rel="stylesheet" />
- <link href="{% static 'css/dashboard/control/demo.css" rel="stylesheet'%}" />
+ <link href="{% static 'css/dashboard/control/demo.css'%}" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -139,7 +139,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table tablesorter " id="">
+                  <table class="table tablesorter " id="sortDriverTable">
                     <thead class=" text-primary">
                       <tr>
                         <th>
@@ -152,11 +152,12 @@
                           Número de tweets
                         </th>
                         <th class="text-center">
+                         
                           Número de likes recibidos
                         </th>
                         <th class="text-center">
-                            Número de retweets recibidos
-                          </th>
+                          Número de retweets recibidos
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -184,7 +185,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table tablesorter " id="">
+                  <table class="table tablesorter " id="sortTeamTable">
                     <thead class=" text-primary">
                         <tr>
                             <th>
@@ -276,7 +277,7 @@
   
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static '/js/dashboard/black-dashboard.min.js'%}"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
-  <script src="{% static 'js/dashboard/control/demo.js'%}"></script>
+  <script src="{% static 'js/dashboard/control/twitter.js'%}"></script>
   <script>
     $(document).ready(function() {
       $().ready(function() {

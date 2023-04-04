@@ -143,7 +143,7 @@ def next_race_scrapping():
             for e in upcoming_races:
                 mes = e.mes.split('-')[0]
                 if (int(MONTHS[mes]) >= month):
-                    if ( datetime.datetime.strptime(e.fecha,"%Y-%m-%d %H:%M:%S") - actual_date <= datetime.timedelta(14)):
+                    if ( datetime.datetime.strptime(e.fecha,"%Y-%m-%d %H:%M:%S") - actual_date <= datetime.timedelta(30)):
                         return (e.temporada,e.ronda,e.dia_comienzo,e.dia_final,e.mes,e.nombre,e.pais,e.imagen)
 
 

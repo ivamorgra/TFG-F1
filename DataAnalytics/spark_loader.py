@@ -284,7 +284,7 @@ def post_speeds(race_id,speeds):
         lista = list(reader)
     archivo.close()
 
-    
+    count_data = 0
     with open("./datasets/results.csv", 'a',newline="") as f:
         for row in lista:
 
@@ -309,6 +309,16 @@ def post_speeds(race_id,speeds):
                     
                     writer = csv.writer(f)
                     writer.writerow(new_row)
+
+            count_data += 1
+            if (len(speeds) != len(lista) & count_data >= len(speeds)):
+                
+                new_row = [row[0],row[1],row[2],row[3],row[4],
+                            row[5],row[6],row[7],row[8],row[9],
+                            row[10],row[11],row[12],"\\N","\\N","\\N","\\N",row[-1]]
+                    
+                writer = csv.writer(f)
+                writer.writerow(new_row)
     
     f.close()
 
