@@ -3,14 +3,20 @@ from csv import writer
 from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, sum,avg, weekofyear
+from pyspark.sql.types import DateType
 from django.db.models import Q
 import datetime
 from .models import Carrera
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
-
+''' Diccionario clave -> abreviatura, valor -> nombre de usuario en twitter'''
+TWITTER_PROFILE = {'HAM': 'LewisHamilton', 'ALO':'alo_oficial','BOT':'ValtteriBottas',
+                   'MAG':'KevinMagnussen','VER':'Max33Verstappen','SAI':'Carlossainz55','OCO':'OconEsteban',
+                   'STR':'lance_stroll','GAS':'PierreGASLY','LEC':'Charles_Leclerc','NOR':'LandoNorris','RUS':'GeorgeRussell63',
+                   'ALB':'alex_albon','TSU':'yukitsunoda07','PER':'SChecoPerez','ZHO':'ZhouGuanyu24','PIA':'OscarPiastri',
+                   'HUL':'HulkHulkenberg','DE ':'nyckdevries','SAR':'LoganSargeant'}
 
 def driver_basic_stats(driver_id):
     races = spark.read.csv("./datasets/results.csv", header=True,sep=",")
@@ -368,6 +374,82 @@ def get_num_wins_season_pilot(id):
     return count
 #endregion
 
+
+
+#region Evolución twitter de dos pilotos
+
+''' Esta función devuelve la evolución de estadísticas de
+     tweets de dos pilotos.
+     Parámetros:
+     - names: lista de dos nombres de pilotos (debe ser 2 nombres)
+     Return: lista de tuplas con la siguiente estructura:
+     (fecha, num_tweets, num_retweets, num_favoritos)
+'''
+
+def get_twitter_evolution(names):
+    
+    # Obtenemos las abreviaturas de los 2 pilotos
+    abreviaturas = []
+    for n in names:
+        abreviaturas.append(Piloto.objects.get(apellidos = n,activo=1).abreviatura)
+    
+    # Obtenemos los nombres de las cuentas de twitter de los dos pilotos
+    twitter_names = []
+    for a in abreviaturas:
+        twitter_names.append(TWITTER_PROFILE[a])
+    
+    # Obtenemos los datos de los tweets de los dos pilotos
+    tweets_stats = spark.read.csv("./datasets/drivers_followers.csv", header=True,sep=",")
+
+
+
+    
+    # Obtenemos datos del csv del primer piloto
+
+    data_driver1 = tweets_stats.filter(tweets_stats.Piloto == twitter_names[0])
+
+    data_driver1 = data_driver1.withColumn("Fecha", data_driver1["Fecha"].cast(DateType()))
+    data_driver1 = data_driver1.withColumn("semana", weekofyear("fecha"))
+    data_driver1 = data_driver1.groupby("semana").agg(avg("Likes"),avg("Rts"),avg("Seguidores")).orderBy("semana").tail(5)
+    
+                      
+    # Obtenemos datos del csv del segundo piloto
+
+    data_driver2 = tweets_stats.filter(tweets_stats.Piloto == twitter_names[1])
+
+    data_driver2 = data_driver2.withColumn("Fecha", data_driver2["Fecha"].cast(DateType()))
+    data_driver2 = data_driver2.withColumn("semana", weekofyear("fecha"))
+
+    data_driver2 = data_driver2.groupby("semana").agg(avg("Likes"),avg("Rts"),avg("Seguidores")).orderBy("semana").tail(5)
+    
+
+    #Convertimos a lista
+    likes_1 = []
+    rts_1 = []
+    seguidores_1 = []
+    likes_2 = []
+    rts_2 = []
+    seguidores_2 = []
+    
+    print (data_driver1)
+
+    for d1,d2 in zip(data_driver1,data_driver2):
+        likes_1.append(d1["avg(Likes)"])
+        rts_1.append(d1["avg(Rts)"])
+        seguidores_1.append(d1["avg(Seguidores)"])
+        likes_2.append(d2["avg(Likes)"])
+        rts_2.append(d2["avg(Rts)"])
+        seguidores_2.append(d2["avg(Seguidores)"])
+    
+
+    
+
+    
+    
+
+    return likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2
+    
+#endregion Evolución twitter de dos pilotos
 
 def get_data_race(race_id):
     NO_DATA = "No hay datos disponibles"

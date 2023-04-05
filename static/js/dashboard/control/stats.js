@@ -355,7 +355,7 @@ demo = {
 
     var ctxprogressive = document.getElementById("starProgresschart").getContext("2d");
 
-    /* Datos de la grafica Evolución Top 3 Pilotos */
+    /* Datos de la grafica Evolución 2 Pilotos */
     const races = document.getElementById('json_races_list')
     const x_races = JSON.parse(races.dataset.json);
 
@@ -457,5 +457,108 @@ demo = {
         }]
       }
     });
+
+    /* GRÁFICO EVOLUCIÓN TWITTER 2 PILOTOS */
+    /* Datos de la grafica Evolución 2 Pilotos */
+
+    var ctxtwitter = document.getElementById("twitterprogresschar").getContext("2d");
+
+    /* LIKES PILOTOS */
+    const likes_piloto1 = document.getElementById('json_twitter_likes1')
+    const likes_1 = JSON.parse(likes_piloto1.dataset.json);
+
+    const likes_piloto2 = document.getElementById('json_twitter_likes2')
+    const likes_2 = JSON.parse(likes_piloto2.dataset.json);
+
+    /* RETWEETS PILOTOS */
+    const retweets_piloto1 = document.getElementById('json_twitter_rts1')
+    const rts_1 = JSON.parse(retweets_piloto1.dataset.json);
+
+    const retweets_piloto2 = document.getElementById('json_twitter_rts2')
+    const rts_2 = JSON.parse(retweets_piloto2.dataset.json);
+
+    /* SEGUIDORES PILOTOS */
+    const seguidores_piloto1 = document.getElementById('json_twitter_seguidores1')
+    const seguidores_1 = JSON.parse(seguidores_piloto1.dataset.json);
+
+    const seguidores_piloto2 = document.getElementById('json_twitter_seguidores2')
+    const seguidores_2 = JSON.parse(seguidores_piloto2.dataset.json);
+
+    var gradientStroke = ctxtwitter.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke.addColorStop(1, 'rgba(72,72,176,0.2)');
+    gradientStroke.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+    gradientStroke.addColorStop(0, 'rgba(119,52,169,0)'); //purple colors
+
+    var config = {
+      type: 'line',
+      data: {
+        labels: ['Hace 1 mes','Hace 3 semanas','Hace 2 semanas','Hace 1 semana','Última semana'],
+        datasets: [{
+          label: 'Media de likes por semana de '+piloto1_name ,
+          fill: true,
+          backgroundColor: gradientStroke,
+          borderColor: '#d048b6',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: '#d048b6',
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: '#d048b6',
+          pointBorderWidth: 20,
+          pointHoverRadius: 4,
+          pointHoverBorderWidth: 15,
+          pointRadius: 4,
+          data: likes_1,
+        },
+        {
+          label: 'Media de likes por semana de '+piloto2_name,
+          fill: true,
+          backgroundColor: gradientStroke,
+          borderColor: '#00d6b4',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: '#00d6b4',
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: '#00d6b4',
+          pointBorderWidth: 20,
+          pointHoverRadius: 4,
+          pointHoverBorderWidth: 15,
+          pointRadius: 4,
+          data: likes_2,
+        },
+        ]
+      },
+      options: gradientChartOptionsConfigurationWithTooltipPurple
+    };
+    
+      var myChartData = new Chart(ctxtwitter, config);
+      $("#0").click(function() {
+        var data = myChartData.config.data;
+        data.datasets[0].data = likes_1;
+        data.datasets[1].data = likes_2;
+        data.datasets[0].label = 'Media de likes por semana de '+piloto1_name;
+        data.datasets[1].label = 'Media de likes por semana de '+piloto2_name;
+        myChartData.update();
+      });
+      $("#1").click(function() {
+        var data = myChartData.config.data;
+        data.datasets[0].data = rts_1;
+        data.datasets[1].data = rts_2;
+        data.datasets[0].label = 'Media de retweets por semana de '+piloto1_name;
+        data.datasets[1].label = 'Media de retweets por semana de '+piloto2_name;
+        myChartData.update();
+      });
+  
+      $("#2").click(function() {
+        var data = myChartData.config.data;
+        data.datasets[0].data = seguidores_1;
+        data.datasets[1].data = seguidores_2;
+        data.datasets[0].label = 'Media de seguidores por semana de '+piloto1_name;
+        data.datasets[1].label = 'Media de seguidores por semana de '+piloto2_name;
+        myChartData.update();
+      });
+
 
 },}

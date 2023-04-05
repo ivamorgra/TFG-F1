@@ -3,7 +3,7 @@ from django.conf import settings
 from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
 from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping
-from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison
+from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
 import logging
 import json
 
@@ -107,48 +107,46 @@ def get_stats(request):
         
         names = [driver_1,driver_2]
         res = get_pilots_comparison(names)
+        likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
 
-        num_wins_1 = res['wins_1']
-        num_wins_2 = res['wins_2']
-        races_list = res['races_list']
-        names_races = res['names_races_list']
-        payload_driver1 = res['puntuation_driver1']
-        payload_driver2 = res['puntuation_driver2']
-
-        json_num_wins_1 = json.dumps(num_wins_1)
-        json_num_wins_2 = json.dumps(num_wins_2)
-        json_races_list = json.dumps(races_list)
-        json_names_races = json.dumps(names_races)
-        json_payload_driver1 = json.dumps(payload_driver1)
-        json_payload_driver2 = json.dumps(payload_driver2)
-        json_driver_name = json.dumps(driver_1)
-        json_driver_name2 = json.dumps(driver_2)
-
-    
     else:
         driver_1 = 'Verstappen'
         driver_2 = 'Alonso'
         
         names = [driver_1,driver_2]
         res = get_pilots_comparison(names)
-
-        num_wins_1 = res['wins_1']
-        num_wins_2 = res['wins_2']
-        races_list = res['races_list']
-        names_races = res['names_races_list']
-        payload_driver1 = res['puntuation_driver1']
-        payload_driver2 = res['puntuation_driver2']
-
-        json_num_wins_1 = json.dumps(num_wins_1)
-        json_num_wins_2 = json.dumps(num_wins_2)
-        json_races_list = json.dumps(races_list)
-        json_names_races = json.dumps(names_races)
-        json_payload_driver1 = json.dumps(payload_driver1)
-        json_payload_driver2 = json.dumps(payload_driver2)
-        json_driver_name = json.dumps(driver_1)
-        json_driver_name2 = json.dumps(driver_2)
+        likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
     
+    num_wins_1 = res['wins_1']
+    num_wins_2 = res['wins_2']
+    races_list = res['races_list']
+    names_races = res['names_races_list']
+    payload_driver1 = res['puntuation_driver1']
+    payload_driver2 = res['puntuation_driver2']
+
+    json_num_wins_1 = json.dumps(num_wins_1)
+    json_num_wins_2 = json.dumps(num_wins_2)
+    json_races_list = json.dumps(races_list)
+    json_names_races = json.dumps(names_races)
+    json_payload_driver1 = json.dumps(payload_driver1)
+    json_payload_driver2 = json.dumps(payload_driver2)
+    json_driver_name = json.dumps(driver_1)
+    json_driver_name2 = json.dumps(driver_2)
+    json_twitter_likes1 = json.dumps(likes_1)
+    json_twitter_likes2 = json.dumps(likes_2)
+    json_twitter_rts1 = json.dumps(rts_1)
+    json_twitter_rts2 = json.dumps(rts_2)
+    json_twitter_seguidores2 = json.dumps(seguidores_2)
+    json_twitter_seguidores1 = json.dumps(seguidores_1)
+        
+
     context = {
+        'json_twitter_likes1':json_twitter_likes1,
+        'json_twitter_likes2':json_twitter_likes2,
+        'json_twitter_rts1':json_twitter_rts1,
+        'json_twitter_rts2':json_twitter_rts2,
+        'json_twitter_seguidores2':json_twitter_seguidores2,
+        'json_twitter_seguidores1':json_twitter_seguidores1,
         'json_driver_name':json_driver_name,
         'json_driver_name2':json_driver_name2,
         'driver_1':driver_1,

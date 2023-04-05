@@ -175,12 +175,37 @@
           <div class="col-6">
             <div class="card card-chart">
               <div class="card-header">
-                <h5 class="card-category">Tendencia en países</h5>
-                <h3 class="card-title">10 países con mayor índice de popularidad (máxima 100)</h3>
+                <h5 class="card-category">Tendencia en Twitter</h5>
+                <h3 class="card-title">Estadísticas en Twitter de los dos pilotos por semanas</h3>
+                <div class="">
+                  <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                    <label class="btn btn-sm btn-primary btn-simple active" id="0">
+                      <input type="radio" name="options" checked>
+                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Likes</span>
+                      <span class="d-block d-sm-none">
+                        <i class="tim-icons icon-single-02"></i>
+                      </span>
+                    </label>
+                    <label class="btn btn-sm btn-primary btn-simple" id="1">
+                      <input type="radio" class="d-none d-sm-none" name="options">
+                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Retweets</span>
+                      <span class="d-block d-sm-none">
+                        <i class="tim-icons icon-gift-2"></i>
+                      </span>
+                    </label>
+                    <label class="btn btn-sm btn-primary btn-simple" id="2">
+                      <input type="radio" class="d-none" name="options">
+                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Seguidores</span>
+                      <span class="d-block d-sm-none">
+                        <i class="tim-icons icon-tap-02"></i>
+                      </span>
+                    </label>
+                  </div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="chart-area">
-                  <canvas id="CountryChart"></canvas>
+                  <canvas id="twitterprogresschar"></canvas>
                 </div>
               </div>
             </div>
@@ -539,6 +564,15 @@
   <div id="json_names_races" data-json='{{ json_names_races |safe }}'></div>
   <div id="json_driver_name" data-json='{{ json_driver_name |safe }}'></div>
   <div id="json_driver_name2" data-json='{{ json_driver_name2 |safe }}'></div>
+  
+  <!-- DATOS DE LA GRÁFICA EVOLUTIVA TWITTER COMPARACIÓN 2 PILOTOS -->
+  <div id="json_twitter_likes1" data-json='{{ json_twitter_likes1 |safe }}'></div>
+  <div id="json_twitter_rts1" data-json='{{ json_twitter_rts1 |safe }}'></div>
+  <div id="json_twitter_seguidores1" data-json='{{ json_twitter_seguidores1 |safe }}'></div>
+
+  <div id="json_twitter_likes2" data-json='{{ json_twitter_likes2 |safe }}'></div>
+  <div id="json_twitter_rts2" data-json='{{ json_twitter_rts2 |safe }}'></div>
+  <div id="json_twitter_seguidores2" data-json='{{ json_twitter_seguidores2 |safe }}'></div>
   
   <!-- DATOS DE LA GRÁFICA EVOLUTIVA TOP 3 CONSTRUCTORES -->
 
