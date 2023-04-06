@@ -3,7 +3,7 @@ from csv import writer
 from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, sum,avg, weekofyear
+from pyspark.sql.functions import col, sum,avg, weekofyear, count, desc, asc
 from pyspark.sql.types import DateType
 from django.db.models import Q
 import datetime
@@ -109,6 +109,225 @@ def get_driver_bynameornacionality(input):
         res.append(driver)
     return res
 
+#region Obtener carreras de un piloto en una temporada
+
+def get_driver_num_races_by_season(driver_id,season):
+    ''' Función que devuelve el número de carreras de un piloto 
+        en una temporada.
+        Parámetros:
+            driver_id: id del piloto
+            season: temporada (año)
+    '''
+
+    # Hacer un join con la tabla de carreras para filtrar por año
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    season_races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    
+    # Definición de join
+    join = [results.raceId == season_races.raceId]
+
+    # Realizar join -> nuevo dataframe unido
+    results_join = results.join(season_races, join, "inner")
+
+    num_races = results_join.filter( (results_join.driverId == driver_id) & (results_join.year == season)).count()
+
+    return num_races
+
+
+#endregion Obtener carreras de un piloto en una temporada
+
+#region Obtener carreras de un piloto 
+
+def get_driver_num_races(driver_id):
+    ''' Función que devuelve el número de victorias de un piloto 
+        en una temporada.
+        Parámetros:
+            driver_id: id del piloto
+            season: temporada (año)
+    '''
+
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    
+    num_races = results.filter( (results.driverId == driver_id)).count()
+
+    return num_races
+
+#endregion Obtener carreras de un piloto
+
+
+#region Obtener el mayor número de victorias en una temporada
+
+def get_driver_max_wins_by_season(driver_id):
+    ''' Función que devuelve el mayor número de victorias de un piloto 
+        en una temporada.
+        Parámetros:
+            driver_id: id del piloto
+    '''
+
+    # Hacer un join con la tabla de carreras para filtrar por año
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    season_races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    
+    # Definición de join
+    join = [results.raceId == season_races.raceId]
+
+    # Realizar join -> nuevo dataframe unido
+    results_join = results.join(season_races, join, "inner")
+
+    #Primero filtramos por victorias del piloto
+    races_by_season = results_join.filter( (results_join.driverId == driver_id) & (results_join.position == 1))
+
+    # Agrupamos las victorias por año y las contamos
+    result = races_by_season.groupBy("year").agg(count("*").alias("count"))
+    
+    res = result.orderBy(desc("count")).first()
+
+    year = res[0]
+    num_wins = res[1]
+
+    return [year,num_wins]
+    
+
+
+#endregion Obtener el mayor número de victorias en una temporada
+
+#region Obtener la posición habitual de un piloto en la temporada
+
+def get_driver_avg_position_by_season(driver_id,season):
+    ''' Función que devuelve la posición más habitual de un piloto 
+        en una temporada.
+        Parámetros:
+            driver_id: id del piloto
+            season: temporada (año)
+    '''
+
+    # Hacer un join con la tabla de carreras para filtrar por año
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    season_races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    
+    # Definición de join
+    join = [results.raceId == season_races.raceId]
+
+    # Realizar join -> nuevo dataframe unido
+    results_join = results.join(season_races, join, "inner")
+
+    num_races = results_join.filter( (results_join.driverId == driver_id) & (results_join.year == season))
+
+    positions = num_races.groupBy("position").agg(count("*").alias("count"))
+
+    res = positions.orderBy(desc("count")).first()
+
+    return res[0],res[1]
+
+
+#endregion Obtener la posición habitual de un piloto en la temporada
+
+#region Obtener la posición más alta de un piloto en la temporada
+def get_driver_max_position_by_season(driver_id,season):
+    ''' Función que devuelve la posición más alta de un piloto 
+        en una temporada.
+        Parámetros:
+            driver_id: id del piloto
+            season: temporada (año)
+    '''
+
+    # Hacer un join con la tabla de carreras para filtrar por año
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    season_races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    
+    # Definición de join
+    join = [results.raceId == season_races.raceId]
+
+    # Realizar join -> nuevo dataframe unido
+    results_join = results.join(season_races, join, "inner")
+
+    num_races = results_join.filter( (results_join.driverId == driver_id) & (results_join.year == season))
+
+    position = num_races.orderBy(asc("position")).first()
+
+    return position.position
+
+#endregion Obtener la posición más alta de un piloto en la temporada
+
+#region Obtener la posición más baja de un piloto en la temporada
+def get_driver_min_position_by_season(driver_id,season):
+    ''' Función que devuelve la posición más baja de un piloto 
+        en una temporada.
+        Parámetros:
+            driver_id: id del piloto
+            season: temporada (año)
+    '''
+
+    # Hacer un join con la tabla de carreras para filtrar por año
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    season_races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    
+    # Definición de join
+    join = [results.raceId == season_races.raceId]
+
+    # Realizar join -> nuevo dataframe unido
+    results_join = results.join(season_races, join, "inner")
+
+    num_races = results_join.filter( (results_join.driverId == driver_id) & (results_join.year == season))
+
+    position = num_races.orderBy(desc("position")).first()
+    return position.position
+
+#endregion Obtener la posición más baja de un piloto en la temporada
+
+#region Obtener la puntuación media de un piloto en la temporada
+
+def get_driver_avg_points_by_season(driver_id,season):
+    ''' Función que devuelve la posición más alta de un piloto 
+        en una temporada.
+        Parámetros:
+            driver_id: id del piloto
+            season: temporada (año)
+    '''
+
+    # Hacer un join con la tabla de carreras para filtrar por año
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    season_races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    
+    # Definición de join
+    join = [results.raceId == season_races.raceId]
+
+    # Realizar join -> nuevo dataframe unido
+    results_join = results.join(season_races, join, "inner")
+
+    num_races = results_join.filter( (results_join.driverId == driver_id) & (results_join.year == season))
+
+    avg_points = num_races.agg(avg("points"))
+
+    return avg_points.first()[0]
+    
+#endregion Obtener la puntuación media de un piloto en la temporada
+
+#region Obtener numero de victorias en una temporada
+
+def get_driver_wins_by_season(driver_id,season):
+        ''' Función que devuelve el número de victorias de un piloto 
+            en una temporada.
+            Parámetros:
+                driver_id: id del piloto
+                season: temporada (año)
+        '''
+
+        # Hacer un join con la tabla de carreras para filtrar por año
+        results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+        season_races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+        
+        # Definición de join
+        join = [results.raceId == season_races.raceId]
+
+        # Realizar join -> nuevo dataframe unido
+        results_join = results.join(season_races, join, "inner")
+
+        wins = results_join.filter( (results_join.driverId == driver_id) & (results_join.position == 1) & (results_join.year == season)).count()
+
+        return wins
+
+#endregion Obtener numero de victorias en una temporada
 
 #region Obtener piloto activo por nombre
 
@@ -301,13 +520,53 @@ def get_pilots_comparison(names):
     wins_1 = get_num_wins_season_pilot(id_driver1)
     wins_2 = get_num_wins_season_pilot(id_driver2)
 
+    # Obtenemos el número de victorias de cada piloto en la temporada
+    season = datetime.datetime.now().year
+    season_wins1 = get_driver_wins_by_season(id_driver1,season)
+    season_wins2 = get_driver_wins_by_season(id_driver2,season)
+
+    # Obtenemos el número de victorias de cada piloto en la temporada
+    max_wins1 = get_driver_max_wins_by_season(id_driver1)
+    max_wins2 = get_driver_max_wins_by_season(id_driver2)
+
+    #Obtenemos posición habitual del piloto en la temporada
+    avg_pos1 = get_driver_avg_position_by_season(id_driver1,season)
+    avg_pos2 = get_driver_avg_position_by_season(id_driver2,season)
+    
+    #Obtenemos la posición más alta del piloto en la temporada
+    max_pos1 = get_driver_max_position_by_season(id_driver1,season)
+    max_pos2 = get_driver_max_position_by_season(id_driver2,season)
+
+    #Obtenemos la posición más baja del piloto en la temporada
+    min_pos1 = get_driver_min_position_by_season(id_driver1,season)
+    min_pos2 = get_driver_min_position_by_season(id_driver2,season)
+
+    #Obtenemos la media de las puntuaciones de un piloto en la temporada
+    avg_puntuation1 = get_driver_avg_points_by_season(id_driver1,season)
+    avg_puntuation2 = get_driver_avg_points_by_season(id_driver2,season)
+
+    print (avg_puntuation1,avg_puntuation2)
     #Obtenemos el pipeline de la temporada
     ids = [id_driver1,id_driver2]
     races_list,names_races_list,puntuation_driver1,puntuation_driver2 = get_comparation_drivers_evolution(ids)
 
     res = {
+        'avg_puntuation1': avg_puntuation1,
+        'avg_puntuation2': avg_puntuation2,
+        'min_pos1': min_pos1,
+        'min_pos2': min_pos2,
+        'max_pos1': max_pos1,
+        'max_pos2': max_pos2,
+        'avg_pos1': avg_pos1[0],
+        'avg_pos2': avg_pos2[0],
+        'max_wins_season1': max_wins1[0],
+        'max_wins_driver1': max_wins1[1],
+        'max_wins_season2': max_wins2[0],
+        'max_wins_driver2': max_wins2[1],
         'wins_1': wins_1,
         'wins_2': wins_2,
+        'season_wins1': season_wins1,
+        'season_wins2': season_wins2,
         'races_list':races_list,
         'names_races_list': names_races_list,
         'puntuation_driver1': puntuation_driver1,
@@ -315,6 +574,7 @@ def get_pilots_comparison(names):
     }
 
     return res
+
 #endregion
 
 
@@ -431,7 +691,6 @@ def get_twitter_evolution(names):
     rts_2 = []
     seguidores_2 = []
     
-    print (data_driver1)
 
     for d1,d2 in zip(data_driver1,data_driver2):
         likes_1.append(d1["avg(Likes)"])
@@ -441,12 +700,6 @@ def get_twitter_evolution(names):
         rts_2.append(d2["avg(Rts)"])
         seguidores_2.append(d2["avg(Seguidores)"])
     
-
-    
-
-    
-    
-
     return likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2
     
 #endregion Evolución twitter de dos pilotos
