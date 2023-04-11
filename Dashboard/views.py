@@ -117,15 +117,12 @@ def get_stats(request):
         res = get_pilots_comparison(names)
         likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
     
-    num_wins_1 = res['wins_1']
-    num_wins_2 = res['wins_2']
     races_list = res['races_list']
     names_races = res['names_races_list']
     payload_driver1 = res['puntuation_driver1']
     payload_driver2 = res['puntuation_driver2']
 
-    json_num_wins_1 = json.dumps(num_wins_1)
-    json_num_wins_2 = json.dumps(num_wins_2)
+
     json_races_list = json.dumps(races_list)
     json_names_races = json.dumps(names_races)
     json_payload_driver1 = json.dumps(payload_driver1)
@@ -141,6 +138,7 @@ def get_stats(request):
         
 
     context = {
+        'comparations':res,
         'json_twitter_likes1':json_twitter_likes1,
         'json_twitter_likes2':json_twitter_likes2,
         'json_twitter_rts1':json_twitter_rts1,
@@ -151,8 +149,6 @@ def get_stats(request):
         'json_driver_name2':json_driver_name2,
         'driver_1':driver_1,
         'driver_2':driver_2,
-        'json_num_wins_1':json_num_wins_1,
-        'json_num_wins_2':json_num_wins_2,
         'json_races_list':json_races_list,
         'json_names_races':json_names_races,
         'json_payload_driver1':json_payload_driver1,
