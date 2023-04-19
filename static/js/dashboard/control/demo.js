@@ -16,11 +16,11 @@ const values2 = JSON.parse(valuesElementGraph2.dataset.json);
 const daysElement = document.getElementById('json_data_dias2')
 const days = JSON.parse(daysElement.dataset.json);
 
-const valuesElementGraph3 = document.getElementById('json_data_graph3')
-const values3 = JSON.parse(valuesElementGraph3.dataset.json);
+//const valuesElementGraph3 = document.getElementById('json_data_graph3')
+//const values3 = JSON.parse(valuesElementGraph3.dataset.json);
 
-const daysElement3 = document.getElementById('json_data_dias3')
-const days3 = JSON.parse(daysElement3.dataset.json);
+//const daysElement3 = document.getElementById('json_data_dias3')
+//const days3 = JSON.parse(daysElement3.dataset.json);
 
 
 demo = {
@@ -547,10 +547,11 @@ demo = {
 
     var chart_labels_graph2 = days;
     var chart_data_graph2 = values2;
-
+ 
+    /*
     var chart_labels_graph3 = days3;
     var chart_data_graph3 = values3;
-
+    */
     var ctx = document.getElementById("chartBig1").getContext('2d');
 
     var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
@@ -594,14 +595,6 @@ demo = {
       var data = myChartData.config.data;
       data.datasets[0].data = chart_data;
       data.labels = chart_labels_graph2;
-      myChartData.update();
-    });
-
-    $("#2").click(function() {
-      var chart_data = chart_data_graph3;
-      var data = myChartData.config.data;
-      data.datasets[0].data = chart_data;
-      data.labels = chart_labels_graph3;
       myChartData.update();
     });
 

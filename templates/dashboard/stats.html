@@ -122,299 +122,607 @@
       <!-- End Navbar -->
       <div class="content">
         <div class="row">
-          <div class="col-12">
-            <div class="card card-chart">
-              <div class="card-header ">
-                <div class="row">
-                  <div class="col-sm-6 text-left">
-                    <h5 class="card-category">Estadísticas principales:</h5>
-                    <h2 class="card-title">Pilotos:</h2> <h3> {{driver_1}} vs {{driver_2}}</h3>
-                    
-                    <form method="POST"> 
-                      {% csrf_token %}
-                      <select name="driver1" class="form-select" aria-label="Default select example">
-                        <option selected>Selecciona un piloto</option>
-                        {% for piloto in ad %}
-                        <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
-                        {% endfor %}
-                      </select>
-                      
-                      <select name="driver2" class="form-select" aria-label="Default select example">
-                        <option selected>Selecciona el piloto competidor</option>
-                        {% for piloto in ad %}
-                        <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
-                        {% endfor %}
-                      </select>
-                      <button type="submit">Enviar</button>
-                    </form>
+          <div class="pestanha">
+            <button id="btn1">Pilotos</button>
+            <button id="btn2">Equipos</button>
+          </div>
+            <div id="contenido_pilotos">      
+              <div class="row">
+                <div class="col-12">
+                  <div class="card card-chart">
+                    <div class="card-header ">
+                      <div class="row">
+                        <div class="col-sm-6 text-left">
+                          <h5 class="card-category">Estadísticas principales:</h5>
+                          <h2 class="card-title">Pilotos:</h2> <h3> {{driver_1}} vs {{driver_2}}</h3>
+                          
+                          <form method="POST"> 
+                            {% csrf_token %}
+                            <select name="driver1" class="form-select" aria-label="Default select example">
+                              <option selected>Selecciona un equipo</option>
+                              {% for piloto in ad %}
+                              <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
+                              {% endfor %}
+                            </select>
+                            
+                            <select name="driver2" class="form-select" aria-label="Default select example">
+                              <option selected>Selecciona el piloto competidor</option>
+                              {% for piloto in ad %}
+                              <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
+                              {% endfor %}
+                            </select>
+                            <button type="submit">Enviar</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="starProgresschart"></canvas>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="starProgresschart"></canvas>
+              <div class="row">
+                <div class="col-6">
+                  <div class="card card-chart">
+                    <div class="card-header">
+                      <h5 class="card-category">Temporada actual</h5>
+                      <h3 class="card-title"> Progreso de temporada</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="sectorProgresschart"></canvas>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <div class="col-6">
+                  <div class="card card-chart">
+                    <div class="card-header">
+                      <h5 class="card-category">Tendencia en Twitter</h5>
+                      <h3 class="card-title">Estadísticas en Twitter de los dos pilotos por semanas</h3>
+                      <div class="">
+                        <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                          <label class="btn btn-sm btn-primary btn-simple active" id="0">
+                            <input type="radio" name="options" checked>
+                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Likes</span>
+                            <span class="d-block d-sm-none">
+                              <i class="tim-icons icon-single-02"></i>
+                            </span>
+                          </label>
+                          <label class="btn btn-sm btn-primary btn-simple" id="1">
+                            <input type="radio" class="d-none d-sm-none" name="options">
+                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Retweets</span>
+                            <span class="d-block d-sm-none">
+                              <i class="tim-icons icon-gift-2"></i>
+                            </span>
+                          </label>
+                          <label class="btn btn-sm btn-primary btn-simple" id="2">
+                            <input type="radio" class="d-none" name="options">
+                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Seguidores</span>
+                            <span class="d-block d-sm-none">
+                              <i class="tim-icons icon-tap-02"></i>
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="twitterprogresschar"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>          
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-6">
-            <div class="card card-chart">
-              <div class="card-header">
-                <h5 class="card-category">Temporada actual</h5>
-                <h3 class="card-title"> Progreso de temporada</h3>
-              </div>
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="sectorProgresschart"></canvas>
+              <div class="row">
+                <div class="col-lg-6 col-md-12">
+                  <div class="card ">
+                    <div class="card-header">
+                      <h4 class="card-title"> Estadísticas de temporada</h4>
+                    </div>
+                    <div class="card-body ">
+                      <div class="table-responsive">
+                        <table class="table tablesorter " id="">
+                          <thead class=" text-primary">
+                            <tr>
+                              <th>
+                                Comparativa
+                              </th>
+                              <th>
+                                {{driver_1}}
+                              </th>
+                              <th>
+                                {{driver_2}}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                Carreras disputadas
+                              </td>
+                              <td>
+                                {{comparations.season_races1}}
+                              </td>
+                              <td>
+                                {{comparations.season_races2}}
+                              </td>
+                            <tr>
+                              <td>
+                                Victorias
+                              </td>
+                              <td>
+                                {{comparations.season_wins1}}
+                              </td>
+                              <td>
+                                {{comparations.season_wins2}}
+                              </td>
+                              <tr>
+                                <td>
+                                  Mejor posición lograda
+                                </td>
+                                <td>
+                                  {{comparations.max_pos1}}
+                                </td>
+                                <td>
+                                  {{comparations.max_pos2}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Peor posición lograda
+                                </td>
+                                <td>
+                                  {{comparations.min_pos1}}
+                                </td>
+                                <td>
+                                  {{comparations.min_pos2}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Posición habitual
+                                </td>
+                                <td>
+                                  {{comparations.avg_pos1}}
+                                </td>
+                                <td>
+                                  {{comparations.avg_pos2}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Puntos totales
+                                </td>
+                                <td>
+                                  {{comparations.total_puntuation1}}
+                                </td>
+                                <td>
+                                  {{comparations.total_puntuation2}}
+                                </td>
+                              <tr>
+                                <td>
+                                  Media de puntos
+                                </td>
+                                <td>
+                                  {{comparations.avg_puntuation1}}
+                                </td>
+                                <td>
+                                  {{comparations.avg_puntuation2}}
+                                </td>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="card card-chart">
-              <div class="card-header">
-                <h5 class="card-category">Tendencia en Twitter</h5>
-                <h3 class="card-title">Estadísticas en Twitter de los dos pilotos por semanas</h3>
-                <div class="">
-                  <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                    <label class="btn btn-sm btn-primary btn-simple active" id="0">
-                      <input type="radio" name="options" checked>
-                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Likes</span>
-                      <span class="d-block d-sm-none">
-                        <i class="tim-icons icon-single-02"></i>
-                      </span>
-                    </label>
-                    <label class="btn btn-sm btn-primary btn-simple" id="1">
-                      <input type="radio" class="d-none d-sm-none" name="options">
-                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Retweets</span>
-                      <span class="d-block d-sm-none">
-                        <i class="tim-icons icon-gift-2"></i>
-                      </span>
-                    </label>
-                    <label class="btn btn-sm btn-primary btn-simple" id="2">
-                      <input type="radio" class="d-none" name="options">
-                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Seguidores</span>
-                      <span class="d-block d-sm-none">
-                        <i class="tim-icons icon-tap-02"></i>
-                      </span>
-                    </label>
+                <div class="col-lg-6 col-md-12">
+                  <div class="card ">
+                    <div class="card-header">
+                      <h4 class="card-title"> Estadísticas generales</h4>
+                    </div>
+                    <div class="card-body ">
+                      <div class="table-responsive">
+                        <table class="table tablesorter " id="">
+                          <thead class=" text-primary">
+                            <tr>
+                              <th>
+                                Comparativa
+                              </th>
+                              <th>
+                                {{driver_1}}
+                              </th>
+                              <th>
+                                {{driver_2}}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                Carreras disputadas
+                              </td>
+                              <td>
+                                {{comparations.num_carreras1}}
+                              </td>
+                              <td>
+                                {{comparations.num_carreras2}}
+                              </td>
+                            <tr>
+                              <td>
+                                Victorias
+                              </td>
+                              <td>
+                                {{comparations.num_victorias1}}
+                              </td>
+                              <td>
+                                {{comparations.num_victorias2}}
+                              </td>
+                              <tr>
+                                <td>
+                                  Carreras no acabadas
+                                </td>
+                                <td>
+                                  {{comparations.num_no_finish1}}
+                                </td>
+                                <td>
+                                  {{comparations.num_no_finish2}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Mayor número de victorias en una temporada
+                                </td>
+                                <td>
+                                  {{comparations.max_wins_driver1}} (temporada {{comparations.max_wins_season1}})
+                                </td>
+                                <td>
+                                  {{comparations.max_wins_driver2}} (temporada {{comparations.max_wins_season2}})
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Posición habitual
+                                </td>
+                                <td>
+                                  {{comparations.avg_global_pos1}} ({{comparations.avg_count1}} veces)
+                                </td>
+                                <td>
+                                  {{comparations.avg_global_pos2}} ({{comparations.avg_count2}} veces)
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Puntos totales
+                                </td>
+                                <td>
+                                  {{comparations.global_puntuation1}}
+                                </td>
+                                <td>
+                                  {{comparations.global_puntuation2}}
+                                </td>
+                              <tr>
+                                <td>
+                                  Media de puntos
+                                </td>
+                                <td>
+                                  {{comparations.avg_total_puntuation1}}
+                                </td>
+                                <td>
+                                  {{comparations.avg_total_puntuation2}}
+                                </td>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="twitterprogresschar"></canvas>
+            </div>
+          
+          </div>
+          <div class="row">  
+          <div id="contenido_equipos" style="display='none';">      
+              <div class="row">
+                <div class="col-12">
+                  <div class="card card-chart">
+                    <div class="card-header ">
+                      <div class="row">
+                        <div class="col-sm-6 text-left">
+                          <h5 class="card-category">Estadísticas principales:</h5>
+                          <h2 class="card-title">Equipos:</h2> <h3> {{driver_1}} vs {{driver_2}}</h3>
+                          
+                          <form method="POST"> 
+                            {% csrf_token %}
+                            <select name="driver1" class="form-select" aria-label="Default select example">
+                              <option selected>Selecciona un piloto</option>
+                              {% for piloto in ad %}
+                              <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
+                              {% endfor %}
+                            </select>
+                            
+                            <select name="driver2" class="form-select" aria-label="Default select example">
+                              <option selected>Selecciona el piloto competidor</option>
+                              {% for piloto in ad %}
+                              <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
+                              {% endfor %}
+                            </select>
+                            <button type="submit">Enviar</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="starProgresschart"></canvas>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>          
-        </div>
-        <div class="row">
-          <div class="col-lg-6 col-md-12">
-            <div class="card ">
-              <div class="card-header">
-                <h4 class="card-title"> Estadísticas de temporada</h4>
+              <div class="row">
+                <div class="col-6">
+                  <div class="card card-chart">
+                    <div class="card-header">
+                      <h5 class="card-category">Temporada actual</h5>
+                      <h3 class="card-title"> Progreso de temporada</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="sectorProgresschart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="card card-chart">
+                    <div class="card-header">
+                      <h5 class="card-category">Tendencia en Twitter</h5>
+                      <h3 class="card-title">Estadísticas en Twitter de los dos pilotos por semanas</h3>
+                      <div class="">
+                        <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                          <label class="btn btn-sm btn-primary btn-simple active" id="0">
+                            <input type="radio" name="options" checked>
+                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Likes</span>
+                            <span class="d-block d-sm-none">
+                              <i class="tim-icons icon-single-02"></i>
+                            </span>
+                          </label>
+                          <label class="btn btn-sm btn-primary btn-simple" id="1">
+                            <input type="radio" class="d-none d-sm-none" name="options">
+                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Retweets</span>
+                            <span class="d-block d-sm-none">
+                              <i class="tim-icons icon-gift-2"></i>
+                            </span>
+                          </label>
+                          <label class="btn btn-sm btn-primary btn-simple" id="2">
+                            <input type="radio" class="d-none" name="options">
+                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Seguidores</span>
+                            <span class="d-block d-sm-none">
+                              <i class="tim-icons icon-tap-02"></i>
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="twitterprogresschar"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>          
               </div>
-              <div class="card-body ">
-                <div class="table-responsive">
-                  <table class="table tablesorter " id="">
-                    <thead class=" text-primary">
-                      <tr>
-                        <th>
-                          Comparativa
-                        </th>
-                        <th>
-                          {{driver_1}}
-                        </th>
-                        <th>
-                          {{driver_2}}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          Carreras disputadas
-                        </td>
-                        <td>
-                          {{comparations.season_races1}}
-                        </td>
-                        <td>
-                          {{comparations.season_races2}}
-                        </td>
-                      <tr>
-                        <td>
-                          Victorias
-                        </td>
-                        <td>
-                          {{comparations.season_wins1}}
-                        </td>
-                        <td>
-                          {{comparations.season_wins2}}
-                        </td>
-                        <tr>
-                          <td>
-                            Mejor posición lograda
-                          </td>
-                          <td>
-                            {{comparations.max_pos1}}
-                          </td>
-                          <td>
-                            {{comparations.max_pos2}}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Peor posición lograda
-                          </td>
-                          <td>
-                            {{comparations.min_pos1}}
-                          </td>
-                          <td>
-                            {{comparations.min_pos2}}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Posición habitual
-                          </td>
-                          <td>
-                            {{comparations.avg_pos1}}
-                          </td>
-                          <td>
-                            {{comparations.avg_pos2}}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Puntos totales
-                          </td>
-                          <td>
-                            {{comparations.total_puntuation1}}
-                          </td>
-                          <td>
-                            {{comparations.total_puntuation2}}
-                          </td>
-                        <tr>
-                          <td>
-                            Media de puntos
-                          </td>
-                          <td>
-                            {{comparations.avg_puntuation1}}
-                          </td>
-                          <td>
-                            {{comparations.avg_puntuation2}}
-                          </td>
-                    </tbody>
-                  </table>
+              <div class="row">
+                <div class="col-lg-6 col-md-12">
+                  <div class="card ">
+                    <div class="card-header">
+                      <h4 class="card-title"> Estadísticas de temporada</h4>
+                    </div>
+                    <div class="card-body ">
+                      <div class="table-responsive">
+                        <table class="table tablesorter " id="">
+                          <thead class=" text-primary">
+                            <tr>
+                              <th>
+                                Comparativa
+                              </th>
+                              <th>
+                                {{driver_1}}
+                              </th>
+                              <th>
+                                {{driver_2}}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                Carreras disputadas
+                              </td>
+                              <td>
+                                {{comparations.season_races1}}
+                              </td>
+                              <td>
+                                {{comparations.season_races2}}
+                              </td>
+                            <tr>
+                              <td>
+                                Victorias
+                              </td>
+                              <td>
+                                {{comparations.season_wins1}}
+                              </td>
+                              <td>
+                                {{comparations.season_wins2}}
+                              </td>
+                              <tr>
+                                <td>
+                                  Mejor posición lograda
+                                </td>
+                                <td>
+                                  {{comparations.max_pos1}}
+                                </td>
+                                <td>
+                                  {{comparations.max_pos2}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Peor posición lograda
+                                </td>
+                                <td>
+                                  {{comparations.min_pos1}}
+                                </td>
+                                <td>
+                                  {{comparations.min_pos2}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Posición habitual
+                                </td>
+                                <td>
+                                  {{comparations.avg_pos1}}
+                                </td>
+                                <td>
+                                  {{comparations.avg_pos2}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Puntos totales
+                                </td>
+                                <td>
+                                  {{comparations.total_puntuation1}}
+                                </td>
+                                <td>
+                                  {{comparations.total_puntuation2}}
+                                </td>
+                              <tr>
+                                <td>
+                                  Media de puntos
+                                </td>
+                                <td>
+                                  {{comparations.avg_puntuation1}}
+                                </td>
+                                <td>
+                                  {{comparations.avg_puntuation2}}
+                                </td>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="card ">
+                    <div class="card-header">
+                      <h4 class="card-title"> Estadísticas generales</h4>
+                    </div>
+                    <div class="card-body ">
+                      <div class="table-responsive">
+                        <table class="table tablesorter " id="">
+                          <thead class=" text-primary">
+                            <tr>
+                              <th>
+                                Comparativa
+                              </th>
+                              <th>
+                                {{driver_1}}
+                              </th>
+                              <th>
+                                {{driver_2}}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                Carreras disputadas
+                              </td>
+                              <td>
+                                {{comparations.num_carreras1}}
+                              </td>
+                              <td>
+                                {{comparations.num_carreras2}}
+                              </td>
+                            <tr>
+                              <td>
+                                Victorias
+                              </td>
+                              <td>
+                                {{comparations.num_victorias1}}
+                              </td>
+                              <td>
+                                {{comparations.num_victorias2}}
+                              </td>
+                              <tr>
+                                <td>
+                                  Carreras no acabadas
+                                </td>
+                                <td>
+                                  {{comparations.num_no_finish1}}
+                                </td>
+                                <td>
+                                  {{comparations.num_no_finish2}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Mayor número de victorias en una temporada
+                                </td>
+                                <td>
+                                  {{comparations.max_wins_driver1}} (temporada {{comparations.max_wins_season1}})
+                                </td>
+                                <td>
+                                  {{comparations.max_wins_driver2}} (temporada {{comparations.max_wins_season2}})
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Posición habitual
+                                </td>
+                                <td>
+                                  {{comparations.avg_global_pos1}} ({{comparations.avg_count1}} veces)
+                                </td>
+                                <td>
+                                  {{comparations.avg_global_pos2}} ({{comparations.avg_count2}} veces)
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  Puntos totales
+                                </td>
+                                <td>
+                                  {{comparations.global_puntuation1}}
+                                </td>
+                                <td>
+                                  {{comparations.global_puntuation2}}
+                                </td>
+                              <tr>
+                                <td>
+                                  Media de puntos
+                                </td>
+                                <td>
+                                  {{comparations.avg_total_puntuation1}}
+                                </td>
+                                <td>
+                                  {{comparations.avg_total_puntuation2}}
+                                </td>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-md-12">
-            <div class="card ">
-              <div class="card-header">
-                <h4 class="card-title"> Estadísticas generales</h4>
-              </div>
-              <div class="card-body ">
-                <div class="table-responsive">
-                  <table class="table tablesorter " id="">
-                    <thead class=" text-primary">
-                      <tr>
-                        <th>
-                          Comparativa
-                        </th>
-                        <th>
-                          {{driver_1}}
-                        </th>
-                        <th>
-                          {{driver_2}}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          Carreras disputadas
-                        </td>
-                        <td>
-                          {{comparations.num_carreras1}}
-                        </td>
-                        <td>
-                          {{comparations.num_carreras2}}
-                        </td>
-                      <tr>
-                        <td>
-                          Victorias
-                        </td>
-                        <td>
-                          {{comparations.num_victorias1}}
-                        </td>
-                        <td>
-                          {{comparations.num_victorias2}}
-                        </td>
-                        <tr>
-                          <td>
-                            Carreras no acabadas
-                          </td>
-                          <td>
-                            {{comparations.num_no_finish1}}
-                          </td>
-                          <td>
-                            {{comparations.num_no_finish2}}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Mayor número de victorias en una temporada
-                          </td>
-                          <td>
-                            {{comparations.max_wins_driver1}} (temporada {{comparations.max_wins_season1}})
-                          </td>
-                          <td>
-                            {{comparations.max_wins_driver2}} (temporada {{comparations.max_wins_season2}})
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Posición habitual
-                          </td>
-                          <td>
-                            {{comparations.avg_global_pos1}} ({{comparations.avg_count1}} veces)
-                          </td>
-                          <td>
-                            {{comparations.avg_global_pos2}} ({{comparations.avg_count2}} veces)
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Puntos totales
-                          </td>
-                          <td>
-                            {{comparations.global_puntuation1}}
-                          </td>
-                          <td>
-                            {{comparations.global_puntuation2}}
-                          </td>
-                        <tr>
-                          <td>
-                            Media de puntos
-                          </td>
-                          <td>
-                            {{comparations.avg_total_puntuation1}}
-                          </td>
-                          <td>
-                            {{comparations.avg_total_puntuation2}}
-                          </td>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        
       </div>
       <footer class="footer">
         <div class="container px-5">

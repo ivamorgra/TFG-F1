@@ -560,5 +560,35 @@ demo = {
         myChartData.update();
       });
 
+      /* CONTROL DE PESTAÑAS */
+
+      // Obtener referencias a los botones y los elementos de contenido
+      const btn1 = document.getElementById("btn1");
+      const contenido1 = document.getElementById("contenido_pilotos");
+      const btn2 = document.getElementById("btn2");
+      const contenido2 = document.getElementById("contenido_equipos");
+      contenido2.style.display = "none";
+      // Agregar eventos click a los botones
+      btn1.addEventListener("click", () => {
+        if (contenido1.style.display === "none") {
+          contenido2.style.display = "none";
+          contenido1.style.display = "block";
+        } else {
+          contenido2.style.display = "none"
+          contenido1.style.display = "block";
+        }
+      });
+
+      btn2.addEventListener("click", () => {
+        if (contenido2.style.display === "none") {
+          contenido1.style.display = "none";
+          contenido2.style.display = "block";
+        } else {
+          contenido1.style.display = "none";
+          contenido2.style.display = "block";
+        }
+      });
+
+
 
 },}

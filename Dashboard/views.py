@@ -20,9 +20,9 @@ def get_dashboard(request):
     - 30 días
     '''
 
-    meses,valores,media,total,countries,values = search_trends('F1',365)
+    meses,valores,media,total,countries,values = search_trends('F1',30)
     dias_5,valores_5,media_5,total_5,countries_5,values_5 = search_trends('F1',7)
-    dias_15,valores_15,media_15,total_15,countries_15,values_15 = search_trends('F1',30)
+    #dias_15,valores_15,media_15,total_15,countries_15,values_15 = search_trends('F1',15)
 
     json_data = json.dumps(valores)
     json_data_months = json.dumps(meses)
@@ -30,8 +30,8 @@ def get_dashboard(request):
     json_data_graph2 = json.dumps(valores_5)
     json_data_dias2 = json.dumps(dias_5)
 
-    json_data_graph3 = json.dumps(valores_15)
-    json_data_dias3 = json.dumps(dias_15)
+    #json_data_graph3 = json.dumps(valores_15)
+    #json_data_dias3 = json.dumps(dias_15)
 
     json_data_countries = json.dumps(countries)
     json_data_values = json.dumps(values)
@@ -77,8 +77,8 @@ def get_dashboard(request):
         'json_data_nombres':json_data_nombres,
         'json_data_graph2':json_data_graph2,
         'json_data_dias2':json_data_dias2,
-        'json_data_graph3':json_data_graph3,
-        'json_data_dias3':json_data_dias3,
+        #'json_data_graph3':json_data_graph3,
+        #'json_data_dias3':json_data_dias3,
         'json_data_months':json_data_months,
         'values_trend':json_data,
         'STATIC_URL':settings.STATIC_URL
