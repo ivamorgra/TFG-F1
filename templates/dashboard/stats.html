@@ -433,24 +433,27 @@
                       <div class="row">
                         <div class="col-sm-6 text-left">
                           <h5 class="card-category">Estadísticas principales:</h5>
-                          <h2 class="card-title">Equipos:</h2> <h3> {{driver_1}} vs {{driver_2}}</h3>
+                          <h2 class="card-title">Equipos:</h2> <h3> {{team_1}} vs {{team_2}}</h3>
                           
                           <form method="POST"> 
                             {% csrf_token %}
-                            <select name="driver1" class="form-select" aria-label="Default select example">
-                              <option selected>Selecciona un piloto</option>
-                              {% for piloto in ad %}
-                              <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
-                              {% endfor %}
-                            </select>
+                            <div class="row">
+                              <select name="driver1" class="form-select" aria-label="Default select example">
+                                <option selected>Selecciona un equipo</option>
+                                {% for t in teams %}
+                                <option  value={{t}}>{{t}}</option>
+                                {% endfor %}
+                              </select>
+                              
+                              <select name="driver2" class="form-select" aria-label="Default select example">
+                                <option selected>Selecciona el equipo competidor</option>
+                                {% for t in teams %}
+                                <option  value={{t}}>{{t}}</option>
+                                {% endfor %}
+                              </select>
+                              <button type="submit">Enviar</button>
+                            </div>
                             
-                            <select name="driver2" class="form-select" aria-label="Default select example">
-                              <option selected>Selecciona el piloto competidor</option>
-                              {% for piloto in ad %}
-                              <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
-                              {% endfor %}
-                            </select>
-                            <button type="submit">Enviar</button>
                           </form>
                         </div>
                       </div>

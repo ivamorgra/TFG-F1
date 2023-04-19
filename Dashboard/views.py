@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.conf import settings
 from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
-from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping
+from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping,constructors_scrapping
 from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
 import logging
 import json
@@ -96,6 +96,7 @@ def get_stats(request):
     json_data_progress = json.dumps(percentage_progress)
     
     active_drivers = drivers_scrapping()
+    active_teams = constructors_scrapping()
 
     if request.method == 'POST':
 
@@ -110,6 +111,8 @@ def get_stats(request):
         likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
 
     else:
+        team_1 = 'Red Bull'
+        team_2 = 'Aston Martin'
         driver_1 = 'Verstappen'
         driver_2 = 'Alonso'
         
@@ -138,6 +141,9 @@ def get_stats(request):
         
 
     context = {
+        'teams':active_teams,
+        'team_1':team_1,
+        'team_2':team_2,
         'comparations':res,
         'json_twitter_likes1':json_twitter_likes1,
         'json_twitter_likes2':json_twitter_likes2,
