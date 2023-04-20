@@ -4,7 +4,7 @@ from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
 from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping,constructors_scrapping
 from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
-from DataAnalytics.spark_queries_teams import get_teams_comparison
+from DataAnalytics.spark_queries_teams import get_teams_comparison,get_twitter_team_evolution
 import logging
 import json
 
@@ -140,7 +140,7 @@ def get_stats(request):
         # En el caso de los equipos:
         team_names = [team_1,team_2]
         team_res = get_teams_comparison(team_names)
-
+        likes_e1,rts_e1,seguidores_e1,likes_e2,rts_e2,seguidores_e2 = get_twitter_team_evolution(team_names)
     races_list = res['races_list']
     names_races = res['names_races_list']
     payload_driver1 = res['puntuation_driver1']
@@ -162,17 +162,34 @@ def get_stats(request):
     json_twitter_seguidores2 = json.dumps(seguidores_2)
     json_twitter_seguidores1 = json.dumps(seguidores_1)
     
+    json_team1_name = json.dumps(team_1)
+    json_team2_name = json.dumps(team_2)
     json_payload_team1 = json.dumps(payload_team1)
     json_payload_team2 = json.dumps(payload_team2)
+    json_twitter_likes_equipos1 = json.dumps(likes_e1)
+    json_twitter_likes_equipos2 = json.dumps(likes_e2)
+    json_twitter_rts_equipos1 = json.dumps(rts_e1)
+    json_twitter_rts_equipos2 = json.dumps(rts_e2)
+    json_twitter_seguidores_equipos1 = json.dumps(seguidores_e1)
+    json_twitter_seguidores_equipos2 = json.dumps(seguidores_e2)
 
     context = {
         #Equipos
+        'json_twitter_likes_equipos1':json_twitter_likes_equipos1,
+        'json_twitter_likes_equipos2':json_twitter_likes_equipos2,
+        'json_twitter_rts_equipos1':json_twitter_rts_equipos1,
+        'json_twitter_rts_equipos2':json_twitter_rts_equipos2,
+        'json_twitter_seguidores_equipos1':json_twitter_seguidores_equipos1,
+        'json_twitter_seguidores_equipos2':json_twitter_seguidores_equipos2,
+        'json_team1_name':json_team1_name,
+        'json_team2_name':json_team2_name,
         'teams':active_teams,
         'team_1':team_1,
         'team_2':team_2,
         'json_payload_team1':json_payload_team1,
         'json_payload_team2':json_payload_team2,
         'team_comparations':team_res,
+        'json'
         # Pilotos
         'comparations':res,
         'json_twitter_likes1':json_twitter_likes1,

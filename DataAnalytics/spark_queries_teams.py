@@ -9,6 +9,13 @@ from django.db.models import Q
 import datetime
 from .models import Carrera
 
+
+''' Diccionario clave -> abreviatura, valor -> nombre de usuario en twitter'''
+TWITTER_PROFILE = {'Mercedes': 'MercedesAMGF1', 'Alpine':'AlpineF1Team','Hass F1 Team':'HaasF1Team',
+                   'Mclaren':'McLarenF1','Alfa Romeo':'alfaromeof1','Williams':'WilliamsRacing','Red Bull':'redbullracing',
+                   'Aston Martin':'AstonMartinF1','Ferrari':'ScuderiaFerrari','AlphaTauri':'AlphaTauriF1'}
+
+
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
 #region Comparativa de equipos (función principal)
@@ -299,4 +306,66 @@ def get_team_total_puntuation(id_team):
     
     return total_points.collect()[0][0]
 
-#endregion Obtener la puntuaación total de un equipo
+#endregion Obtener la puntuación total de un equipo
+
+#region Evolución twitter de dos equipos
+
+''' Esta función devuelve la evolución de estadísticas de
+     tweets de dos equipos.
+     Parámetros:
+     - names: lista de dos nombres de equipos (debe ser 2 nombres)
+     Return: lista de tuplas con la siguiente estructura:
+     (fecha, num_tweets, num_retweets, num_favoritos)
+'''
+
+def get_twitter_team_evolution(names):
+    
+    
+    # Obtenemos los nombres de las cuentas de twitter de los dos pilotos
+    twitter_names = []
+    for a in names:
+        twitter_names.append(TWITTER_PROFILE[a])
+    
+    # Obtenemos los datos de los tweets de los dos pilotos
+    tweets_stats = spark.read.csv("./datasets/followers.csv", header=True,sep=",")
+
+    
+    # Obtenemos datos del csv del primer equipo
+
+    data_team1 = tweets_stats.filter(tweets_stats.Escuderia == twitter_names[0])
+
+    data_team1 = data_team1.withColumn("Fecha", data_team1["Fecha"].cast(DateType()))
+    data_team1 = data_team1.withColumn("semana", weekofyear("fecha"))
+    data_team1 = data_team1.groupby("semana").agg(avg("Likes"),avg("Rts"),avg("Seguidores")).orderBy("semana").tail(5)
+    
+                      
+    # Obtenemos datos del csv del segundo equipo
+
+    data_team2 = tweets_stats.filter(tweets_stats.Escuderia == twitter_names[1])
+
+    data_team2 = data_team2.withColumn("Fecha", data_team2["Fecha"].cast(DateType()))
+    data_team2 = data_team2.withColumn("semana", weekofyear("fecha"))
+
+    data_team2 = data_team2.groupby("semana").agg(avg("Likes"),avg("Rts"),avg("Seguidores")).orderBy("semana").tail(5)
+    
+
+    #Convertimos a lista
+    likes_1 = []
+    rts_1 = []
+    seguidores_1 = []
+    likes_2 = []
+    rts_2 = []
+    seguidores_2 = []
+    
+
+    for d1,d2 in zip(data_team1,data_team2):
+        likes_1.append(d1["avg(Likes)"])
+        rts_1.append(d1["avg(Rts)"])
+        seguidores_1.append(d1["avg(Seguidores)"])
+        likes_2.append(d2["avg(Likes)"])
+        rts_2.append(d2["avg(Rts)"])
+        seguidores_2.append(d2["avg(Seguidores)"])
+    
+    return likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2
+    
+#endregion Evolución twitter de dos equipos
