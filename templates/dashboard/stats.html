@@ -534,10 +534,10 @@
                                 Comparativa
                               </th>
                               <th>
-                                {{driver_1}}
+                                {{team_1}}
                               </th>
                               <th>
-                                {{driver_2}}
+                                {{team_2}}
                               </th>
                             </tr>
                           </thead>
@@ -557,20 +557,20 @@
                                 Victorias
                               </td>
                               <td>
-                                {{comparations.season_wins1}}
+                                {{team_comparations.season_wins1}}
                               </td>
                               <td>
-                                {{comparations.season_wins2}}
+                                {{team_comparations.season_wins2}}
                               </td>
                               <tr>
                                 <td>
                                   Mejor posición lograda
                                 </td>
                                 <td>
-                                  {{comparations.max_pos1}}
+                                  {{team_comparations.max_pos1}}
                                 </td>
                                 <td>
-                                  {{comparations.max_pos2}}
+                                  {{team_comparations.max_pos2}}
                                 </td>
                               </tr>
                               <tr>
@@ -578,21 +578,10 @@
                                   Peor posición lograda
                                 </td>
                                 <td>
-                                  {{comparations.min_pos1}}
+                                  {{team_comparations.min_pos1}}
                                 </td>
                                 <td>
-                                  {{comparations.min_pos2}}
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  Posición habitual
-                                </td>
-                                <td>
-                                  {{comparations.avg_pos1}}
-                                </td>
-                                <td>
-                                  {{comparations.avg_pos2}}
+                                  {{team_comparations.min_pos2}}
                                 </td>
                               </tr>
                               <tr>
@@ -600,20 +589,10 @@
                                   Puntos totales
                                 </td>
                                 <td>
-                                  {{comparations.total_puntuation1}}
+                                  {{team_comparations.total_puntuation1}}
                                 </td>
                                 <td>
-                                  {{comparations.total_puntuation2}}
-                                </td>
-                              <tr>
-                                <td>
-                                  Media de puntos
-                                </td>
-                                <td>
-                                  {{comparations.avg_puntuation1}}
-                                </td>
-                                <td>
-                                  {{comparations.avg_puntuation2}}
+                                  {{team_comparations.total_puntuation2}}
                                 </td>
                           </tbody>
                         </table>
@@ -635,10 +614,10 @@
                                 Comparativa
                               </th>
                               <th>
-                                {{driver_1}}
+                                {{team_1}}
                               </th>
                               <th>
-                                {{driver_2}}
+                                {{team_2}}
                               </th>
                             </tr>
                           </thead>
@@ -648,73 +627,40 @@
                                 Carreras disputadas
                               </td>
                               <td>
-                                {{comparations.num_carreras1}}
+                                {{team_comparations.num_carreras1}}
                               </td>
                               <td>
-                                {{comparations.num_carreras2}}
+                                {{team_comparations.num_carreras2}}
                               </td>
                             <tr>
                               <td>
                                 Victorias
                               </td>
                               <td>
-                                {{comparations.num_victorias1}}
+                                {{team_comparations.num_victorias1}}
                               </td>
                               <td>
-                                {{comparations.num_victorias2}}
+                                {{team_comparations.num_victorias2}}
                               </td>
-                              <tr>
-                                <td>
-                                  Carreras no acabadas
-                                </td>
-                                <td>
-                                  {{comparations.num_no_finish1}}
-                                </td>
-                                <td>
-                                  {{comparations.num_no_finish2}}
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  Mayor número de victorias en una temporada
-                                </td>
-                                <td>
-                                  {{comparations.max_wins_driver1}} (temporada {{comparations.max_wins_season1}})
-                                </td>
-                                <td>
-                                  {{comparations.max_wins_driver2}} (temporada {{comparations.max_wins_season2}})
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  Posición habitual
-                                </td>
-                                <td>
-                                  {{comparations.avg_global_pos1}} ({{comparations.avg_count1}} veces)
-                                </td>
-                                <td>
-                                  {{comparations.avg_global_pos2}} ({{comparations.avg_count2}} veces)
-                                </td>
-                              </tr>
                               <tr>
                                 <td>
                                   Puntos totales
                                 </td>
                                 <td>
-                                  {{comparations.global_puntuation1}}
+                                  {{team_comparations.global_puntuation1}}
                                 </td>
                                 <td>
-                                  {{comparations.global_puntuation2}}
+                                  {{team_comparations.global_puntuation2}}
                                 </td>
                               <tr>
                                 <td>
                                   Media de puntos
                                 </td>
                                 <td>
-                                  {{comparations.avg_total_puntuation1}}
+                                  {{team_comparations.avg_total_puntuation1}}
                                 </td>
                                 <td>
-                                  {{comparations.avg_total_puntuation2}}
+                                  {{team_comparations.avg_total_puntuation2}}
                                 </td>
                           </tbody>
                         </table>
@@ -724,8 +670,7 @@
                 </div>
               </div>
             </div>
-          </div>
-        
+          </div>  
       </div>
       <footer class="footer">
         <div class="container px-5">

@@ -4,6 +4,7 @@ from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
 from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping,constructors_scrapping
 from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
+from DataAnalytics.spark_queries_teams import get_teams_comparison
 import logging
 import json
 
@@ -100,15 +101,31 @@ def get_stats(request):
 
     if request.method == 'POST':
 
-        #Se obtiene los nombres de los pilotos a comparar
-        driver_1 = request.POST.get('driver1')
-        driver_2 = request.POST.get('driver2')
-        if (driver_2 == 'De'):
-            driver_2 = "De Vries"
+        ''' En esta vista hay 2 formularios de búsqueda, uno para comparar pilotos y 
+        otro para comparar equipos'''
+
+        if (request.POST.get('driver1')):
+            #Se obtiene los nombres de los pilotos a comparar
+            driver_1 = request.POST.get('driver1')
+            driver_2 = request.POST.get('driver2')
+            if (driver_2 == 'De'):
+                driver_2 = "De Vries"
+            
+            names = [driver_1,driver_2]
+            res = get_pilots_comparison(names)
+            likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
+            
+            team_1 = 'Red Bull'
+            team_2 = 'Aston Martin'
         
-        names = [driver_1,driver_2]
-        res = get_pilots_comparison(names)
-        likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
+        else:
+            team_1 = request.POST.get('team1')
+            team_2 = request.POST.get('team2')
+            names = [team_1,team_2]
+            res = get_teams_comparison(names)
+            #likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
+            driver_1 = 'Verstappen'
+            driver_2 = 'Alonso'
 
     else:
         team_1 = 'Red Bull'
@@ -119,12 +136,18 @@ def get_stats(request):
         names = [driver_1,driver_2]
         res = get_pilots_comparison(names)
         likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
-    
+
+        # En el caso de los equipos:
+        team_names = [team_1,team_2]
+        team_res = get_teams_comparison(team_names)
+
     races_list = res['races_list']
     names_races = res['names_races_list']
     payload_driver1 = res['puntuation_driver1']
     payload_driver2 = res['puntuation_driver2']
 
+    payload_team1 = team_res['puntuation_team1']
+    payload_team2 = team_res['puntuation_team2']
 
     json_races_list = json.dumps(races_list)
     json_names_races = json.dumps(names_races)
@@ -138,12 +161,19 @@ def get_stats(request):
     json_twitter_rts2 = json.dumps(rts_2)
     json_twitter_seguidores2 = json.dumps(seguidores_2)
     json_twitter_seguidores1 = json.dumps(seguidores_1)
-        
+    
+    json_payload_team1 = json.dumps(payload_team1)
+    json_payload_team2 = json.dumps(payload_team2)
 
     context = {
+        #Equipos
         'teams':active_teams,
         'team_1':team_1,
         'team_2':team_2,
+        'json_payload_team1':json_payload_team1,
+        'json_payload_team2':json_payload_team2,
+        'team_comparations':team_res,
+        # Pilotos
         'comparations':res,
         'json_twitter_likes1':json_twitter_likes1,
         'json_twitter_likes2':json_twitter_likes2,

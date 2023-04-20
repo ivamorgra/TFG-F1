@@ -41,3 +41,4 @@ tweepy==4.12.1
 tzdata==2022.7
 urllib3==1.26.14
 zipp==3.15.0
+StringIO
