@@ -104,7 +104,7 @@ def get_stats(request):
         ''' En esta vista hay 2 formularios de búsqueda, uno para comparar pilotos y 
         otro para comparar equipos'''
 
-        if (request.POST.get('driver1')):
+        if (request.POST.get('driver1') != None):
             #Se obtiene los nombres de los pilotos a comparar
             driver_1 = request.POST.get('driver1')
             driver_2 = request.POST.get('driver2')
@@ -121,11 +121,17 @@ def get_stats(request):
         else:
             team_1 = request.POST.get('team1')
             team_2 = request.POST.get('team2')
-            names = [team_1,team_2]
-            res = get_teams_comparison(names)
-            #likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
+            team_names = [team_1,team_2]
             driver_1 = 'Verstappen'
             driver_2 = 'Alonso'
+
+            names = [driver_1,driver_2]
+            res = get_pilots_comparison(names)
+            likes_1,rts_1,seguidores_1,likes_2,rts_2,seguidores_2 = get_twitter_evolution(names)
+
+            team_res = get_teams_comparison(team_names)
+            likes_e1,rts_e1,seguidores_e1,likes_e2,rts_e2,seguidores_e2 = get_twitter_team_evolution(team_names)
+        
 
     else:
         team_1 = 'Red Bull'
@@ -141,6 +147,7 @@ def get_stats(request):
         team_names = [team_1,team_2]
         team_res = get_teams_comparison(team_names)
         likes_e1,rts_e1,seguidores_e1,likes_e2,rts_e2,seguidores_e2 = get_twitter_team_evolution(team_names)
+        
     races_list = res['races_list']
     names_races = res['names_races_list']
     payload_driver1 = res['puntuation_driver1']

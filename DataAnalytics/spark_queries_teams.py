@@ -11,8 +11,8 @@ from .models import Carrera
 
 
 ''' Diccionario clave -> abreviatura, valor -> nombre de usuario en twitter'''
-TWITTER_PROFILE = {'Mercedes': 'MercedesAMGF1', 'Alpine':'AlpineF1Team','Hass F1 Team':'HaasF1Team',
-                   'Mclaren':'McLarenF1','Alfa Romeo':'alfaromeof1','Williams':'WilliamsRacing','Red Bull':'redbullracing',
+TWITTER_PROFILE = {'Mercedes': 'MercedesAMGF1', 'Alpine':'AlpineF1Team','Haas':'HaasF1Team',
+                   'McLaren':'McLarenF1','Alfa':'alfaromeof1','Williams':'WilliamsRacing','Red Bull':'redbullracing',
                    'Aston Martin':'AstonMartinF1','Ferrari':'ScuderiaFerrari','AlphaTauri':'AlphaTauriF1'}
 
 

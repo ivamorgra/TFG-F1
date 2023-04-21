@@ -438,14 +438,14 @@
                           <form method="POST"> 
                             {% csrf_token %}
                             <div class="row">
-                              <select name="driver1" class="form-select" aria-label="Default select example">
+                              <select name="team1" class="form-select" aria-label="Default select example">
                                 <option selected>Selecciona un equipo</option>
                                 {% for t in teams %}
                                 <option  value={{t}}>{{t}}</option>
                                 {% endfor %}
                               </select>
                               
-                              <select name="driver2" class="form-select" aria-label="Default select example">
+                              <select name="team2" class="form-select" aria-label="Default select example">
                                 <option selected>Selecciona el equipo competidor</option>
                                 {% for t in teams %}
                                 <option  value={{t}}>{{t}}</option>
@@ -744,13 +744,13 @@
   <div id="json_team2_name" data-json='{{ json_team2_name |safe }}'></div>
   
   <!-- DATOS DE LA GRÁFICA EVOLUTIVA TWITTER COMPARACIÓN 2 CONSTRUCTORES -->
-  <div id="json_twitter_likes_equipos1" data-json='{{ json_twitter_likes1 |safe }}'></div>
-  <div id="json_twitter_rts_equipos1" data-json='{{ json_twitter_rts1 |safe }}'></div>
-  <div id="json_twitter_seguidores_equipos1" data-json='{{ json_twitter_seguidores1 |safe }}'></div>
+  <div id="json_twitter_likes_equipos1" data-json='{{ json_twitter_likes_equipos1 |safe }}'></div>
+  <div id="json_twitter_rts_equipos1" data-json='{{ json_twitter_rts_equipos1 |safe }}'></div>
+  <div id="json_twitter_seguidores_equipos1" data-json='{{ json_twitter_seguidores_equipos1 |safe }}'></div>
 
-  <div id="json_twitter_likes_equipos2" data-json='{{ json_twitter_likes2 |safe }}'></div>
-  <div id="json_twitter_rts_equipos2" data-json='{{ json_twitter_rts2 |safe }}'></div>
-  <div id="json_twitter_seguidores_equipos2" data-json='{{ json_twitter_seguidores2 |safe }}'></div>
+  <div id="json_twitter_likes_equipos2" data-json='{{ json_twitter_likes_equipos2 |safe }}'></div>
+  <div id="json_twitter_rts_equipos2" data-json='{{ json_twitter_rts_equipos2 |safe }}'></div>
+  <div id="json_twitter_seguidores_equipos2" data-json='{{ json_twitter_seguidores_equipos2 |safe }}'></div>
 
   <!--   Core JS Files   -->
   <script src="{% static '/js/dashboard/core/jquery.min.js'%}"></script>

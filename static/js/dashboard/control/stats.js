@@ -438,7 +438,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
       const equipo2_name = document.getElementById('json_team2_name').getAttribute('data-json')
       
-      console.log(y_equipo1);
+
 
         var team_data = {
           labels: labels_names,
@@ -559,37 +559,30 @@ document.addEventListener("DOMContentLoaded", function(event) {
       gradientStroke.addColorStop(0.2, 'rgba(72,72,176,0.0)');
       gradientStroke.addColorStop(0, 'rgba(119,52,169,0)'); //purple colors
 
-      /* Datos de la grafica Evolución 2 Equipos */
-
-      var ctxteamtwitter = document.getElementById("twitterTeamprogresschar").getContext("2d");
+     
 
       /* LIKES EQUIPOS */
       const likes_equipo1 = document.getElementById('json_twitter_likes_equipos1')
-      const likesequipo_1 = JSON.parse(likes_piloto1.dataset.json);
+      const likesequipo_1 = JSON.parse(likes_equipo1.dataset.json);
 
       const likes_equipo2 = document.getElementById('json_twitter_likes_equipos2')
-      const likesequipo_2 = JSON.parse(likes_piloto2.dataset.json);
+      const likesequipo_2 = JSON.parse(likes_equipo2.dataset.json);
 
       /* RETWEETS PILOTOS */
       const retweets_equipo1 = document.getElementById('json_twitter_rts_equipos1')
-      const rtsequipo_1 = JSON.parse(retweets_piloto1.dataset.json);
+      const rtsequipo_1 = JSON.parse(retweets_equipo1.dataset.json);
 
       const retweets_equipo2 = document.getElementById('json_twitter_rts_equipos2')
-      const rtsequipo_2 = JSON.parse(retweets_piloto2.dataset.json);
+      const rtsequipo_2 = JSON.parse(retweets_equipo2.dataset.json);
 
       /* SEGUIDORES PILOTOS */
       const seguidores_equipo1 = document.getElementById('json_twitter_seguidores_equipos1')
-      const seguidoresequipo_1 = JSON.parse(seguidores_piloto1.dataset.json);
+      const seguidoresequipo_1 = JSON.parse(seguidores_equipo1.dataset.json);
 
       const seguidores_equipo2 = document.getElementById('json_twitter_seguidores_equipos2')
-      const seguidoresequipo_2 = JSON.parse(seguidores_piloto2.dataset.json);
+      const seguidoresequipo_2 = JSON.parse(seguidores_equipo2.dataset.json);
 
-      var gradientStrokeequipo = ctxteamtwitter.createLinearGradient(0, 230, 0, 50);
-
-      gradientStrokeequipo.addColorStop(1, 'rgba(72,72,176,0.2)');
-      gradientStrokeequipo.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-      gradientStrokeequipo.addColorStop(0, 'rgba(119,52,169,0)'); //purple colors
-      
+            
       // configuración y datos de la gráfica para pilotos
       var config = {
         type: 'line',
@@ -638,6 +631,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         $("#0").click(function() {
           var data = myChartData.config.data;
           data.datasets[0].data = likes_1;
+
           data.datasets[1].data = likes_2;
           data.datasets[0].label = 'Media de likes por semana de '+piloto1_name;
           data.datasets[1].label = 'Media de likes por semana de '+piloto2_name;
@@ -661,10 +655,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
           myChartData.update();
         });
       
+      
+       /* Datos de la grafica Evolución 2 Equipos */
+
+      var ctxteamtwitter = document.getElementById("twitterTeamprogresschar").getContext("2d");
+
+      var gradientStrokeequipo = ctxteamtwitter.createLinearGradient(0, 230, 0, 50);
+
+      gradientStrokeequipo.addColorStop(1, 'rgba(72,72,176,0.2)');
+      gradientStrokeequipo.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+      gradientStrokeequipo.addColorStop(0, 'rgba(119,52,169,0)'); //purple colors
+
+      
       // configuración y datos de la gráfica para equipos
       var team_config = {
         type: 'line',
-        teamdata: {
+        data: {
           labels: ['Hace 1 mes','Hace 3 semanas','Hace 2 semanas','Hace 1 semana','Última semana'],
           datasets: [{
             label: 'Media de likes por semana de '+ equipo1_name ,
@@ -681,7 +687,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             pointHoverRadius: 4,
             pointHoverBorderWidth: 15,
             pointRadius: 4,
-            team_data: likesequipo_1,
+            data: likesequipo_1,
           },
           {
             label: 'Media de likes por semana de '+equipo2_name,
@@ -698,37 +704,41 @@ document.addEventListener("DOMContentLoaded", function(event) {
             pointHoverRadius: 4,
             pointHoverBorderWidth: 15,
             pointRadius: 4,
-            team_data: likesequipo_2,
+            data: likesequipo_2,
           },
           ]
         },
         options: gradientChartOptionsConfigurationWithTooltipPurple
       };
-      
-        var myTeamChartData = new Chart(ctxteamtwitter, config);
+
+
+
+
+      var myTeamChartData = new Chart(ctxteamtwitter, team_config);
+
         $("#teamLikes").click(function() {
           var data = myTeamChartData.config.data;
-          data.datasets[0].team_data = likesequipo_1;
-          data.datasets[1].team_data = likesequipo_1;
+          data.datasets[0].data = likesequipo_1;
+          data.datasets[1].data = likesequipo_2;
           data.datasets[0].label = 'Media de likes por semana de '+equipo1_name;
           data.datasets[1].label = 'Media de likes por semana de '+equipo2_name;
           myTeamChartData.update();
         });
         $("#TeamRetweets").click(function() {
           var team_data = myTeamChartData.config.data;
-          data.datasets[0].team_data = rtsequipo_1;
-          data.datasets[1].team_data = rtsequipo_2;
-          data.datasets[0].label = 'Media de retweets por semana de '+equipo1_name;
+          team_data.datasets[0].data = rtsequipo_1;
+          team_data.datasets[1].data = rtsequipo_2;
+          team_data.datasets[0].label = 'Media de retweets por semana de '+equipo1_name;
           team_data.datasets[1].label = 'Media de retweets por semana de '+equipo2_name;
           myTeamChartData.update();
         });
     
         $("#TeamSeguidores").click(function() {
           var team_data = myTeamChartData.config.data;
-          data.datasets[0].team_data = seguidoresequipo_1;
-          data.datasets[1].team_data = seguidoresequipo_2;
-          data.datasets[0].label = 'Media de seguidores por semana de '+equipo1_name;
-          data.datasets[1].label = 'Media de seguidores por semana de '+equipo2_name;
+          team_data.datasets[0].data = seguidoresequipo_1;
+          team_data.datasets[1].data = seguidoresequipo_2;
+          team_data.datasets[0].label = 'Media de seguidores por semana de '+equipo1_name;
+          team_data.datasets[1].label = 'Media de seguidores por semana de '+equipo2_name;
           myTeamChartData.update();
         });
 
