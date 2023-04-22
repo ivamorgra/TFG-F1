@@ -53,6 +53,7 @@
                   </ul>
                 </div>
               </div>
+            
               <div class="col-sm-4">
                 <div class="card card-plain h-100">
                   <div class="card-header pb-0 p-3">
@@ -74,13 +75,14 @@
                   </div>
                 </div>
               </div>
+            
               <div class="col-sm-4">
                 <div class="card card-plain h-100">
                   <div class="card card-chart">
                     <div class="card-header">
-                      <h5 class="card-category">Total Tendencias: </h5>
+                      <h5 class="card-category">Total Tendencias</h5>
                       <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> {{total}}</h3>
-                      <h5 class="card-category">Media de tendencias: </h5>
+                      <h5 class="card-category">Media de tendencias</h5>
                       <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> {{media}}</h3>
                     </div>
                     <div class="card-body">
@@ -95,16 +97,14 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row">
+          
             <div class="col-sm-4">
               <div class="card card-plain h-100">
                 <div class="card card-chart">
                   <div class="card-header">
-                    <h5 class="card-category">Total Tendencias: </h5>
-                    <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> {{total}}</h3>
-                    <h5 class="card-category">Media de tendencias: </h5>
-                    <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> {{media}}</h3>
+                    <h5 class="card-category">Popularidad en países</h5>
+                    <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> Países donde genera mayor tendencia</h3>
+                    
                   </div>
                   <div class="card-body">
                     <div class="chart-area">
@@ -116,11 +116,22 @@
                   </div>
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <!--   Core JS Files   -->
+
+    <!-- Gráfica de tendencias -->
+    <div id="x" data-json='{{ x |safe }}'></div>
+    <div id="y" data-json='{{ y |safe }}'></div>
+
+    <!-- Gráfica de tendencias en países-->
+    <div id="paises_tendencia" data-json='{{ paises_tendencia |safe }}'></div>
+    <div id="valores_paises" data-json='{{ valores_paises |safe }}'></div>
+
+    <script src="{% static '/js/dataanalytics/driver/profile_driver.js'%}"></script>
     <script src="{% static '/js/core/popper.min.js'%}"></script>
     <script src="{% static '/js/core/bootstrap.min.js'%}"></script>
     <script src="{% static '/js/plugins/perfect-scrollbar.min.js'%}"></script>
@@ -139,71 +150,7 @@
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{% static '/js/material-dashboard.min.js'%}"></script>
 
-    <script>
 
-     
-
-      meses = {};
-      meses[1] = "enero";
-      meses[2] = "febrero";
-      meses[3] = "marzo";
-      meses[4] = "abril";
-      meses[5] = "mayo";
-      meses[6] = "junio";
-      meses[7] = "julio";
-      meses[8] = "agosto";
-      meses[9] = "septiembre";
-      meses[10] = "octubre";
-      meses[11] = "noviembre";
-      meses[12] = "diciembre";
-
-      primer_mes = {{x}}
-      let data_x = [];
-    
-      for (let i = primer_mes; i <= 12 ; i++) {
-    
-        data_x.push(meses[i]);
-      }
-
-      if (primer_mes+5 > 12) {
-        for (let i = 1; i < primer_mes+5-12; i++) {
-          data_x.push(meses[i]);
-        }
-      }
-      
-      
-      const data = {
-        labels: data_x,
-        datasets: [
-          {
-            label: 'Tendencia',
-            data: {{y}},
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-          }
-        ]
-      };
-      
-      const config = {
-        type: 'line',
-        data: data,
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      };
-      
-      const myChart = new Chart(
-        document.getElementById('chartLinePurple'),
-        config
-      );
-      
-      
-    </script>
     
   </body>
 

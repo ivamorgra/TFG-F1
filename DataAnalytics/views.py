@@ -10,6 +10,8 @@ from .meteo import get_weather
 from .bstracker import next_race_scrapping
 from .trends import search_trends
 import matplotlib.pyplot as plt
+import json
+
 # Create your views here.
 
 ''' Vista de la página principal'''
@@ -66,15 +68,24 @@ def get_driver(request,id):
     '''Llamada a la función de carga de datos'''
     driver = get_object_or_404(Piloto,pk=id)
     stats = driver_basic_stats(id)
+
     
-    x,y,media,total = search_trends(driver.nombre,150)
+    x,y,media,total,paises_tendencia,paises_tendencia_values = search_trends(driver.nombre,150)
+
     paises,numero = get_country_races_by_driver(id)
+    
+    meses = json.dumps(x)
+    valores = json.dumps(y)
+    
+    paises_tendencia = json.dumps(paises_tendencia)
 
     context = {'paises':paises,
                'valores':numero,
                'total':total,
                'media':media,
-               'x':x,'y':y,'driver':driver,'stats':stats,
+               'paises_tendencia':paises_tendencia,
+               'valores_paises':paises_tendencia_values,
+               'x':meses,'y':valores,'driver':driver,'stats':stats,
                'STATIC_URL':settings.STATIC_URL}
     
     return render(request,'drivers/profile.html',context)
@@ -142,13 +153,18 @@ def details_race(request,id):
 
     carrera,circuit,podium,pole,meteo,data_fl,data_ms = get_race(id)
     print (meteo)
-    if (meteo[0] == 'No hay datos disponibles ya que la carrera se disputó antes del año 2000'):
+    if (meteo != []):
+        if (meteo[0] == 'No hay datos disponibles ya que la carrera se disputó antes del año 2000'):
+            bool_meteo = False
+
+        if (data_fl[0] == 'No hay datos disponibles'):
+            bool_data_fl = False
+        
+        if (data_ms[0] == 'No hay datos disponibles'):
+            bool_data_ms = False
+    else:
         bool_meteo = False
-
-    if (data_fl[0] == 'No hay datos disponibles'):
         bool_data_fl = False
-    
-    if (data_ms[0] == 'No hay datos disponibles'):
         bool_data_ms = False
-
+    
     return render(request,'races/details.html',{'fl':bool_data_fl,'ms':bool_data_ms,'nm':bool_meteo,'v_rapida':data_fl,'max_vel':data_ms,'m':meteo,'pole':pole,'c':carrera,'cir':circuit,'p':podium,'STATIC_URL':settings.STATIC_URL})

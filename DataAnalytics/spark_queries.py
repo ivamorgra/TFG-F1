@@ -8,6 +8,7 @@ from pyspark.sql.types import DateType
 from django.db.models import Q
 import datetime
 from .models import Carrera
+from pyspark.sql.functions import to_date
 
 spark = SparkSession.Builder().appName("F1Analytics").getOrCreate()
 
@@ -18,6 +19,25 @@ TWITTER_PROFILE = {'HAM': 'LewisHamilton', 'ALO':'alo_oficial','BOT':'ValtteriBo
                    'ALB':'alex_albon','TSU':'yukitsunoda07','PER':'SChecoPerez','ZHO':'ZhouGuanyu24','PIA':'OscarPiastri',
                    'HUL':'HulkHulkenberg','DE ':'nyckdevries','SAR':'LoganSargeant'}
 
+
+#region Obtener podium de una carrera
+
+def get_race_podium(race_id):
+    
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+
+    first_driver = results.filter( (results.raceId == race_id) & (results.position == 1) ).collect()[0]
+    second_driver = results.filter( (results.raceId == race_id) & (results.position == 2) ).collect()[0]
+    third_driver = results.filter( (results.raceId == race_id) & (results.position == 3) ).collect()[0]
+
+    driver_one = Piloto.objects.get(pk=int(first_driver[2]))
+    second_one = Piloto.objects.get(pk=int(second_driver[2]))
+    third_one = Piloto.objects.get(pk=int(third_driver[2]))
+
+    podium = [(1,driver_one),(2,second_one),(3,third_one)]
+
+    return podium
+#endregion Obtener datos de una carrera
 def driver_basic_stats(driver_id):
     races = spark.read.csv("./datasets/results.csv", header=True,sep=",")
     races_driver = races.filter(races.driverId == driver_id)
@@ -325,7 +345,11 @@ def get_races():
     
     races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
     #Pasar del dataframe de spark a un array de python
-    races = races.select("raceId","name","year",).collect()
+    races = races.select("raceId","name","year","date")
+    races = races.withColumn('date_datetime', to_date(races.date, 'dd/MM/yy'))
+    races = races.filter(races.date_datetime < datetime.datetime.now()).collect()
+    
+    #filter(datetime.datetime.strptime("dd/mm/yy",str(races.date)) < datetime.datetime.now()).collect()
     #Conversion a iterador para pasarlo a la vista html
     res = process_race_data(races)
     res.sort(key=lambda x: x[2], reverse=True)

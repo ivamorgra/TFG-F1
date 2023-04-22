@@ -10,3 +10,5 @@ temporada,nombre,min_temp,temperatura,precipitacion,humedad,condiciones
 2022,Abu Dhabi Grand Prix,30.0,30.0,0.0,50.71,Partially cloudy
 2010,Chinese Grand Prix,13.7,14.8,0.0,85.12,Partially cloudy
 2022,Emilia Romagna Grand Prix,13.5,14.8,2.22,73.43,"Rain, Partially cloudy"
+2023,Saudi Arabian Grand Prix,25.9,26.3,0.0,43.78,Clear
+2023,Australian Grand Prix,14.0,14.5,1.86,72.16,"Rain, Overcast"

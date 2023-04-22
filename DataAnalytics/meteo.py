@@ -26,16 +26,18 @@ def get_weather(location, date, end_date,start_time,end_time):
     # Cargue los datos devueltos en un objeto de Python
         
         lista_valores = list(response.json().values())
-        data_dict = lista_valores[-1]
-        data_parsed = list(data_dict.values())[0]['values'][0]
-        temperatura = data_parsed['temp']
-        
-        precipitacion = data_parsed['precip']
-        humedad = data_parsed['humidity']
-        condiciones = data_parsed['conditions']
-        min_temp = data_parsed['mint']
-        
-        meteo.append((min_temp,temperatura,precipitacion,humedad,condiciones))
+        if(type(lista_valores[-1]) != str):
+            data_dict = lista_valores[-1]
+            data_parsed = list(data_dict.values())[0]['values'][0]
+            temperatura = data_parsed['temp']
+            
+            precipitacion = data_parsed['precip']
+            humedad = data_parsed['humidity']
+            condiciones = data_parsed['conditions']
+            min_temp = data_parsed['mint']
+            
+            meteo.append((min_temp,temperatura,precipitacion,humedad,condiciones))
+
         return meteo
     else:
     # Mostrar un error en caso de que la solicitud haya fallado
