@@ -117,7 +117,11 @@ def get_stats(request):
             
             team_1 = 'Red Bull'
             team_2 = 'Aston Martin'
-        
+            team_names = [team_1,team_2]
+            team_res = get_teams_comparison(team_names)
+            likes_e1,rts_e1,seguidores_e1,likes_e2,rts_e2,seguidores_e2 = get_twitter_team_evolution(team_names)
+
+            
         else:
             team_1 = request.POST.get('team1')
             team_2 = request.POST.get('team2')
@@ -155,7 +159,15 @@ def get_stats(request):
 
     payload_team1 = team_res['puntuation_team1']
     payload_team2 = team_res['puntuation_team2']
+    
+    #Datos de la gráfica de abandonos
+    abandonos_t1 = team_res['abandonos1']
+    years_t1 = team_res['years1']
 
+    abandonos_t2 = team_res['abandonos2']
+    years_t2 = team_res['years2']
+
+    #Conversión de los datos a JSON
     json_races_list = json.dumps(races_list)
     json_names_races = json.dumps(names_races)
     json_payload_driver1 = json.dumps(payload_driver1)
@@ -179,9 +191,17 @@ def get_stats(request):
     json_twitter_rts_equipos2 = json.dumps(rts_e2)
     json_twitter_seguidores_equipos1 = json.dumps(seguidores_e1)
     json_twitter_seguidores_equipos2 = json.dumps(seguidores_e2)
+    json_abandonos_t1 = json.dumps(abandonos_t1)
+    json_years_t1 = json.dumps(years_t1)
+    json_abandonos_t2 = json.dumps(abandonos_t2)
+    json_years_t2 = json.dumps(years_t2)
 
     context = {
         #Equipos
+        'json_abandonos_t1':json_abandonos_t1,
+        'json_years_t1':json_years_t1,
+        'json_abandonos_t2':json_abandonos_t2,
+        'json_years_t2':json_years_t2,
         'json_twitter_likes_equipos1':json_twitter_likes_equipos1,
         'json_twitter_likes_equipos2':json_twitter_likes_equipos2,
         'json_twitter_rts_equipos1':json_twitter_rts_equipos1,
@@ -196,7 +216,6 @@ def get_stats(request):
         'json_payload_team1':json_payload_team1,
         'json_payload_team2':json_payload_team2,
         'team_comparations':team_res,
-        'json'
         # Pilotos
         'comparations':res,
         'json_twitter_likes1':json_twitter_likes1,

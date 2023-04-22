@@ -76,7 +76,16 @@ def get_teams_comparison(names):
     team_ids = [id_team1,id_team2]
     races_list,names_races_list,puntuation_team1,puntuation_team2 = get_comparation_team_evolution(team_ids)
     
+
+    #Obtener datos de abandonos en las carreras en cada año
+    years1,abandonos1 = get_team_crash_by_season(id_team1)
+    years2,abandonos2 = get_team_crash_by_season(id_team2)
+
     res = {
+        'years1': years1,
+        'years2': years2,
+        'abandonos1': abandonos1,
+        'abandonos2': abandonos2,
         'avg_total_puntuation1': total_global_puntuation1/num_carreras1,
         'avg_total_puntuation2': total_global_puntuation2/num_carreras2,
         'global_puntuation1': total_global_puntuation1,
@@ -104,6 +113,38 @@ def get_teams_comparison(names):
 #endregion
 
 
+#region Obtener los abandonos por año de un equipo
+
+def get_team_crash_by_season(id_team):
+    ''' Obtiene los abandonos por año de un equipo por cada año
+    que ha participado en la F1.
+    Parámetros:	
+    id_team (int): id del equipo
+    Devuelve:
+    abandonos (list): lista de abandonos por año'''
+
+    # Hacer un join con la tabla de carreras para filtrar por año
+    results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
+    season_races = spark.read.csv("./datasets/races.csv", header=True,sep=",")
+    
+    # Definición de join
+    join = [results.raceId == season_races.raceId]
+
+    # Realizar join
+    results_join = results.join(season_races, join, "inner")
+
+    # Filtrar por id del equipo y por abandonos
+    results_join = results_join.filter(results_join.constructorId == id_team).filter(results_join.statusId != 1)
+    #agrupamos por año y contamos los abandonos de ese año
+    results_join = results_join.groupBy("year").count().orderBy(desc("year")).collect()
+    #Obtenemos los años en los que ha participado el equipo
+    years = [int(x.year) for x in results_join]
+    #Obtenemos los abandonos en cada año
+    abandonos = [int(x['count']) for x in results_join]
+
+    return years,abandonos
+
+#endregion Obtener los abandonos por año de un equipo
 
 # region Obtener el equipo a partir de un nombre
 
@@ -324,6 +365,10 @@ def get_twitter_team_evolution(names):
     # Obtenemos los nombres de las cuentas de twitter de los dos pilotos
     twitter_names = []
     for a in names:
+        if (a == "Red"):
+            a = "Red Bull"
+        if (a == "Aston"):
+            a = "Aston Martin"
         twitter_names.append(TWITTER_PROFILE[a])
     
     # Obtenemos los datos de los tweets de los dos pilotos

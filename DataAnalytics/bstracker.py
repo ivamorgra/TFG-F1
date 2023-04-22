@@ -17,21 +17,18 @@ URL_F1_OFFICIAL = 'https://www.formula1.com/'
 MONTHS = {'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05',
 'Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10',
 'Nov':'11','Dec':'12'}
-'''
-MONTHS = {'01':'Jan','02':'Feb','03':'Mar','04':'Apr',
-'05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep',
-'10':'Oct','11':'Nov','12':'Dec'}
-'''
+
+
 def race_scrapping(url):
     podium = []
     count = 0
-    #circuit_name = ''
+
     f = urllib.request.urlopen(url)
     
     soup = BeautifulSoup(f,"html.parser")
     data = soup.find_all('table', class_ = "infobox vevent")
     for row in data:
-        #circuit_name = row.find('td', class_ = "infobox-data location").text
+        
         data_podium = row.find_all('div', class_ = "plainlist")
         for li in data_podium:
             podium.append((count,li.find_all('a')[-1].get('title')))
@@ -128,7 +125,7 @@ def next_race_scrapping():
                 lugar = event.find('div',class_ = "event-place d-block").text
                 titulo = event.find('div',class_ = "event-title f1--xxs").text
                 img_circuito = event.find('div',class_ = 'event-image').find('img')['data-src']
-                #new_races.append()
+
                 writer.writerow((str(year),ronda,fecha,fecha_comienzo,fecha_fin,mes,titulo,lugar,img_circuito))
             f.close()
     else:

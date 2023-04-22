@@ -470,12 +470,12 @@
                 <div class="col-6">
                   <div class="card card-chart">
                     <div class="card-header">
-                      <h5 class="card-category">Temporada actual</h5>
-                      <h3 class="card-title"> Progreso de temporada</h3>
+                      <h5 class="card-category">Análisis de fiabilidad</h5>
+                      <h3 class="card-title"> Número de abandonos por temporada</h3>
                     </div>
                     <div class="card-body">
                       <div class="chart-area">
-                        <canvas id="sectorProgresschart"></canvas>
+                        <canvas id="fiabilityChart"></canvas>
                       </div>
                     </div>
                   </div>
@@ -752,6 +752,12 @@
   <div id="json_twitter_rts_equipos2" data-json='{{ json_twitter_rts_equipos2 |safe }}'></div>
   <div id="json_twitter_seguidores_equipos2" data-json='{{ json_twitter_seguidores_equipos2 |safe }}'></div>
 
+  <!-- DATOS DE LA GRÁFICA EVOLUTIVA COMPARACIÓN 2 CIRCUITOS -->
+
+  <div id="json_abandonos_t1" data-json='{{ json_abandonos_t1 |safe }}'></div>
+  <div id="json_years_t1" data-json='{{ json_years_t1 |safe }}'></div>
+  <div id="json_abandonos_t2" data-json='{{ json_abandonos_t2 |safe }}'></div>
+  <div id="json_years_t2" data-json='{{ json_years_t2 |safe }}'></div>
   <!--   Core JS Files   -->
   <script src="{% static '/js/dashboard/core/jquery.min.js'%}"></script>
   <script src="{% static '/js/dashboard/core/popper.min.js'%}"></script>

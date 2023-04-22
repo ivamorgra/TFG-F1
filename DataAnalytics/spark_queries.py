@@ -758,7 +758,6 @@ def get_driver_habitual_position(driver_id):
 
     res = positions.orderBy(desc("count")).collect()
 
-    print(res)
 
     if res[0][0] == "\\N":
         return res[1][0] , res[1][1]
