@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
@@ -92,6 +92,10 @@ def get_dashboard(request):
 #region Vista de estadísticas
 
 def get_stats(request):
+
+    
+    mostrar_preloader = True
+
     percentage_progress = get_season_progress()
     
     json_data_progress = json.dumps(percentage_progress)
@@ -196,7 +200,9 @@ def get_stats(request):
     json_abandonos_t2 = json.dumps(abandonos_t2)
     json_years_t2 = json.dumps(years_t2)
 
+    mostrar_preloader = False
     context = {
+        'mostrar_preloader':mostrar_preloader,
         #Equipos
         'json_abandonos_t1':json_abandonos_t1,
         'json_years_t1':json_years_t1,
@@ -239,6 +245,10 @@ def get_stats(request):
     return render(request, 'dashboard/stats.html',context)
 
 #endregion
+
+
+def get_loader(request):
+    return render(request, 'loader.html')
 
 #region Vista de Clasificación
 

@@ -726,11 +726,15 @@ def get_driver_max_wins_one_season(driver_id):
 
     # Agrupamos las victorias por año y las contamos
     result = races_by_season.groupBy("year").agg(count("*").alias("count"))
-    
+    result.show()
     res = result.orderBy(desc("count")).first()
 
-    year = res[0]
-    num_wins = res[1]
+    if (res is None):
+        year = 0
+        num_wins = 0
+    else:
+        year = res[0]
+        num_wins = res[1]
 
     return [year,num_wins]
     

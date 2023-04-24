@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'background_task',
     'DataAnalytics',
+    'Dashboard',
 ]
 
 MIDDLEWARE = [

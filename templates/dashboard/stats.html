@@ -17,9 +17,18 @@
   <!-- CSS Files -->
   <link href="{% static 'css/dashboard/black-dashboard.css'%}" rel="stylesheet" />
   <link href="{% static 'css/dashboard/control/demo.css" rel="stylesheet'%}" />
+
+  <!-- SPINNER -->
+  <link rel="stylesheet" href="{% static 'css/spinner.css' %}">
+  <!--<script src="{% static 'js/spinner.js' %}"></script>-->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+
 </head>
 
 <body class="">
+  
+    
   <div class="wrapper">
     <div class="sidebar">
       <!--
@@ -66,7 +75,7 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'dashboard' %}">
+            <a href="{% url 'stats' %}" onclick="return confirm('Este proceso puede tardar varios minutos')">
               <i class="tim-icons icon-chart-bar-32"></i>
               <p>Estadísticas</p>
             </a>
@@ -120,7 +129,8 @@
         </div>
       </div>
       <!-- End Navbar -->
-      <div class="content">
+      
+      <div id="content" class="content">
         <div class="row">
           <div class="pestanha">
             <button id="btn1">Pilotos</button>
@@ -151,7 +161,7 @@
                               <option  value={{piloto.1}}>{{piloto.1}},{{piloto.0}}</option>
                               {% endfor %}
                             </select>
-                            <button type="submit">Enviar</button>
+                            <button type="submit" onclick="return confirm('Este proceso puede tardar varios minutos')">Enviar</button>
                           </form>
                         </div>
                       </div>
@@ -451,7 +461,7 @@
                                 <option  value={{t}}>{{t}}</option>
                                 {% endfor %}
                               </select>
-                              <button type="submit">Enviar</button>
+                              <button type="submit" onclick="return confirm('Este proceso puede tardar varios minutos')">Enviar</button>
                             </div>
                             
                           </form>
@@ -670,8 +680,10 @@
                 </div>
               </div>
             </div>
+            
           </div>  
       </div>
+      
       <footer class="footer">
         <div class="container px-5">
           <div class="row align-items-center justify-content-between flex-column flex-sm-row">
@@ -769,6 +781,7 @@
   
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static '/js/dashboard/black-dashboard.min.js'%}"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
+  
   <script src="{% static 'js/dashboard/control/stats.js'%}"></script>
   
   <script>
@@ -897,6 +910,7 @@
         application: "black-dashboard-free"
       });
   </script>
+  
 </body>
 
 </html>
