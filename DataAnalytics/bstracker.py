@@ -209,16 +209,16 @@ def get_data_race(year,location,nombre_carrera):
     
     #Según la localización sabemos qué data-value es el correspondiente
 
+    suburl = ''
     for v in values:
         
         ''''''
-        if (location.lower() == 'united states'):
-            if (( ('MIAMI' in nombre_carrera) and ('Miami' in v.split('/')[1]))
-                    or ( ('LAS VEGAS' in nombre_carrera) and ('las vegas' in v.split('/')[1].replace('-',' ')))
-                    or ( ('united states' in v.split('/')[1].replace('-',' ')))):
+        if (location.lower() == 'united states' or location.lower() == 'usa'):
+            if ( ('Miami Grand Prix' in nombre_carrera) and ('miami' in v.split('/')[1])):  suburl = v; break
+            if ( ('LAS VEGAS' in nombre_carrera) and ('las vegas' in v.split('/')[1].replace('-',' '))): suburl = v; break
+            if  ('united states' in v.split('/')[1].replace('-',' ')): suburl = v; break
                 
-                suburl = v
-                break
+            
 
         elif (location.lower() == 'italy'):
             if (( ('EMILIA-ROMAGNA'in nombre_carrera) and ('1209' in v.split('/')[0]))
@@ -232,7 +232,10 @@ def get_data_race(year,location,nombre_carrera):
             break
 
     #Ya podemos obtener la url de la vista donde se obtiene la clasificación
-            
+    if (suburl == ''): 
+        print ("No se ha encontrado la carrera")
+        return None,None  
+         
     url = 'https://www.formula1.com/en/results.html/'+str(year)+'/races/'+suburl+"/race-result.html"
     url_speeds = 'https://www.formula1.com/en/results.html/'+str(year)+'/races/'+suburl+"/fastest-laps.html"
     data = get_positions(url)
