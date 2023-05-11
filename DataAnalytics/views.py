@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
-
+from django.core.paginator import Paginator
 from DataAnalytics.forms import CircuitoBusquedaForm, ConstructorBusquedaForm, PilotoBusquedaForm, CarreraBusquedaForm
 from .models import Circuito, Piloto, Constructor
 from .spark_loader import populate,load_df
@@ -50,6 +50,7 @@ def load_dataframes(request):
 def list_drivers(request):
    
     drivers = Piloto.objects.all()
+
     search = False
     formulario = PilotoBusquedaForm()
 
@@ -60,8 +61,19 @@ def list_drivers(request):
             value=formulario.cleaned_data['input']
             drivers = get_driver_bynameornacionality(value)
             search = True
+   
+    paginator = Paginator(drivers, 10)
+    page = request.GET.get('page')
+    drivers_page = paginator.get_page(page)
+    num_pages = paginator.num_pages
+    next_pages = []
 
-    return render(request,'drivers.html',{'search':search,'formulario':formulario,'drivers':drivers,'STATIC_URL':settings.STATIC_URL})
+    if int(page) + 1 <= num_pages:
+        next_pages.append(int(page) + 1)
+    if int(page) + 2 <= num_pages:
+        next_pages.append(int(page) + 2)
+    
+    return render(request,'drivers/list.html',{'page_obj': drivers_page,'pages':next_pages,'search':search,'formulario':formulario,'drivers':drivers,'STATIC_URL':settings.STATIC_URL})
 
 
 def get_driver(request,id):

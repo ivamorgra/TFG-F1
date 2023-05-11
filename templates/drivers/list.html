@@ -1,0 +1,91 @@
+{% extends 'nav.html' %}
+{%load static%}
+
+{% block contenido %} 
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9">
+
+            {% if search %}
+                <h2> Listado de pilotos de F1 filtrados por nombre o nacionalidad </h2>
+            {% else %}
+                <h2 > Listado de pilotos de Fórmula 1 </h2>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9">
+            
+            <form id="formulario" method="post" action=''>{% csrf_token %}
+                <fieldset>
+                    <legend>B&uacute;squeda de Pilotos por nombre o nacionalidad</legend>
+                    {{formulario}}
+                    <input type='submit'  value='Realizar B&uacute;squeda'/>
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+    <br>
+    
+    {% if drivers %}
+    <div class="row">
+        <table class="responsive-table">
+            <thead>
+            <tr>
+                <th class="text-center" scope="col">Abreviatura</th>
+                <th class="text-center" scope="col">Nombre</th>
+                <th class="text-center" scope="col">Apellidos</th>
+                <th class="text-center" scope="col">Nacionalidad</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for driver in page_obj %}
+                <tr>
+                  <td class="text-center"><a href="/driver/{{driver.id}}"><dd>{{driver.abreviatura}}</dd></th>
+                  <td class="text-center">{{driver.nombre}}</th>
+                  <td class="text-center">{{driver.apellidos}}</td>
+                  <td class="text-center">{{driver.nacionalidad}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+	{% endif %}
+
+    <!-- Paginación -->
+
+    <div class="row">
+        <div class="col-md-5">
+        </div>
+        <div class="col-md-7">
+
+            <nav aria-label="...">
+                <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" tabindex="-1" href="?page={{ page_obj.previous_page_number }}"> Anterior </a>
+                </li>
+                {% endif %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+                {% for p in pages %}
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="?page={{ p }}">{{p}}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
