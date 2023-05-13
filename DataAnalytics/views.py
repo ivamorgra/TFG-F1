@@ -145,9 +145,20 @@ def list_circuits(request):
             value=formulario.cleaned_data['input']
             circuits = get_circuit_bynameornacionality(value)
             search = True
-        
     
-    return render(request,'circuits.html',{'search':search,'formulario':formulario,'circuits':circuits,'STATIC_URL':settings.STATIC_URL})
+    paginator = Paginator(circuits, 10)
+    page = request.GET.get('page')
+    cts_page = paginator.get_page(page)
+    num_pages = paginator.num_pages
+    next_pages = []
+
+    if int(page) + 1 <= num_pages:
+        next_pages.append(int(page) + 1)
+    if int(page) + 2 <= num_pages:
+        next_pages.append(int(page) + 2)
+
+    
+    return render(request,'circuits/list.html',{'page_obj': cts_page,'pages':next_pages,'search':search,'formulario':formulario,'circuits':circuits,'STATIC_URL':settings.STATIC_URL})
 
 def get_circuit(request,id):
     circuit = get_object_or_404(Circuito,pk=id)

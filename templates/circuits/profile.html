@@ -1,0 +1,25 @@
+{% extends 'nav.html' %}
+
+{% block titulo %} Ficha completa del circuito {{c.nombre}}{% endblock %}
+
+
+
+{% block contenido %} 
+
+    
+		
+    {% if c %}
+        <p>Nombre: {{c.nombre}} || Referencia: {{c.nombre_referencia}}</p>
+        <p>Localización: {{c.localizacion}}</p>
+        <p>País: {{c.pais}}</p>
+        <p>Latitud: {{c.latitud}}</p>
+        <p>Altura: {{c.altura}}</p>
+        <p>Longitud: {{c.longitud}}</p>
+        <p>Más información: <a href="{{c.enlace}}"> Enlace para obtener más información sobre el circuito </a></p>
+
+	{% endif %}
+    
+
+    
+
+{% endblock %}

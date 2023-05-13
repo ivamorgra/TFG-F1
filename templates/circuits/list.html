@@ -1,0 +1,85 @@
+{% extends 'nav.html' %}
+{% block contenido %} 
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-8">
+
+            {% if search %}
+            <h2> Listado de circuitos filtrados por nombre o país </h2>
+            {% else %}
+                <h2> Listado de circuitos de F1 </h2>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-8">
+            
+            <form id="formulario" method="post" action=''>{% csrf_token %}
+                <fieldset>
+                    <legend>B&uacute;squeda de Circuitos por nombre o país</legend>
+                    {{formulario}}
+                    <input type='submit'  value='Realizar B&uacute;squeda'/>
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+    <br>
+    <div class="row">		
+        {% if circuits %}
+        <table class="responsive-table">
+            <thead>
+            <tr>
+                <th class="text-center" scope="col">Referencia</th>
+                <th class="text-center" scope="col">Nombre</th>
+                <th class="text-center" scope="col">País</th>
+                <th class="text-center" scope="col">Localización</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for c in  page_obj %}
+                <tr>
+                <td class="text-center"><a href="/circuits/{{c.id}}"><dd>{{c.nombre_referencia}} ({{c.pais}}</dd></a></td>
+                <td class="text-center">{{c.nombre}}</td>
+                <td class="text-center">{{c.pais}}</td>
+                <td class="text-center">{{c.localizacion}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <h2> No hay circuitos que coincidan con la búsqueda </h2>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+        </div>
+        <div class="col-md-7">
+
+            <nav aria-label="...">
+                <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" tabindex="-1" href="?page={{ page_obj.previous_page_number }}"> Anterior </a>
+                </li>
+                {% endif %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+                {% for p in pages %}
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="?page={{ p }}">{{p}}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"href="?page={{ page_obj.next_page_number }}">+</a>
+                    </li>
+                {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+{% endblock %}
