@@ -114,7 +114,18 @@ def get_constructors(request):
             constructors = get_constructor_bynameornacionality(value)
             search = True
 
-    return render(request,'constructors.html',{'search':search,'formulario':formulario,'constructors':constructors,'STATIC_URL':settings.STATIC_URL})
+    paginator = Paginator(constructors, 10)
+    page = request.GET.get('page')
+    ctos_page = paginator.get_page(page)
+    num_pages = paginator.num_pages
+    next_pages = []
+
+    if int(page) + 1 <= num_pages:
+        next_pages.append(int(page) + 1)
+    if int(page) + 2 <= num_pages:
+        next_pages.append(int(page) + 2)
+
+    return render(request,'teams/list.html',{'page_obj': ctos_page,'pages':next_pages,'search':search,'formulario':formulario,'constructors':constructors,'STATIC_URL':settings.STATIC_URL})
 
 
 def get_constructor(request,id):
