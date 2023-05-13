@@ -49,7 +49,7 @@ def load_dataframes(request):
 
 def list_drivers(request):
    
-    drivers = Piloto.objects.all()
+    drivers = Piloto.objects.all().order_by('-activo')
 
     search = False
     formulario = PilotoBusquedaForm()
@@ -103,7 +103,7 @@ def get_driver(request,id):
     return render(request,'drivers/profile.html',context)
     
 def get_constructors(request):
-    constructors = Constructor.objects.all()
+    constructors = Constructor.objects.all().order_by('-activo')
     formulario = ConstructorBusquedaForm()
     search = False
     if request.method=='POST':
@@ -135,7 +135,7 @@ def get_constructor(request,id):
     return render(request,'constructor.html',{'constructor':constructor,'stats':stats,'STATIC_URL':settings.STATIC_URL})
 
 def list_circuits(request):
-    circuits =  Circuito.objects.all()
+    circuits =  Circuito.objects.all().order_by('-nombre')
     formulario = CircuitoBusquedaForm()
     search = False
     if request.method=='POST':
@@ -167,7 +167,7 @@ def get_circuit(request,id):
 
 
 def list_races(request):
-    carreras = get_races()
+    carreras = Carrera.objects.all().order_by('-fecha')
     formulario = CarreraBusquedaForm()
     search = False
     if request.method=='POST':
@@ -177,8 +177,19 @@ def list_races(request):
             value=formulario.cleaned_data['input']
             carreras = get_race_bynameorseason(value)
             search = True
-        
-    return render(request,'races/list.html',{'search':search,'formulario':formulario,'c':carreras,'STATIC_URL':settings.STATIC_URL})
+    
+    paginator = Paginator(carreras, 10)
+    page = request.GET.get('page')
+    races_page = paginator.get_page(page)
+    num_pages = paginator.num_pages
+    next_pages = []
+
+    if int(page) + 1 <= num_pages:
+        next_pages.append(int(page) + 1)
+    if int(page) + 2 <= num_pages:
+        next_pages.append(int(page) + 2)
+
+    return render(request,'races/list.html',{'page_obj': races_page,'pages':next_pages,'search':search,'formulario':formulario,'c':carreras,'STATIC_URL':settings.STATIC_URL})
 
 def details_race(request,id):
     bool_meteo = True
