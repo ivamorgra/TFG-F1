@@ -47,10 +47,10 @@
             <tbody>
                 {% for driver in page_obj %}
                 <tr>
-                  <td class="text-center"><a href="/driver/{{driver.id}}"><dd>{{driver.abreviatura}}</dd></td>
-                  <td class="text-center">{{driver.nombre}}</td>
-                  <td class="text-center">{{driver.apellidos}}</td>
-                  <td class="text-center">{{driver.nacionalidad}}</td>
+                  <td id="driver-ab" class="text-center"><a href="/driver/{{driver.id}}"><dd>{{driver.abreviatura}}</dd></td>
+                  <td id="driver-name" class="text-center">{{driver.nombre}}</td>
+                  <td id="driver-apellidos" class="text-center">{{driver.apellidos}}</td>
+                  <td id="driver-nacionalidad" class="text-center">{{driver.nacionalidad}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
