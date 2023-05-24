@@ -34,7 +34,7 @@ class DriverViewTestCase(StaticLiveServerTestCase):
 
         # Opciones de selenium
         options = webdriver.ChromeOptions()
-        options.headless = False
+        options.headless = True
         self.driver = webdriver.Chrome(options=options)
         self.driver.set_window_size(1920, 1080)
 

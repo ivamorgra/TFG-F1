@@ -1,11 +1,9 @@
 from django.test import TestCase
 from requests import patch
 from DataAnalytics.models import Piloto
-from DataAnalytics.models import Piloto
 from DataAnalytics.spark_loader import load_drivers
 from DataAnalytics.views import list_drivers
 from DataAnalytics.forms import PilotoBusquedaForm
-import unittest
 from unittest.mock import Mock
 
 

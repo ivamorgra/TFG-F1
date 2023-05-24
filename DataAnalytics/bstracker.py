@@ -86,6 +86,8 @@ def get_actual_team_byname(name):
 
 def next_race_scrapping():
 
+    spark = SparkSession.builder.appName("F1Analytics").getOrCreate()
+
     next_races = spark.read.csv('./datasets/next_races.csv', header=True,sep=",")
     
     actual_date = datetime.datetime.now()
@@ -333,6 +335,7 @@ def get_standings():
         names.append(complete_name)
 
     #Se elimina la primera fila que es vacía
+    
     return res[1:],names[1:],points
 
 #endregion
@@ -373,7 +376,7 @@ def get_standings_teams():
         names.append(complete_name)
 
     #Se elimina la primera fila que es vacía
-    
+
     return res[1:],names[1:],points
 
 #endregion

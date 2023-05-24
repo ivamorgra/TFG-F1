@@ -1,5 +1,7 @@
 import csv 
 from csv import writer
+
+from F1Analytics import settings
 from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
@@ -48,6 +50,7 @@ def driver_basic_stats(driver_id):
     num_swins = sraces.filter( (sraces.driverId == driver_id) & (sraces.position == 1)).count()
     
     stats = [num_races,num_wins,num_sraces,num_swins]
+    
     return stats
 
 def get_country_races_by_driver(driver_id):
@@ -228,8 +231,11 @@ def get_driver_max_position_by_season(driver_id,season):
     num_races = results_join.filter( (results_join.driverId == driver_id) & (results_join.year == season))
 
     position = num_races.orderBy(asc("position")).first()
-
-    return position.position
+    
+    if settings.TESTING:
+        return position[0]
+    else:
+        return position.position
 
 #endregion Obtener la posición más alta de un piloto en la temporada
 
@@ -255,7 +261,12 @@ def get_driver_min_position_by_season(driver_id,season):
     num_races = results_join.filter( (results_join.driverId == driver_id) & (results_join.year == season))
 
     position = num_races.orderBy(desc("position")).first()
-    return position.position
+    
+    if settings.TESTING:
+        return position[0]
+    else:
+        return position.position
+
 
 #endregion Obtener la posición más baja de un piloto en la temporada
 
