@@ -1,3 +1,4 @@
+'''
 import tweepy
 import datetime
 from datetime import timedelta
@@ -137,8 +138,8 @@ class ProcessData():
         return emoji_pattern.sub(r'', text)
 
 
-''' Con esta función se comprueba si la última actualización
- de los datos fue hace más de 24 horas (o igual).'''
+ Con esta función se comprueba si la última actualización
+ de los datos fue hace más de 24 horas (o igual).
 def check_date(dataset):
     #Se accede a la última fila del dataset para obtener la fecha de la última actualización y evitar una sobrecarga en la API
     df = spark.read.csv(dataset, header=True)
@@ -211,7 +212,7 @@ my_thread.start()
 my_drivers_thread.start()
 
 
-    
+'''
 
 
 

@@ -51,11 +51,12 @@ class ConstructorTest(TestCase):
         assert constructor.referencia == "MER"
         assert constructor.activo == True
         
-    
+    #ID-019
     def test_retrieve_constructor_name(self):
         constructor = Constructor.objects.get(id=1)
         self.assertEqual(constructor.nombre, 'Constructor1')
     
+    #ID-020
     def test_retrieve_all_constructors(self):
         constructor = Constructor.objects.all()
         self.assertEqual(constructor.count(), 2)

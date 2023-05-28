@@ -1,25 +1,173 @@
 {% extends 'nav.html' %}
-
-{% block titulo %} Ficha completa de la escudería {{constructor.nombre}}{% endblock %}
+{% load static %}
+{% block titulo %}{% endblock %}
 
 
 
 {% block contenido %} 
 
-    
-		
-    {% if constructor %}
-        <p>Nombre: {{constructor.nombre}} || Referencia: {{constructor.referencia}}</p>
-        <p>Nacionalidad: {{constructor.nacionalidad}}</p>
-        <p>Más información: <a href="{{constructor.enlace}}"> Enlace para obtener más información sobre la escudería </a></p>
-        <hr>
-		<h4>Ficha técnica:</h4>
-		<p>Número de carreras disputadas: {{stats.0}}</p>	
-        <p>Número de victorias: {{stats.1}}</p>
-        <p>Número de carreras a Sprint disputadas: {{stats.2}}</p>	
-        <p>Número de victorias en carreras a Sprint: {{stats.3}}</p>    
-		<hr>
-	{% endif %}
+<body class="g-sidenav-show bg-gray-200">
+    <div class="container-fluid px-2 px-md-4">
+      <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://as01.epimg.net/motor/imagenes/2020/12/23/formula_1/1608743339_743699_1608743576_noticia_normal_recorte1.jpg');">
+        <span class="mask  bg-gradient-2 opacity-6"></span>
+      </div>
+      <div class="card card-body mx-3 mx-md-4 mt-n6">
+        <div class="row gx-4 mb-2">
+          <div class="col-auto">
+            <div class="avatar avatar-xl position-relative">
+              <img src="../static/images/red_bull_profile.png" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+            </div>
+          </div>
+          <div class="col-auto my-auto">
+            <div class="h-100">
+              <h5 class="mb-1">
+                {{constructor.nombre}} ({{constructor.referencia}})
+              </h5>
+              <p class="mb-0 font-weight-normal text-sm">
+                Formula One Team / Escudería de Fórmula Uno
+              </p>
+            </div>
+          </div>
+        </div>
+      		
+
+
+
+
+        {% if constructor %}
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="card card-plain h-100">
+              <div class="card-header pb-0 p-3">
+                <h6 class="mb-0">Ficha Técnica</h6>
+              </div>
+              <div class="card-body p-3">
+                <h6 class="text-uppercase text-body text-xs font-weight-bolder">FICHA TÉCNICA</h6>
+                <ul class="list-group">
+                  <li class="list-group-item border-0 px-0">
+                    <div class="form-check form-switch ps-0">
+                      <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Nombre:</strong> &nbsp; {{constructor.nombre}}</li>
+                      <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Referencia:</strong> &nbsp; {{constructor.referencia}}</li>
+                      <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Nacionalidad:</strong> &nbsp; {{constructor.nacionalidad}}</li>
+                      <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Más información:</strong> <a href="{{constructor.enlace}}"> Enlace para obtener más información sobre el piloto </a></li>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          
+            <div class="col-sm-4">
+              <div class="card card-plain h-100">
+                <div class="card-header pb-0 p-3">
+                  <div class="row">
+                    <div class="col-md-8 d-flex align-items-center">
+                      <h6 class="text-uppercase text-body text-xs font-weight-bolder">estadísticas básicas</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-3">
+                  <hr class="horizontal gray-light my-4">
+                  <ul class="list-group">
+                    <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Número de carreras disputadas:</strong> &nbsp; {{stats.0}}</li>
+                    <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Número de victorias:</strong> &nbsp; {{stats.1}}</li>
+                    <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Número de carreras a Sprint disputadas:</strong> &nbsp; {{stats.2}}</li>
+                    <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Número de victorias en carreras a Sprint:</strong> &nbsp; {{stats.3}}</li>
+                    <li class="list-group-item border-0 ps-0 pb-0">
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% if constructor.activo == 1 %}
+            
+
+            <div class="col-sm-4">
+              <div class="card card-plain h-100">
+                <div class="card card-chart">
+                  <div class="card-header">
+                    <h5 class="card-category">Estadísticas de la temporada actual </h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table >
+                        <thead class=" text-primary">
+                          <tr>
+                            <th>
+                              Equipo
+                            </th>
+                            <th>
+                              {{constructor.nombre}}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>   
+                                <td>Piloto</td>
+                                <td class="text-center">{{pilotos.0}} {{pilotos_apellidos.0}}</td>
+                            </tr> 
+                            <tr>   
+                                <td>Piloto</td>
+                                <td class="text-center">{{pilotos.1}} {{pilotos_apellidos.1}}</td>
+                            </tr> 
+                            <tr>
+                              <td>Victorias</td>
+                              <td class="text-center">{{wins}}</td>
+                            </tr> 
+                            <tr>   
+                                <td>Puntuación total</td>
+                                <td class="text-center">{{tot_punt}}</td>
+                            </tr>
+                            <tr>   
+                                <td>Posición más alta</td>
+                                <td class="text-center">{{max_pos}}</td>
+                            </tr>
+                            <tr>   
+                                <td>Posición más baja</td>
+                                <td class="text-center">{{min_pos}}</td>
+                            </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+                {% else %}
+                <h3> El piloto no está activo en la temporada actual </h3>
+                {% endif %}
+          </div>
+        
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+
+  <script src="{% static '/js/dataanalytics/driver/profile_driver.js'%}"></script>
+  <script src="{% static '/js/core/popper.min.js'%}"></script>
+  <script src="{% static '/js/core/bootstrap.min.js'%}"></script>
+  <script src="{% static '/js/plugins/perfect-scrollbar.min.js'%}"></script>
+  <script src="{% static '/js/plugins/smooth-scrollbar.min.js'%}"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{% static '/js/material-dashboard.min.js'%}"></script>
+
+
+  
+</body>
+
     
 
 {% endblock %}

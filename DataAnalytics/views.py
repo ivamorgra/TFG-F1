@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.core.paginator import Paginator
 from DataAnalytics.forms import CircuitoBusquedaForm, ConstructorBusquedaForm, PilotoBusquedaForm, CarreraBusquedaForm
-from .models import Circuito, Piloto, Constructor
+from .models import Circuito, Piloto, Constructor, Periodo
 from .spark_loader import populate,load_df
 from django.conf import settings
 from .spark_queries import *
+from .spark_queries_teams import *
 from .auto_races import get_race
 from .meteo import get_weather
 from .bstracker import next_race_scrapping
@@ -80,8 +81,17 @@ def get_driver(request,id):
     '''Llamada a la función de carga de datos'''
     driver = get_object_or_404(Piloto,pk=id)
     stats = driver_basic_stats(id)
-
+    season = datetime.datetime.now().year
+    periodo = Periodo.objects.get(piloto=driver)
+    if (periodo is not None):
+        constructor = periodo.constructor
     
+    if(driver.activo == 1):
+        avg_punt = get_driver_avg_points_by_season(driver.id,season)
+        tot_punt = get_driver_total_points_by_season(driver.id,season)
+        max_pos = get_driver_max_position_by_season(driver.id,season)
+        min_pos = get_driver_min_position_by_season(driver.id,season)
+        wins = get_driver_wins_by_season(driver.id,season)
     x,y,media,total,paises_tendencia,paises_tendencia_values = search_trends(driver.nombre,150)
 
     paises,numero = get_country_races_by_driver(id)
@@ -98,6 +108,8 @@ def get_driver(request,id):
                'paises_tendencia':paises_tendencia,
                'valores_paises':paises_tendencia_values,
                'x':meses,'y':valores,'driver':driver,'stats':stats,
+                'constructor':constructor,'avg_punt':avg_punt,'tot_punt':tot_punt,
+                'max_pos':max_pos,'min_pos':min_pos,'wins':wins,
                'STATIC_URL':settings.STATIC_URL}
     
     return render(request,'drivers/profile.html',context)
@@ -131,8 +143,31 @@ def get_constructors(request):
 def get_constructor(request,id):
     '''Llamada a la función de carga de datos'''
     constructor = get_object_or_404(Constructor,pk=id)
+    season = datetime.datetime.now().year
+
+    per = Periodo.objects.filter(constructor=constructor).order_by('-piloto_id')
+    pilotos = []
+    pilotos_apellidos = []
+    for p in per:
+        pilotos.append(p.piloto.nombre)
+        pilotos_apellidos.append(p.piloto.apellidos)
     stats = constructor_basic_stats(id)
-    return render(request,'constructor.html',{'constructor':constructor,'stats':stats,'STATIC_URL':settings.STATIC_URL})
+    max_pos = get_team_max_position_by_season(id,season)
+    min_pos = get_team_min_position_by_season(id,season)
+    tot_punt = get_team_total_points_by_season(id,season)
+    wins = get_team_wins_by_season(id,season)
+
+    context = {'stats':stats,
+               'constructor':constructor,
+                'max_pos':max_pos,
+                'min_pos':min_pos,
+                'pilotos':pilotos,
+                'pilotos_apellidos':pilotos_apellidos,
+                'tot_punt':tot_punt,
+                'wins':wins,
+               'STATIC_URL':settings.STATIC_URL}
+    
+    return render(request,'teams/profile.html',context)
 
 def list_circuits(request):
     circuits =  Circuito.objects.all().order_by('-nombre')

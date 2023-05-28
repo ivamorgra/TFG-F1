@@ -10,14 +10,14 @@
 
   <body class="g-sidenav-show bg-gray-200">
       <div class="container-fluid px-2 px-md-4">
-        <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
+        <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://media.revistagq.com/photos/620e38dcc789a63cc825a53f/16:9/pass/drive-to-survive-4-netflix-fecha.jpeg');">
           <span class="mask  bg-gradient-primary  opacity-6"></span>
         </div>
         <div class="card card-body mx-3 mx-md-4 mt-n6">
           <div class="row gx-4 mb-2">
             <div class="col-auto">
               <div class="avatar avatar-xl position-relative">
-                <img src="../assets/img/bruce-mars.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                <img src="../static/images/hamilton_profile.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
               </div>
             </div>
             <div class="col-auto my-auto">
@@ -75,8 +75,26 @@
                   </div>
                 </div>
               </div>
-            
               <div class="col-sm-4">
+                <div class="card card-plain h-100">
+                  <div class="card card-chart">
+                    <div class="card-header">
+                      <h5 class="card-category">Popularidad en países</h5>
+                      <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> Países donde genera mayor tendencia</h3>
+                      
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="sectores">
+                          
+                        </canvas>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-5">
                 <div class="card card-plain h-100">
                   <div class="card card-chart">
                     <div class="card-header">
@@ -96,27 +114,68 @@
                   </div>
                 </div>
               </div>
-            </div>
-          
-            <div class="col-sm-4">
-              <div class="card card-plain h-100">
-                <div class="card card-chart">
-                  <div class="card-header">
-                    <h5 class="card-category">Popularidad en países</h5>
-                    <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> Países donde genera mayor tendencia</h3>
-                    
-                  </div>
-                  <div class="card-body">
-                    <div class="chart-area">
-                      <canvas id="sectores">
-                        
-                      </canvas>
-                      
+              {% if driver.activo == 1%}
+              
+
+              <div class="col-sm-4">
+                <div class="card card-plain h-100">
+                  <div class="card card-chart">
+                    <div class="card-header">
+                      <h5 class="card-category">Estadísticas de la temporada actual </h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <table >
+                          <thead class=" text-primary">
+                            <tr>
+                              <th>
+                                Piloto
+                              </th>
+                              <th>
+                                {{driver.nombre}} {{driver.apellidos}}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                              <tr>   
+                                  <td>Escudería</td>
+                                  <td class="text-center">{{constructor}}</td>
+                              </tr> 
+                              <tr>
+                                <td>Victorias</td>
+                                <td class="text-center">{{wins}}</td>
+                              </tr> 
+                              <tr>   
+                                  <td>Puntuación media</td>
+                                  <td class="text-center">{{avg_punt}}</td>
+                              </tr>
+
+                              <tr>   
+                                  <td>Puntuación total</td>
+                                  <td class="text-center">{{tot_punt}}</td>
+                              </tr>
+                              <tr>   
+                                  <td>Posición más alta</td>
+                                  <td class="text-center">{{max_pos}}</td>
+                              </tr>
+                              <tr>   
+                                  <td>Posición más baja</td>
+                                  <td class="text-center">{{min_pos}}</td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              
+                  {% else %}
+                  <h3> El piloto no está activo en la temporada actual </h3>
+                  {% endif %}
             </div>
+          
+            
           </div>
         </div>
       </div>

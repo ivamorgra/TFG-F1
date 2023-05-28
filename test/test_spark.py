@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from DataAnalytics.models import Piloto
-from DataAnalytics.spark_queries import get_active_driver_byname, get_driver_avg_points_by_season, get_driver_avg_position_by_season, get_driver_max_position_by_season, get_driver_min_position_by_season, get_driver_num_races, get_driver_wins_by_season, get_race_podium, get_races
+from DataAnalytics.spark_queries import get_active_driver_byname, get_driver_avg_points_by_season, get_driver_avg_position_by_season, get_driver_max_position_by_season, get_driver_min_position_by_season, get_driver_num_races, get_driver_wins_by_season, get_race_podium, get_races, get_top3drivers_evolution
 
 
 # Dependencies:
@@ -10,45 +10,70 @@ import pytest
 
 
 class TestSparkQueries(TestCase):
-
+    def setUp(self):
+        self.pilot1 = Piloto.objects.create(
+            id=40,
+            nombre='Driver A',
+            abreviatura='DRA',
+            fecha_nacimiento='1990-01-01',
+            nacionalidad='Spanish',
+            activo=1
+        )
+        self.pilot2 = Piloto.objects.create(
+            id=42,
+            nombre='Driver B',
+            abreviatura='DRB',
+            fecha_nacimiento='1990-01-01',
+            nacionalidad='Spanish',
+            activo=1
+        )
+        self.pilot3 = Piloto.objects.create(
+            id=43,
+            nombre='Driver C',
+            abreviatura='DRC',
+            fecha_nacimiento='1990-01-01',
+            nacionalidad='Spanish',
+            activo=1
+        )
     @patch('DataAnalytics.spark_queries.spark')
     def test_get_driver_num_races(self, spark_mock):
-        # Mock the necessary objects
+        # Mockear los objetos necesarios (Arrange)
         results_mock = MagicMock()
         results_mock.filter.return_value.count.return_value = 5
         spark_mock.read.csv.return_value = results_mock
 
-        # Call the function
+        # Acción
         driver_id = 1
         num_races = get_driver_num_races(driver_id)
 
-        # Assert the result
+        # Comprobación
         self.assertEqual(num_races, 5)
 
+    #ID-068
     @patch('DataAnalytics.spark_queries.spark')
     def test_get_driver_avg_position_by_season(self, spark_mock):
-        # Mock the necessary objects
+        # Mockear los objetos necesarios (Arrange)
         results_mock = MagicMock()
         season_races_mock = MagicMock()
         results_join_mock = MagicMock()
         num_races_mock = MagicMock()
         positions_mock = MagicMock()
 
-        # Configure the mock objects
+        
         results_mock.join.return_value = results_join_mock
         results_join_mock.filter.return_value = num_races_mock
         num_races_mock.groupBy.return_value.agg.return_value = positions_mock
         positions_mock.orderBy.return_value.first.return_value = ('1', 10)
 
-        # Configure the spark mock to return the mock objects
+        # Configuración del mock de spark para devolver los objetos mockeados
         spark_mock.read.csv.side_effect = [results_mock, season_races_mock]
 
-        # Call the function
+        # Actuación
         driver_id = 1
         season = 2022
         position, count = get_driver_avg_position_by_season(driver_id, season)
 
-        # Assert the result
+        # Comprobación
         self.assertEqual(position, '1')
         self.assertEqual(count, 10)
 
