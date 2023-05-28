@@ -198,7 +198,7 @@ def list_circuits(request):
 def get_circuit(request,id):
     circuit = get_object_or_404(Circuito,pk=id)
     
-    return render(request,'circuit.html',{'c':circuit,'STATIC_URL':settings.STATIC_URL})
+    return render(request,'circuits/profile.html',{'c':circuit,'STATIC_URL':settings.STATIC_URL})
 
 
 def list_races(request):
@@ -232,7 +232,6 @@ def details_race(request,id):
     bool_data_ms = True
 
     carrera,circuit,podium,pole,meteo,data_fl,data_ms = get_race(id)
-    print (meteo)
     if (meteo != []):
         if (meteo[0] == 'No hay datos disponibles ya que la carrera se disputó antes del año 2000'):
             bool_meteo = False

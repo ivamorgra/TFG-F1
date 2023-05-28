@@ -1,46 +1,163 @@
 {% extends 'nav.html' %}
-
-{% block titulo %} Ficha completa de la carrera {{c.name}}{% endblock %}
+{% load static %}
+{% block titulo %} {% endblock %}
 
 
 
 {% block contenido %} 
 
-    {% if c %}
-        <p>Nombre de la carrera: {{c.0.4}}</p>
-        <p>Fecha: {{c.0.5}} || Año: {{c.0.1}} </p>
-        <p>circuito: <a href="/circuits/{{cir.id}}">{{cir.nombre}}<a></p>
-        <p>Posición de Pole: {{pole}}</p>
-        <p> Podium: </p>
-            {%for po in p%}
-                <p> Pos {{po.0}}: {{po.1}}</p>
-            {%endfor%}
-        {% if fl %}
-            <p> Vuelta rápida: {{v_rapida.3}} || Piloto: <a href="/driver/{{v_rapida.0}}">{{v_rapida.1}}<a> || Escudería: {{v_rapida.2}}</p>
-        {% else %}
-            <p> No hay datos específicos de vuelta rápida para esta carrera.
-        {% endif %}
-        {% if ms %}
-                <p> Máxima velocidad alcanzada: {{max_vel.3}} km/h || Piloto: <a href="/driver/{{max_vel.0}}">{{max_vel.1}}<a> || Escudería: {{max_vel.2}}</p>
-        {% else %}
-            <p> No hay datos específicos de máxima velocidad para esta carrera.
-        {% endif %}
-        <p> Meteorología: </p>
-        {% if nm %}
-            {% for d in m%}
-                <p> Temperatura mínima: {{d.0}} ºC</p>
-                <p> Temperatura : {{d.1}} ºC</p>
-                <p> Precipitaciones: {{d.2}}</p>
-                <p> Humedad: {{d.3}} %</p>
-                <p> Condiciones: {{d.4}}</p>
-            {%endfor%}
-        {% else %}
-            <p> No hay datos de meteorología para esta carrera, ya que el año en el que se disputó no se registraron datos de meteorología.
-                es anterior al año 2000.
-            </p>
-        {% endif %}
-    {% else %}
-        <p>La carrera no existe</p>
-    {% endif %}
+    
 
+    <body class="g-sidenav-show bg-gray-200">
+        <div class="container-fluid px-2 px-md-4">
+          <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4b/F1-Bandera_a_cuadros.png');">
+            <span class="mask  bg-gradient-3 opacity-6"></span>
+          </div>
+          <div class="card card-body mx-3 mx-md-4 mt-n6">
+            <div class="row gx-4 mb-2">
+              <div class="col-auto">
+                <div class="avatar avatar-xl position-relative">
+                  <img src="../static/images/australia.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                </div>
+              </div>
+              <div class="col-auto my-auto">
+                <div class="h-100">
+                  <h5 class="mb-1">
+                    {{c.0.4}} ({{c.0.1}})
+                  </h5>
+                  <p class="mb-0 font-weight-normal text-sm">
+                    Formula One Race / Carrera de Fórmula Uno
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            {% if c %}
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="card card-plain h-100">
+                      <div class="card-header pb-0 p-3">
+                        <h6 class="mb-0">Detalles</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <h6 class="text-uppercase text-body text-xs font-weight-bolder">Detalles geográficos</h6>
+                        <ul class="list-group">
+                          <li class="list-group-item border-0 px-0">
+                            <div class="form-check form-switch ps-0">
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Nombre de la carrera:</strong> &nbsp; {{c.0.4}}</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Fecha:</strong> &nbsp; {{c.0.5}} ({{c.0.1}})</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Circuito:</strong> &nbsp; circuito: <a href="/circuits/{{cir.id}}">{{cir.nombre}}</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Latitud:</strong> &nbsp; {{cir.latitud}}</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Altura:</strong> &nbsp; {{cir.altura}}</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Longitud:</strong> &nbsp; {{cir.longitud}}</li>
+                                {% if nm %}
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Temperatura mínima:</strong> &nbsp; {{m.0.0}} ºC</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Temperatura :</strong> &nbsp; {{m.0.1}}</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Precipitaciones :</strong> &nbsp; {{m.0.2}} mm</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Humedad :</strong> &nbsp; {{m.0.3}}</li>
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Condiciones :</strong> &nbsp; {{m.0.4}}</li>
+                              {% endif %}
+                              <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Más información:</strong> <a href="{{c.enlace}}"> Enlace para obtener más información sobre el piloto </a></li>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                </div>
+              <div class="col-sm-4">
+                <div class="card card-plain h-100">
+                  <div class="card-header pb-0 p-3">
+                    <h6 class="mb-0">Detalles</h6>
+                  </div>
+                  <div class="card-body p-3">
+                    <h6 class="text-uppercase text-body text-xs font-weight-bolder">Detalles de carrera</h6>
+                    <ul class="list-group">
+                      <li class="list-group-item border-0 px-0">
+
+                        <div class="form-check form-switch ps-0">
+                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Posición de Pole:</strong> &nbsp; {{pole}}</li>
+                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Ganador:</strong> &nbsp;
+
+                             {{p.0.1.nombre}} {{p.0.1.apellidos}}
+                            </li>
+                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Segundo:</strong> &nbsp;
+                                {{p.1.1}} {{p.1.1.apellidos}}
+                            </li>
+                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Tercero:</strong> &nbsp;
+                                {{p.2.1}} {{p.2.1.apellidos}}
+                            </li>
+                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Tiempo de vuelta rápida:</strong> &nbsp;
+                                {% if fl %}
+                                {{v_rapida.3}} min
+                                {% else %}            
+                                No hay datos específicos de vuelta rápida para esta carrera.
+                                {% endif %}
+                            </li>
+                                <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Piloto de vuelta rápida:</strong> &nbsp;
+                                {% if fl %}
+                                    <a href="/driver/{{v_rapida.0}}">{{v_rapida.1}}<a>
+                                {% else %}            
+                                No hay datos específicos de vuelta rápida para esta carrera.
+                                {% endif %}
+                            </li>
+                                <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Escudería del piloto:</strong> &nbsp;
+                                    {% if fl %}
+                                    {{v_rapida.2}}
+                                    {% else %}            
+                                    No hay datos específicos de vuelta rápida para esta carrera.
+                                    {% endif %}
+                            </li>
+                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Máxima velocidad alcanzada:</strong> &nbsp; 
+                                {% if ms %}
+                                {{max_vel.3}} km/h 
+                                {% else %}
+                                No hay datos específicos de máxima velocidad para esta carrera.
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Piloto con mayor velocidad alcanzada:</strong> &nbsp; 
+                                    {% if ms %}
+                                    <a href="/driver/{{max_vel.0}}">{{max_vel.1}}<a>
+                                    {% else %}
+                                        No hay datos específicos de máxima velocidad para esta carrera.
+                                    {% endif %}
+                            </li>
+                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Escudería del piloto:</strong> &nbsp; 
+                                    {% if ms %}
+                                    {{max_vel.2}}
+                                    {% else %}
+                                    No hay datos específicos de máxima velocidad para esta carrera.
+                                    {% endif %}
+                            </li>
+                        </div>  
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+              
+        {%endif%}
+      <!--   Core JS Files   -->
+    
+      <script src="{% static '/js/dataanalytics/driver/profile_driver.js'%}"></script>
+      <script src="{% static '/js/core/popper.min.js'%}"></script>
+      <script src="{% static '/js/core/bootstrap.min.js'%}"></script>
+      <script src="{% static '/js/plugins/perfect-scrollbar.min.js'%}"></script>
+      <script src="{% static '/js/plugins/smooth-scrollbar.min.js'%}"></script>
+      <script>
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+          var options = {
+            damping: '0.5'
+          }
+          Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+      </script>
+      <!-- Github buttons -->
+      <script async defer src="https://buttons.github.io/buttons.js"></script>
+      <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+      <script src="{% static '/js/material-dashboard.min.js'%}"></script>
+    
+    
+      
+    </body>
 {% endblock %}
