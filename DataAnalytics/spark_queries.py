@@ -1,6 +1,8 @@
 import csv 
 from csv import writer
 
+import numpy as np
+
 from F1Analytics import settings
 from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
@@ -962,4 +964,47 @@ def check_notexists(name,year):
     
     
     return ((len(race) == 0),race)
+
+
+
+''' Obtener datos de meteorología de una temporada'''
+
+def get_meteo_byseason(year):
+    ''' Obtenemos los datos de meteorología de una temporada'''
+    res = []
+    meteo = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
+    meteo = meteo.filter(meteo.temporada == year).collect()
+    for m in meteo:
+        nombre = m["nombre"]
+        temp_min = m["min_temp"]
+        temp = m["temperatura"]
+        humedad = m["humedad"]
+        precipitaciones = m["precipitacion"]
+        condiciones = m["condiciones"]
+        res.append((nombre,temp_min,temp,humedad,precipitaciones,condiciones))
+    return res
+
+
+def get_evolution_temp(season):
+    ''' Obtenemos la evolución de la temperatura a lo largo de la temporada'''
+    names = []
+    temps = []
+    meteo = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
+    meteo = meteo.filter(meteo.temporada == season).collect()
+    for m in meteo:
+        nombre = m["nombre"]
+        temp = m["temperatura"]
+        names.append(nombre)
+        temps.append(temp)
+    return names, temps
+
+def get_avg_hum(season):
+    ''' Obtenemos la media de la humedad a lo largo de la temporada'''
+    hums = []
+    meteo = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
+    meteo = meteo.filter(meteo.temporada == season).collect()
+    for m in meteo:
+        hum = float(m["humedad"])
+        hums.append(hum)
+    return np.mean(hums)
 

@@ -1,0 +1,396 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/x-icon" href="{% static 'images/f1icon.ico' %} " />
+  <title>
+    F1DataAnalytics Dashboard
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+  <link href="{% static 'css/dashboard/nucleo-icons.css'%}" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link href="{% static 'css/dashboard/black-dashboard.css'%}" rel="stylesheet" />
+  <link href="{% static 'css/dashboard/control/demo.css" rel="stylesheet'%}" />
+</head>
+
+<body class="">
+  <div class="wrapper">
+    <div class="sidebar">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+    -->
+      <div class="sidebar-wrapper">
+        <div class="logo">
+          <a href="javascript:void(0)" class="simple-text logo-mini">
+            F1
+          </a>
+          <a href="javascript:void(0)" class="simple-text logo-normal">
+            Estadísticas F1
+          </a>
+        </div>
+        <ul class="nav">
+          <li>
+            <a href="/">
+              <i class="tim-icons icon-spaceship"></i>
+              <p>Inicio</p>
+            </a>
+          </li>
+          <li class="active">
+            <a href={% url 'dashboard' %}>
+              <i class="tim-icons icon-chart-pie-36"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <li>
+            <a href="/dashboard/twitter/10">
+              <i class="tim-icons icon-sound-wave"></i>
+              <p>Twitter</p>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <i class="tim-icons icon-zoom-split"></i>
+              <p>Meteorología</p>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'stats' %}">
+              <i class="tim-icons icon-chart-bar-32"></i>
+              <p>Estadísticas</p>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'standings' %}">
+              <i class="tim-icons icon-trophy"></i>
+              <p>Clasificación</p>
+            </a>
+          </li>
+          <li>
+            <a href="./typography.html">
+              <i class="tim-icons icon-atom"></i>
+              <p>Predicciones</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle d-inline">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <div class="row">
+              <div class="col col-md-12">
+                <img class="navbar-logo" alt="Logotipo de la aplicación" src="{% static '/images/logobarra.png' %}" />
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </nav>
+      <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i class="tim-icons icon-simple-remove"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card ">
+                  <div class="card-header">
+                    
+                    <h4 class="card-title">DATOS SOBRE LA METEOROLOGÍA EN LA TEMPORADA</h4>
+                    <p class="category"> Datos escogidos gracias a Visual Crossing API</p>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table tablesorter " id="sortDriverTable">
+                        <thead class=" text-primary">
+                          <tr>
+                            <th class="text-center">
+                              Carrera
+                            </th>
+                            <th class="text-center">
+                              Temperatura mínima
+                            </th>
+                            <th class="text-center">
+                              Temperatura
+                            </th>
+                            <th class="text-center">
+                             
+                              Precipitaciones
+                            </th>
+                            <th class="text-center">
+                              Humedad
+                            </th>
+                            <th class="text-center">
+                                Condiciones
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for w in weather %}
+                            <tr>   
+                                <td class="text-center">{{w.0}}</td>
+                                <td class="text-center">{{w.1}} ºC</td>
+                                <td class="text-center">{{w.2}} ºC</td>
+                                <td class="text-center">{{w.4}}</td>
+                                <td class="text-center">{{w.3}}</td>
+                                <td class="text-center">{{w.5}}</td>
+                            </tr>  
+                            {% endfor %}
+                          
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card ">
+                  <div class="card-header">
+                    
+                    <h4 class="card-title">ESTADÍSTICAS DE METEOROLOGÍA EN LA TEMPORADA</h4>
+                    <p class="category"> Evolución de temperatura media</p>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="chartLinePurple"></canvas>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="card ">
+                      <div class="card-header">
+                        
+                        <h4 class="card-title">ESTADÍSTICAS DE METEOROLOGÍA EN LA TEMPORADA</h4>
+                        <p class="category"> Media de humedad en carreras</p>
+                      </div>
+                      <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="sectorProgresschart"></canvas>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>
+
+        </div>
+        
+        </div>
+      <footer class="footer">
+        <div class="container px-5">
+          <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+              <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; F1DataAnalytics, 2023</div></div>
+              <div class="col-auto">
+                  <a class="link-light small" href="#!">Privacidad</a>
+                  <span class="text-white mx-1">&middot;</span>
+                  <a class="link-light small" href="#!">Términos</a>
+                  <span class="text-white mx-1">&middot;</span>
+                  <a class="link-light small" href="#!">Contacto</a>
+              </div>
+          </div>
+      </div>
+      </footer>
+    </div>
+  </div>
+  <div class="fixed-plugin">
+    <div class="dropdown show-dropdown">
+      <a href="#" data-toggle="dropdown">
+        <i class="fa fa-cog fa-2x"> </i>
+      </a>
+      <ul class="dropdown-menu">
+        <li class="header-title"> Color de la barra</li>
+        <li class="adjustments-line">
+          <a href="javascript:void(0)" class="switch-trigger background-color">
+            <div class="badge-colors text-center">
+              <span class="badge filter badge-primary active" data-color="primary"></span>
+              <span class="badge filter badge-info" data-color="blue"></span>
+              <span class="badge filter badge-success" data-color="green"></span>
+            </div>
+            <div class="clearfix"></div>
+          </a>
+        </li>
+        <li class="adjustments-line text-center color-change">
+          <span class="color-label">MODO LUMINOSO</span>
+          <span class="badge light-badge mr-2"></span>
+          <span class="badge dark-badge ml-2"></span>
+          <span class="color-label">MODO OSCURO</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DATOS DE LA GRÁFICA EVOLUTIVA TEMPERATURA -->
+  <div id="json_names" data-json='{{ json_names |safe }}'></div>
+  <div id="json_temps" data-json='{{ json_temps |safe }}'></div>
+
+  <!-- Datos de la gráfica media humedad-->
+    <div id="json_avg_hum" data-json='{{ json_avg_hum |safe }}'></div>
+  <!--   Core JS Files   -->
+  <script src="{% static '/js/dashboard/core/jquery.min.js'%}"></script>
+  <script src="{% static '/js/dashboard/core/popper.min.js'%}"></script>
+  <script src="{% static '/js/dashboard/core/bootstrap.min.js'%}"></script>
+  <script src="{% static '/js/dashboard/plugins/perfect-scrollbar.jquery.min.js'%}"></script>
+    
+  <!-- Chart JS -->
+  <script src="{% static '/js/dashboard/plugins/chartjs.min.js'%}"></script>
+  
+  <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{% static '/js/dashboard/black-dashboard.min.js'%}"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
+  <script src="{% static 'js/dashboard/control/meteo.js'%}"></script>
+  <script>
+    $(document).ready(function() {
+      $().ready(function() {
+        $sidebar = $('.sidebar');
+        $navbar = $('.navbar');
+        $main_panel = $('.main-panel');
+
+        $full_page = $('.full-page');
+
+        $sidebar_responsive = $('body > .navbar-collapse');
+        sidebar_mini_active = true;
+        white_color = false;
+
+        window_width = $(window).width();
+
+        fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+
+
+        $('.fixed-plugin a').click(function(event) {
+          if ($(this).hasClass('switch-trigger')) {
+            if (event.stopPropagation) {
+              event.stopPropagation();
+            } else if (window.event) {
+              window.event.cancelBubble = true;
+            }
+          }
+        });
+
+        $('.fixed-plugin .background-color span').click(function() {
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data', new_color);
+          }
+
+          if ($main_panel.length != 0) {
+            $main_panel.attr('data', new_color);
+          }
+
+          if ($full_page.length != 0) {
+            $full_page.attr('filter-color', new_color);
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.attr('data', new_color);
+          }
+        });
+
+        $('.switch-sidebar-mini input').on("switchChange.bootstrapSwitch", function() {
+          var $btn = $(this);
+
+          if (sidebar_mini_active == true) {
+            $('body').removeClass('sidebar-mini');
+            sidebar_mini_active = false;
+            blackDashboard.showSidebarMessage('Sidebar mini deactivated...');
+          } else {
+            $('body').addClass('sidebar-mini');
+            sidebar_mini_active = true;
+            blackDashboard.showSidebarMessage('Sidebar mini activated...');
+          }
+
+          // we simulate the window Resize so the charts will get updated in realtime.
+          var simulateWindowResize = setInterval(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, 180);
+
+          // we stop the simulation of Window Resize after the animations are completed
+          setTimeout(function() {
+            clearInterval(simulateWindowResize);
+          }, 1000);
+        });
+
+        $('.switch-change-color input').on("switchChange.bootstrapSwitch", function() {
+          var $btn = $(this);
+
+          if (white_color == true) {
+
+            $('body').addClass('change-background');
+            setTimeout(function() {
+              $('body').removeClass('change-background');
+              $('body').removeClass('white-content');
+            }, 900);
+            white_color = false;
+          } else {
+
+            $('body').addClass('change-background');
+            setTimeout(function() {
+              $('body').removeClass('change-background');
+              $('body').addClass('white-content');
+            }, 900);
+
+            white_color = true;
+          }
+
+
+        });
+
+        $('.light-badge').click(function() {
+          $('body').addClass('white-content');
+        });
+
+        $('.dark-badge').click(function() {
+          $('body').removeClass('white-content');
+        });
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      demo.initDashboardPageCharts();
+
+    });
+  </script>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS &&
+      TrackJS.install({
+        token: "ee6fab19c5a04ac1a32a645abde4613a",
+        application: "black-dashboard-free"
+      });
+  </script>
+</body>
+
+</html>

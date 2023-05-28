@@ -1,9 +1,10 @@
+import datetime
 from django.shortcuts import render, redirect
 from django.conf import settings
 #from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
 from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping,constructors_scrapping
-from DataAnalytics.spark_queries import get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
+from DataAnalytics.spark_queries import get_avg_hum, get_evolution_temp, get_meteo_byseason, get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
 from DataAnalytics.spark_queries_teams import get_teams_comparison,get_twitter_team_evolution
 import logging
 import json
@@ -264,5 +265,28 @@ def get_view_standings(request):
     }
     return render(request, 'dashboard/standings.html',context)
 #endregion Vista de Clasificación
+
+
+#region Vista de Meteorología
+
+def get_view_weather(request):
+    season = datetime.datetime.now().year
+    weather = get_meteo_byseason(season)
+    names, temps = get_evolution_temp(season)
+    avg_hum = get_avg_hum(season)
+    json_names = json.dumps(names)
+    json_temps = json.dumps(temps)
+    json_avg_hum = json.dumps(avg_hum)
+    context = {
+        'weather':weather,
+        'json_names':json_names,
+        'json_temps':json_temps,
+        'json_avg_hum':json_avg_hum,
+    }
+    return render(request, 'dashboard/weather.html',context)
+
+#endregion Vista de Meteorología
+
+
 
 ''' APARTADO TWITTER '''
