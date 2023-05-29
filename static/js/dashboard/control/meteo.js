@@ -413,7 +413,7 @@ demo = {
       options: gradientChartOptionsConfigurationWithTooltipPurple
     });
 
-    /* DIAGRAMA DE SECTORES */
+    /* DIAGRAMA DE SECTORES HUMEDAD*/
     var ctx = document.getElementById('sectorProgresschart').getContext('2d');
     var myChart = new Chart(ctx, {
       type: 'pie',
@@ -422,6 +422,39 @@ demo = {
         datasets: [{
           label: 'Media de humedad en carreras',
           data: [value, rest_value],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)'
+          ],
+          borderWidth: 1
+        }]
+      }
+    });
+
+
+    /* DIAGRAMA DE SECTORES CONDICIONES */
+
+
+    //const conditions_percentage = document.getElementById('json_avg_conditions')
+
+    const values = document.getElementById('json_avg_conditions')
+    const conditions_percentage = JSON.parse(values.dataset.json);
+
+
+    var ctx = document.getElementById('sectorConditionsProgresschart').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Lluvia', 'Despejado','Nublado'],
+        datasets: [{
+          label: 'Porcentaje de condiciones en carreras',
+          data: conditions_percentage,
           backgroundColor: [
             'rgba(255, 99, 132, 0.7)',
             'rgba(54, 162, 235, 0.7)',

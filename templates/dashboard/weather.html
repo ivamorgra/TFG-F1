@@ -197,8 +197,22 @@
                       </div>
                     </div>
                   </div>
+                <div class="col-md-6">
+                    <div class="card ">
+                      <div class="card-header">
+                        
+                        <h4 class="card-title">ESTADÍSTICAS DE METEOROLOGÍA EN LA TEMPORADA</h4>
+                        <p class="category"> Condiciones en carreras</p>
+                      </div>
+                      <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="sectorConditionsProgresschart"></canvas>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-            </div>
+              </div>
             </div>
 
         </div>
@@ -252,7 +266,10 @@
   <div id="json_temps" data-json='{{ json_temps |safe }}'></div>
 
   <!-- Datos de la gráfica media humedad-->
-    <div id="json_avg_hum" data-json='{{ json_avg_hum |safe }}'></div>
+  <div id="json_avg_hum" data-json='{{ json_avg_hum |safe }}'></div>
+
+  <!-- Datos de la gráfica media humedad-->
+  <div id="json_avg_conditions" data-json='{{ json_avg_conditions |safe }}'></div>
   <!--   Core JS Files   -->
   <script src="{% static '/js/dashboard/core/jquery.min.js'%}"></script>
   <script src="{% static '/js/dashboard/core/popper.min.js'%}"></script>

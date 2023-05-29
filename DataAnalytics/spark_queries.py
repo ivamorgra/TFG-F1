@@ -1008,3 +1008,21 @@ def get_avg_hum(season):
         hums.append(hum)
     return np.mean(hums)
 
+def get_avg_conditions(season):
+    ''' Obtenemos la media de las condiciones a lo largo de la temporada'''
+    meteo = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
+    meteo = meteo.filter(meteo.temporada == season)
+    
+    ''' Obtenemos el número de carreras que hay en la temporada'''
+
+    num_races = meteo.count()
+
+
+    conds = ['Rain','Clear','cloudy']
+    res = []
+
+    for c in conds:
+        value = meteo.filter(col("condiciones").like("%{}%".format(c))).count() / num_races
+        res.append(value)
+
+    return res

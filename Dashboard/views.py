@@ -4,7 +4,7 @@ from django.conf import settings
 #from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
 from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping,constructors_scrapping
-from DataAnalytics.spark_queries import get_avg_hum, get_evolution_temp, get_meteo_byseason, get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
+from DataAnalytics.spark_queries import get_avg_conditions, get_avg_hum, get_evolution_temp, get_meteo_byseason, get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
 from DataAnalytics.spark_queries_teams import get_teams_comparison,get_twitter_team_evolution
 import logging
 import json
@@ -274,14 +274,19 @@ def get_view_weather(request):
     weather = get_meteo_byseason(season)
     names, temps = get_evolution_temp(season)
     avg_hum = get_avg_hum(season)
+    avg_conditions = get_avg_conditions(season)
+
     json_names = json.dumps(names)
     json_temps = json.dumps(temps)
     json_avg_hum = json.dumps(avg_hum)
+    json_avg_conditions = json.dumps(avg_conditions)
+
     context = {
         'weather':weather,
         'json_names':json_names,
         'json_temps':json_temps,
         'json_avg_hum':json_avg_hum,
+        'json_avg_conditions':json_avg_conditions,
     }
     return render(request, 'dashboard/weather.html',context)
 
