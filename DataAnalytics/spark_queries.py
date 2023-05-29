@@ -389,7 +389,7 @@ def get_top3drivers_evolution(abreviaturas):
     actual_year = actual_date.year
 
     #Obtenemos las carreras hasta la fecha
-    races = Carrera.objects.filter(temporada=actual_year)
+    races = Carrera.objects.filter(temporada=actual_year).order_by('fecha')
     #Pasamos las carreras a un array de python
     races_list = races.values_list('id')
     names_races_list = races.values_list('nombre')
@@ -967,8 +967,7 @@ def check_notexists(name,year):
 
 
 
-''' Obtener datos de meteorología de una temporada'''
-
+#region Obtener datos de meteorología de una temporada
 def get_meteo_byseason(year):
     ''' Obtenemos los datos de meteorología de una temporada'''
     res = []
@@ -983,8 +982,8 @@ def get_meteo_byseason(year):
         condiciones = m["condiciones"]
         res.append((nombre,temp_min,temp,humedad,precipitaciones,condiciones))
     return res
-
-
+#endregion Obtener datos de meteorología de una temporada
+#region Obtener evolución de la temperatura de una temporada
 def get_evolution_temp(season):
     ''' Obtenemos la evolución de la temperatura a lo largo de la temporada'''
     names = []
@@ -997,7 +996,8 @@ def get_evolution_temp(season):
         names.append(nombre)
         temps.append(temp)
     return names, temps
-
+#endregion Obtener evolución de la temperatura de una temporada
+#region Obtener media de la humedad de una temporada
 def get_avg_hum(season):
     ''' Obtenemos la media de la humedad a lo largo de la temporada'''
     hums = []
@@ -1007,7 +1007,8 @@ def get_avg_hum(season):
         hum = float(m["humedad"])
         hums.append(hum)
     return np.mean(hums)
-
+#endregion Obtener media de la humedad de una temporada
+#region Obtener condiciones de una temporada
 def get_avg_conditions(season):
     ''' Obtenemos la media de las condiciones a lo largo de la temporada'''
     meteo = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
@@ -1026,3 +1027,4 @@ def get_avg_conditions(season):
         res.append(value)
 
     return res
+#endregion Obtener condiciones de una temporada
