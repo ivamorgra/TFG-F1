@@ -448,7 +448,7 @@ def get_top3teams_evolution(names):
     actual_year = datetime.datetime.now().year
 
     #Obtenemos las carreras 
-    races = Carrera.objects.filter(temporada=actual_year)
+    races = Carrera.objects.filter(temporada=actual_year).order_by('fecha') 
     races_list = races.values_list('id')
 
     try:
@@ -459,7 +459,7 @@ def get_top3teams_evolution(names):
         team_3 = Constructor.objects.filter(Q(nombre__icontains= names[2].split(' ')[0] ), activo = 1).get()
 
         #Obtenemos los puntos de los equipos en cada carrera
-        results = spark.read.csv("./datasets/constructor_results.csv", header=True,sep=",")
+        results = spark.read.csv("./datasets/results.csv", header=True,sep=",")
         
         for r in races_list:
             
