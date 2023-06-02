@@ -285,7 +285,7 @@ def get_comparation_team_evolution(ids):
     actual_year = actual_date.year
 
     #Obtenemos las carreras hasta la fecha
-    races = Carrera.objects.filter(temporada=actual_year)
+    races = Carrera.objects.filter(temporada=actual_year).order_by('fecha')
     #Pasamos las carreras a un array de python
     races_list = races.values_list('id')
     names_races_list = races.values_list('nombre')

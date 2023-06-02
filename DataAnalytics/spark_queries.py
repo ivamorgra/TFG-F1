@@ -2,7 +2,7 @@ import csv
 from csv import writer
 
 import numpy as np
-
+from collections import Counter
 from F1Analytics import settings
 from .models import Circuito, Piloto, Constructor
 from pyspark import SparkContext
@@ -656,7 +656,7 @@ def get_comparation_drivers_evolution(ids):
     actual_year = actual_date.year
 
     #Obtenemos las carreras hasta la fecha
-    races = Carrera.objects.filter(temporada=actual_year)
+    races = Carrera.objects.filter(temporada=actual_year).order_by('fecha')
     #Pasamos las carreras a un array de python
     races_list = races.values_list('id')
     names_races_list = races.values_list('nombre')
@@ -1009,6 +1009,7 @@ def get_avg_hum(season):
     return np.mean(hums)
 #endregion Obtener media de la humedad de una temporada
 #region Obtener condiciones de una temporada
+
 def get_avg_conditions(season):
     ''' Obtenemos la media de las condiciones a lo largo de la temporada'''
     meteo = spark.read.csv("./datasets/meteo.csv", header=True,sep=",")
@@ -1028,3 +1029,83 @@ def get_avg_conditions(season):
 
     return res
 #endregion Obtener condiciones de una temporada
+
+
+#region Procesamiento del dataframe de predicciones
+def process_predictions(df): 
+    ''' df es un dataframe'''
+    #posiciones = df['position'].tolist()
+    
+    # Calcular la posición que más se repite y su frecuencia
+    '''
+    contador_posiciones = Counter(posiciones)
+    posicion_mas_repetida = contador_posiciones.most_common(1)[0][0]
+    frecuencia_posicion = contador_posiciones.most_common(1)[0][1]
+    '''
+    # Calcular el valor a dividir entre 3
+    #valor_dividir = frecuencia_posicion / 3
+    
+    # Obtener un diccionario con los nombres de los pilotos y la posición repetida
+    '''
+    res = {}
+    nombres_pilotos = df['forename'] + ' ' + df['surname']
+    for nombre, posicion in zip(nombres_pilotos, posiciones):
+        if posicion == posicion_mas_repetida:
+            res[nombre] = {
+                'posicion': posicion,
+                'porcentaje': valor_dividir
+            }
+    '''
+    ''' Conversión del dataframe 
+    lista_df = df.collect()
+    #lista_rows = [list(fila) for fila in lista_df]
+
+    for fila in lista_df:
+        driver_name = res['forename']
+
+        if driver_name in res:
+
+        else:
+            res[driver_name] = 
+    '''
+    '''
+    result = df.groupBy("forename", "position").agg(count("position").alias("contador"))
+    result = result.groupBy("forename").agg(max("contador").alias("max_contador"))
+
+    # Convertir el resultado en un diccionario
+    diccionario = {fila["forename"]: fila["max_contador"] for fila in result.collect()}
+
+    # Imprimir el diccionario
+    print(diccionario)
+    '''
+    count_df = df.count()
+    distinct_df = df.select("prediction","forename","surname", "probability").dropDuplicates(["prediction", "forename"])
+    #distinct_df = df.select("prediction", "forename","probability").distinct()
+    count_ddf= distinct_df.count()
+    # Mostrar el resultado
+    #distinct_df.show()
+    sorted_df = distinct_df.orderBy(distinct_df["prediction"].asc())  # Orden descendente
+    sorted_df.show()
+    res = []
+    for row in sorted_df.collect():
+        predict = [
+            int(row['prediction']) if int(row['prediction']) != 0 else 'DNF',
+            row['forename'],
+            row['surname']
+        ]
+        array_probability = list(row['probability'])
+        probability = int(array_probability[int(row['prediction'])])
+        res_prob = 'Alta'
+        if (probability < 0.5):
+            res_prob = 'Baja'
+        predict.append(res_prob)
+        
+        res.append(predict)
+
+    
+    return  sorted(res, key=lambda x: (isinstance(x[0], int), x[0]))
+
+    #return res
+#endregion Procesamiento del dataframe de predicciones
+
+

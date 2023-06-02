@@ -3,9 +3,10 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 #from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
-from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping,constructors_scrapping
-from DataAnalytics.spark_queries import get_avg_conditions, get_avg_hum, get_evolution_temp, get_meteo_byseason, get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution
+from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping,constructors_scrapping, next_race_scrapping
+from DataAnalytics.spark_queries import get_avg_conditions, get_avg_hum, get_evolution_temp, get_meteo_byseason, get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution, process_predictions
 from DataAnalytics.spark_queries_teams import get_teams_comparison,get_twitter_team_evolution
+from Dashboard.model import train_model
 import logging
 import json
 
@@ -287,11 +288,22 @@ def get_view_weather(request):
         'json_temps':json_temps,
         'json_avg_hum':json_avg_hum,
         'json_avg_conditions':json_avg_conditions,
+        'STATIC_URL':settings.STATIC_URL
     }
     return render(request, 'dashboard/weather.html',context)
 
 #endregion Vista de Meteorología
 
+def get_view_predictions(request):
+    df = train_model()
+    res = process_predictions(df)
+    next_race = next_race_scrapping()
+    context = {
+        'res': res,
+        'race': next_race,
+        'STATIC_URL':settings.STATIC_URL
 
+    }
+    return render(request, 'dashboard/predictions.html',context)
 
 ''' APARTADO TWITTER '''

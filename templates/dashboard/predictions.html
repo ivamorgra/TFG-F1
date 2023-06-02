@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/x-icon" href="{% static 'images/f1icon.ico' %} " />
   <title>
-    Clasificación
+    Predicciones F1
   </title>
   <!--     Fonts and icons     -->
  <!--     Fonts and icons     -->
@@ -17,7 +17,7 @@
  <link href="{% static 'css/dashboard/nucleo-icons.css'%}" rel="stylesheet" />
  <!-- CSS Files -->
  <link href="{% static 'css/dashboard/black-dashboard.css'%}" rel="stylesheet" />
- <link href="{% static 'css/dashboard/control/demo.css" rel="stylesheet'%}" />
+ <link href="{% static 'css/dashboard/control/demo.css'%}" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -48,8 +48,8 @@
                     <p>Dashboard</p>
                 </a>
             </li>
-            <li>
-              <a href="href=/dashboard/twitter/10">
+            <li class="active">
+              <a href="/#">
                 <i class="tim-icons icon-sound-wave"></i>
                 <p>Twitter</p>
               </a>
@@ -57,7 +57,13 @@
             <li>
               <a href="./map.html">
                 <i class="tim-icons icon-zoom-split"></i>
-                <p>Meteorología</p>
+                <p>Tendencias</p>
+              </a>
+            </li>
+            <li>
+              <a href="./notifications.html">
+                <i class="tim-icons icon-single-02"></i>
+                <p>Popularidad</p>
               </a>
             </li>
             <li>
@@ -66,14 +72,14 @@
                 <p>Estadísticas</p>
               </a>
             </li>
-            <li class="active">
+            <li>
               <a href="{% url 'standings' %}">
                 <i class="tim-icons icon-trophy"></i>
                 <p>Clasificación</p>
               </a>
             </li>
             <li>
-              <a href="./typography.html">
+              <a href="{% url 'predictions' %}">
                 <i class="tim-icons icon-atom"></i>
                 <p>Predicciones</p>
               </a>
@@ -121,81 +127,40 @@
             <div class="card ">
               <div class="card-header">
                 
-                <h4 class="card-title">CLASIFICACIÓN PILOTOS</h4>
-                <p class="category"> Clasificación actual del mundial de Fórmula 1</p>
-                
+                <h4 class="card-title">PREDICCIÓN DE LA PRÓXIMA CARRERA: {{race.5}}</h4>
+                <p class="category">  </p>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table tablesorter " id="">
+                  <table class="table tablesorter " id="sortDriverTable">
                     <thead class=" text-primary">
                       <tr>
-                        <th >
-                            Posición
+                        <th class="text-center">
+                          Posición
                         </th>
-                        <th>
-                          Nombre del piloto
+                        <th class="text-center">
+                          Nombre
                         </th>
-                        <th>
-                          Nacionalidad
+                        <th class="text-center">
+                          Apellido
                         </th>
-                        <th>
-                          Coche
+                        <th class="text-center">
+                         
+                          Probabilidad
                         </th>
-                        <th >
-                          Puntos
-                        </th>
-                        
+
                       </tr>
                     </thead>
                     <tbody>
-                        {% for s in driver_standings %}
+                      {% for r in res %}
                         <tr>   
-                            <td>{{s.1}}</td>
-                            <td >{{s.2}} {{s.3}}</td>
-                            <td >{{s.5}}</td>
-                            <td >{{s.6}}</td>
-                            <td>{{s.7}}</td>
+
+                            <td class="text-center">{{r.0}}</td>
+                            <td class="text-center">{{r.1}}</td>
+                            <td class="text-center">{{r.2}}</td>
+                            <td class="text-center">{{r.3}}</td>
                         </tr>  
                         {% endfor %}
-                      
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="card  card-plain">
-              <div class="card-header">
-                <h4 class="card-title"> CLASIFICACIÓN EQUIPOS</h4>
-                <p class="category">Clasificación actual del mundial de constructores de la Fórmula 1</p>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table tablesorter " id="">
-                    <thead class=" text-primary">
-                        <tr>
-                            <th>
-                              Posición
-                            </th>
-                            <th>
-                              Nombre del equipo
-                            </th>
-                            <th>
-                              Puntos
-                            </th>
-                          </tr>
-                    </thead>
-                    <tbody>
-                        {% for s in team_standings %}
-                        <tr>   
-                            <td>{{s.1}}</td>
-                            <td>{{s.2}}</td>
-                            <td >{{s.3}}</td>
-                        </tr>  
-                        {% endfor %}
-                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -246,6 +211,7 @@
       </ul>
     </div>
   </div>
+  
   <!--   Core JS Files   -->
   <script src="{% static '/js/dashboard/core/jquery.min.js'%}"></script>
   <script src="{% static '/js/dashboard/core/popper.min.js'%}"></script>
@@ -257,7 +223,7 @@
   
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static '/js/dashboard/black-dashboard.min.js'%}"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
-  
+  <script src="{% static 'js/dashboard/control/twitter.js'%}"></script>
   <script>
     $(document).ready(function() {
       $().ready(function() {

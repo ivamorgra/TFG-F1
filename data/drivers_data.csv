@@ -1,0 +1,21 @@
+driverId,driverRef,number,code,forename,surname,dob,nationality,url
+1,"hamilton",44,"HAM","Lewis","Hamilton","1985-01-07","British","http://en.wikipedia.org/wiki/Lewis_Hamilton"
+4,"alonso",14,"ALO","Fernando","Alonso","1981-07-29","Spanish","http://en.wikipedia.org/wiki/Fernando_Alonso"
+830,"max_verstappen",33,"VER","Max","Verstappen","1997-09-30","Dutch","http://en.wikipedia.org/wiki/Max_Verstappen"
+856,Perez,11,PER,Sergio,Perez,1990-01-26,Mexico,\N
+857,Piastri,81,PIA,Oscar,Piastri,2001-04-06,Australia,\N
+858,Hulkenberg,27,HUL,Nico,Hulkenberg,1987-08-19,Germany,\N
+859,De Vries,21,DE ,Nyck,De Vries,1995-02-06,Netherlands,\N
+860,Sargeant,2,SAR,Logan,Sargeant,2001-12-31,United States,\N
+852,"tsunoda",22,"TSU","Yuki","Tsunoda","2000-05-11","Japanese","http://en.wikipedia.org/wiki/Yuki_Tsunoda"
+855,"zhou",24,"ZHO","Guanyu","Zhou","1999-05-30","Chinese","http://en.wikipedia.org/wiki/Guanyu_Zhou"
+844,"leclerc",16,"LEC","Charles","Leclerc","1997-10-16","Monegasque","http://en.wikipedia.org/wiki/Charles_Leclerc"
+839,"ocon",31,"OCO","Esteban","Ocon","1996-09-17","French","http://en.wikipedia.org/wiki/Esteban_Ocon"
+840,"stroll",18,"STR","Lance","Stroll","1998-10-29","Canadian","http://en.wikipedia.org/wiki/Lance_Stroll"
+807,"hulkenberg",27,"HUL","Nico","Hülkenberg","1987-08-19","German","http://en.wikipedia.org/wiki/Nico_H%C3%BClkenberg"
+32,"sainz",55,"SAI","Carlos","Sainz","1994-09-01","Spanish","http://en.wikipedia.org/wiki/Carlos_Sainz_Jr."
+825,"kevin_magnussen",20,"MAG","Kevin","Magnussen","1992-10-05","Danish","http://en.wikipedia.org/wiki/Kevin_Magnussen"
+847,"russell",63,"RUS","George","Russell","1998-02-15","British","http://en.wikipedia.org/wiki/George_Russell_%28racing_driver%29"
+848,"albon",23,"ALB","Alexander","Albon","1996-03-23","Thai","http://en.wikipedia.org/wiki/Alexander_Albon"
+842,"gasly",10,"GAS","Pierre","Gasly","1996-02-07","French","http://en.wikipedia.org/wiki/Pierre_Gasly"
+822,"bottas",77,"BOT","Valtteri","Bottas","1989-08-28","Finnish","http://en.wikipedia.org/wiki/Valtteri_Bottas"

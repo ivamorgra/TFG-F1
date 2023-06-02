@@ -57,7 +57,7 @@ ROOT_URLCONF = 'F1Analytics.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates','datasets'],
+        'DIRS': ['templates','datasets','data'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
