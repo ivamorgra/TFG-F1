@@ -43,27 +43,21 @@
               </a>
             </li>
             <li>
-                <a href={% url 'dashboard' %}>
+                <a href="{% url 'dashboard' %}">
                     <i class="tim-icons icon-chart-pie-36"></i>
                     <p>Dashboard</p>
                 </a>
             </li>
             <li class="active">
-              <a href="{% url 'twitter' num=10 %}">
+              <a href="{% url 'twitter' %}">
                 <i class="tim-icons icon-sound-wave"></i>
                 <p>Twitter</p>
               </a>
             </li>
             <li>
-              <a href="./map.html">
+              <a href="{% url 'meteo' %}">
                 <i class="tim-icons icon-zoom-split"></i>
-                <p>Tendencias</p>
-              </a>
-            </li>
-            <li>
-              <a href="./notifications.html">
-                <i class="tim-icons icon-single-02"></i>
-                <p>Popularidad</p>
+                <p>Meteorología</p>
               </a>
             </li>
             <li>
@@ -79,7 +73,7 @@
               </a>
             </li>
             <li>
-              <a href="./typography.html">
+              <a href="{% url 'predictions' %}">
                 <i class="tim-icons icon-atom"></i>
                 <p>Predicciones</p>
               </a>
@@ -122,15 +116,9 @@
         </div>
         <!-- End Navbar -->
       <div class="content">
+        
         <div class="row">
           <div class="col-md-12">
-            <div class="col-sm-12" id="selection-buttons">
-              <div class="btn-group">
-                <a href="{% url 'twitter' num=10 %}" class="btn btn-primary{{active1}}">Últimos 10</a>
-                <a href="{% url 'twitter' num=25 %}" class="btn btn-primary{{active2}}">Últimos 25</a>
-                <a href="{% url 'twitter' num=50 %}" class="btn btn-primary{{active3}}">Últimos 50</a>
-              </div>
-            </div>
             <div class="card ">
               <div class="card-header">
                 
@@ -161,7 +149,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                        {% for s in context.teams %}
+                        {% for s in teams %}
                         <tr>   
                             <td>@{{s.0}}</td>
                             <td class="text-center">{{s.1}}</td>
@@ -206,7 +194,7 @@
                           </tr>
                     </thead>
                     <tbody>
-                        {% for s in context.drivers %}
+                        {% for s in drivers %}
                         <tr>   
                             <td>@{{s.0}}</td>
                             <td class="text-center">{{s.1}}</td>

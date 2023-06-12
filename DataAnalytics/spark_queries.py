@@ -1033,57 +1033,12 @@ def get_avg_conditions(season):
 
 #region Procesamiento del dataframe de predicciones
 def process_predictions(df): 
-    ''' df es un dataframe'''
-    #posiciones = df['position'].tolist()
     
-    # Calcular la posición que más se repite y su frecuencia
-    '''
-    contador_posiciones = Counter(posiciones)
-    posicion_mas_repetida = contador_posiciones.most_common(1)[0][0]
-    frecuencia_posicion = contador_posiciones.most_common(1)[0][1]
-    '''
-    # Calcular el valor a dividir entre 3
-    #valor_dividir = frecuencia_posicion / 3
-    
-    # Obtener un diccionario con los nombres de los pilotos y la posición repetida
-    '''
-    res = {}
-    nombres_pilotos = df['forename'] + ' ' + df['surname']
-    for nombre, posicion in zip(nombres_pilotos, posiciones):
-        if posicion == posicion_mas_repetida:
-            res[nombre] = {
-                'posicion': posicion,
-                'porcentaje': valor_dividir
-            }
-    '''
-    ''' Conversión del dataframe 
-    lista_df = df.collect()
-    #lista_rows = [list(fila) for fila in lista_df]
-
-    for fila in lista_df:
-        driver_name = res['forename']
-
-        if driver_name in res:
-
-        else:
-            res[driver_name] = 
-    '''
-    '''
-    result = df.groupBy("forename", "position").agg(count("position").alias("contador"))
-    result = result.groupBy("forename").agg(max("contador").alias("max_contador"))
-
-    # Convertir el resultado en un diccionario
-    diccionario = {fila["forename"]: fila["max_contador"] for fila in result.collect()}
-
-    # Imprimir el diccionario
-    print(diccionario)
-    '''
     count_df = df.count()
     distinct_df = df.select("prediction","forename","surname", "probability").dropDuplicates(["prediction", "forename"])
-    #distinct_df = df.select("prediction", "forename","probability").distinct()
+    
     count_ddf= distinct_df.count()
-    # Mostrar el resultado
-    #distinct_df.show()
+
     sorted_df = distinct_df.orderBy(distinct_df["prediction"].asc())  # Orden descendente
     sorted_df.show()
     res = []
@@ -1108,4 +1063,39 @@ def process_predictions(df):
     #return res
 #endregion Procesamiento del dataframe de predicciones
 
+#region Procesar dataframe de matriz de confusión
 
+def process_confusion_matrix(df):
+    res = []
+    for row in df.collect():
+        res.append((
+            row['position'],
+            row['total_instances'],
+            row['correct_instances'],
+            row['precision'],
+            row['recall'],
+            row['f1_score']
+        ))
+    return res
+#endregion Procesar dataframe de matriz de confusión
+
+
+def get_last_twitter_stats():
+
+    twitter_drivers = spark.read.csv('./datasets/drivers_followers.csv', header=True)
+    twitter_teams = spark.read.csv('./datasets/followers.csv', header=True)
+
+    df_last = twitter_drivers.orderBy(twitter_drivers.Fecha).limit(10).collect()
+    df_last_teams = twitter_teams.orderBy(twitter_teams.Fecha).limit(20).collect()
+    
+    driver_res = []
+    team_res = []
+
+    for row in df_last:
+        driver_res.append([row["Piloto"],row["Seguidores"],row["Tweets"],row["Likes"],row["Rts"]])
+    
+    for row in df_last_teams:
+        #team_res.append((row["Escuderia"],row["Seguidores"],row["Tweets"],row["Likes"],row["Rts"]))
+        team_res.append([row["Escuderia"],row["Seguidores"],row["Tweets"],row["Likes"],row["Rts"]])
+
+    return driver_res, team_res

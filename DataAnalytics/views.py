@@ -202,7 +202,9 @@ def get_circuit(request,id):
 
 
 def list_races(request):
-    carreras = Carrera.objects.all().order_by('-fecha')
+    #carreras = Carrera.objects.all().order_by('-fecha')
+    fecha_actual = datetime.datetime.now()
+    carreras = Carrera.objects.filter(fecha__lt=fecha_actual).order_by('-fecha')
     formulario = CarreraBusquedaForm()
     search = False
     if request.method=='POST':

@@ -4,6 +4,9 @@ from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import BinaryClassificationEvaluator, RegressionEvaluator
 from pyspark.ml.classification import LogisticRegressionModel
 from pyspark.ml.feature import VectorAssembler
+from pyspark.mllib.evaluation import MulticlassMetrics
+from pyspark.sql.functions import count, sum
+from pyspark.sql.types import IntegerType
 
 def train_model():
     spark = SparkSession.builder.getOrCreate()
@@ -36,7 +39,7 @@ def train_model():
     assembler = VectorAssembler(inputCols=selected_columns, outputCol="features")
     # Transformar los datos de entrenamiento utilizando el ensamblador
     training_data = assembler.transform(train_data)
-    training_data.show()
+    #training_data.show()
 
     # Ajustar el modelo de regresión logística utilizando los datos de entrenamiento
     lr_model = lr.fit(training_data)
@@ -48,16 +51,35 @@ def train_model():
     validation_data = assembler.transform(test_data)
     predictions = lr_model.transform(validation_data)
 
-    predictions.show()
+    #predictions.show()
+
+    ''' CÁLCULO DE ERRORES '''
     # Calcular métricas de evaluación para el problema de clasificación o regresión
-    if lr.getFamily() == "binomial":
-        evaluator = BinaryClassificationEvaluator(labelCol='position')
-        accuracy = evaluator.evaluate(predictions)
-        print(f"Accuracy: {accuracy}")
-    else:
-        evaluator = RegressionEvaluator(labelCol='position', metricName='rmse')
-        rmse = evaluator.evaluate(predictions)
-        print(f"RMSE: {rmse}")
+
+  
+    evaluator = RegressionEvaluator(labelCol='position', metricName='rmse')
+    rmse = evaluator.evaluate(predictions)
+    #print(f"RMSE: {rmse}")
 
 
-    return predictions
+    
+
+  
+
+
+
+    predictions = predictions.withColumn("prediction_label", predictions["prediction"].cast(IntegerType()))
+
+
+    confusion_matrix = predictions.groupBy("position") \
+        .agg(count("*").alias("total_instances"),
+            sum((predictions["position"] == predictions["prediction_label"]).cast("integer")).alias("correct_instances"))
+
+
+    confusion_matrix = confusion_matrix.withColumn("precision", confusion_matrix["correct_instances"] / confusion_matrix["total_instances"])
+    confusion_matrix = confusion_matrix.withColumn("recall", confusion_matrix["correct_instances"] / confusion_matrix["total_instances"])
+
+    confusion_matrix = confusion_matrix.withColumn("f1_score", 2 * (confusion_matrix["precision"] * confusion_matrix["recall"]) / (confusion_matrix["precision"] + confusion_matrix["recall"]))
+    #confusion_matrix.show()
+
+    return predictions, confusion_matrix, rmse

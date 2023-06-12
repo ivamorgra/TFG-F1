@@ -43,19 +43,19 @@
               </a>
             </li>
             <li>
-                <a href={% url 'dashboard' %}>
+                <a href="{% url 'dashboard' %}">
                     <i class="tim-icons icon-chart-pie-36"></i>
                     <p>Dashboard</p>
                 </a>
             </li>
             <li>
-              <a href="href=/dashboard/twitter/10">
+              <a href="{% url 'twitter' %}">
                 <i class="tim-icons icon-sound-wave"></i>
                 <p>Twitter</p>
               </a>
             </li>
             <li>
-              <a href="./map.html">
+              <a href="{% url 'meteo' %}">
                 <i class="tim-icons icon-zoom-split"></i>
                 <p>Meteorología</p>
               </a>
@@ -73,7 +73,7 @@
               </a>
             </li>
             <li>
-              <a href="./typography.html">
+              <a href="{% url 'predictions' %}">
                 <i class="tim-icons icon-atom"></i>
                 <p>Predicciones</p>
               </a>

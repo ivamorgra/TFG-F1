@@ -4,7 +4,7 @@ from django.conf import settings
 #from DataAnalytics.twitter import UserClient
 from DataAnalytics.trends import search_trends
 from DataAnalytics.bstracker import get_standings,get_standings_teams,drivers_scrapping,constructors_scrapping, next_race_scrapping
-from DataAnalytics.spark_queries import get_avg_conditions, get_avg_hum, get_evolution_temp, get_meteo_byseason, get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution, process_predictions
+from DataAnalytics.spark_queries import get_avg_conditions, get_avg_hum, get_evolution_temp, get_last_twitter_stats, get_meteo_byseason, get_top3drivers_evolution,get_top3teams_evolution,get_season_progress,get_pilots_comparison,get_twitter_evolution, process_confusion_matrix, process_predictions
 from DataAnalytics.spark_queries_teams import get_teams_comparison,get_twitter_team_evolution
 from Dashboard.model import train_model
 import logging
@@ -295,15 +295,32 @@ def get_view_weather(request):
 #endregion Vista de Meteorología
 
 def get_view_predictions(request):
-    df = train_model()
-    res = process_predictions(df)
+    df,confusion_matrix,rmse  = train_model()
+    res= process_predictions(df)
+    confusion_matrix_list = process_confusion_matrix(confusion_matrix)
     next_race = next_race_scrapping()
+
+    json_rmse = json.dumps(rmse)
     context = {
         'res': res,
         'race': next_race,
+        'json_rmse': json_rmse,
+        'matrix': confusion_matrix_list,
         'STATIC_URL':settings.STATIC_URL
 
     }
     return render(request, 'dashboard/predictions.html',context)
 
 ''' APARTADO TWITTER '''
+
+def get_twitter_stats(request):
+
+    res_drivers, res_teams = get_last_twitter_stats()
+
+    context = {
+        'drivers':res_drivers,
+        'teams':res_teams,
+        'STATIC_URL':settings.STATIC_URL
+    }
+
+    return render(request,'dashboard/twitter.html', context)

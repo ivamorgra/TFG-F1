@@ -43,27 +43,21 @@
               </a>
             </li>
             <li>
-                <a href={% url 'dashboard' %}>
+                <a href="{% url 'dashboard' %}">
                     <i class="tim-icons icon-chart-pie-36"></i>
                     <p>Dashboard</p>
                 </a>
             </li>
             <li class="active">
-              <a href="/#">
+              <a href="{% url 'twitter' %}">
                 <i class="tim-icons icon-sound-wave"></i>
                 <p>Twitter</p>
               </a>
             </li>
             <li>
-              <a href="./map.html">
+              <a href="{% url 'meteo' %}">
                 <i class="tim-icons icon-zoom-split"></i>
-                <p>Tendencias</p>
-              </a>
-            </li>
-            <li>
-              <a href="./notifications.html">
-                <i class="tim-icons icon-single-02"></i>
-                <p>Popularidad</p>
+                <p>Meteorología</p>
               </a>
             </li>
             <li>
@@ -168,6 +162,60 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card ">
+              <div class="card-header">
+                
+                <h4 class="card-title">Matriz de confusión y recall: </h4>
+                <p class="category">  </p>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table tablesorter " id="sortDriverTable">
+                    <thead class=" text-primary">
+                      <tr>
+                        <th class="text-center">
+                          Posición
+                        </th>
+                        <th class="text-center">
+                          Instancias totales
+                        </th>
+                        <th class="text-center">
+                          Instancias correctas
+                        </th>
+                        <th class="text-center">                         
+                          Precisión
+                        </th>
+                        <th class="text-center">  
+                          Recall
+                        </th>
+                        <th class="text-center">                         
+                          F1_score
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for m in matrix %}
+                        <tr>   
+
+                            <td class="text-center">{{m.0}}</td>
+                            <td class="text-center">{{m.1}}</td>
+                            <td class="text-center">{{m.2}}</td>
+                            <td class="text-center">{{m.3}}</td>
+                            <td class="text-center">{{m.4}}</td>
+                            <td class="text-center">{{m.5}}</td>
+                        </tr>  
+                        {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       </div>
       <footer class="footer">
         <div class="container px-5">
@@ -211,7 +259,7 @@
       </ul>
     </div>
   </div>
-  
+  <div id="json_rmse" data-json='{{ json_rmse |safe }}'></div>
   <!--   Core JS Files   -->
   <script src="{% static '/js/dashboard/core/jquery.min.js'%}"></script>
   <script src="{% static '/js/dashboard/core/popper.min.js'%}"></script>
@@ -223,7 +271,7 @@
   
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static '/js/dashboard/black-dashboard.min.js'%}"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
-  <script src="{% static 'js/dashboard/control/twitter.js'%}"></script>
+  <script src="{% static 'js/dashboard/control/prediction.js'%}"></script>
   <script>
     $(document).ready(function() {
       $().ready(function() {
